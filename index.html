@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Micah Crandell</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0b0b0b;
+    font-family: Menlo, monospace;
+  }
+  .typing-animation {
+    font-size: 2rem;
+    color: #dfdfdf;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  .typing-animation:hover {
+    color: #00FF00; 
+  }
+</style>
+</head>
+<body>
+<div class="typing-animation" id="typing-animation"></div>
+<script>
+  const text = "micah_crandell";
+  let index = 0;
+  let isDeleting = false;
+
+  function type() {
+    const typingAnimation = document.getElementById('typing-animation');
+    const speed = 200;
+
+    if (isDeleting) {
+      typingAnimation.textContent = text.substring(0, index - 1);
+      index--;
+    } else {
+      typingAnimation.textContent = text.substring(0, index + 1);
+      index++;
+    }
+
+    if (index === text.length + 1) {
+      isDeleting = true;
+    }
+
+    if (index === 0) {
+      isDeleting = false;
+    }
+
+    setTimeout(type, isDeleting ? speed / 2 : speed);
+
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    type();
+  });
+</script>
+</body>
+</html>
