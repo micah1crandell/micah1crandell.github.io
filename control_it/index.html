@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control-It - Support</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #121212;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section h1 {
+            font-size: 24px;
+            margin-bottom: -10px;
+        }
+
+        .welcome-section .gear-icon {
+            font-size: 40px;
+            cursor: default;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin: 20px 0;
+            margin-top: -10px;
+        }
+
+        .grids {
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .grid-item {
+            background-color: #1e1e1e;
+            margin-right: 10px;
+            text-align: center;
+            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-item .grid-icon {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2px;
+            width: 30px;
+            height: 30px;
+        }
+
+        .grid-icon div {
+            background-color: #f5f5f5;
+            border-radius: 2px;
+        }
+
+        .grid-item p {
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .connections {
+            margin-top: 20px;
+        }
+
+        .connection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            background-color: #1e1e1e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .connection-item:hover {
+            background-color: #2b2b2b;
+        }
+
+        .connection-item .status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .connection-item .status.active {
+            background-color: green;
+        }
+
+        .connection-item .status.inactive {
+            background-color: red;
+        }
+
+        .connection-details {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .connection-details p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1e1e1e;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .footer-nav a {
+            color: #f5f5f5;
+            text-decoration: none;
+        }
+
+        .footer-nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hey, Welcome Back Section -->
+        <div class="welcome-section">
+            <div>
+                <h1>Hey, <span id="username">User</span></h1>
+                <p>Welcome to Control-It Support</p>
+            </div>
+            <div class="gear-icon">&#9881;</div>
+        </div>
+
+        <!-- Grids Section -->
+        <div class="grids-section">
+            <h2 class="section-title">Grids</h2>
+            <div class="grids">
+                <div class="grid-item">
+                    <div class="grid-icon">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <p>Website</p>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-icon">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <p>Github</p>
+                </div>
+                <!-- Add more grid items here -->
+            </div>
+        </div>
+
+        <!-- Active Connections Section (Renamed to Support Links) -->
+        <div class="connections">
+            <h2 class="section-title">Support Links</h2>
+            <a href="libraries.html" class="connection-item">
+                <div class="status inactive"></div>
+                <div class="connection-details">
+                    <p>Libraries and Examples</p>
+                    <p>192.168.10.127</p>
+                </div>
+            </a>
+            <a href="faq.html" class="connection-item">
+                <div class="status active"></div>
+                <div class="connection-details">
+                    <p>FAQ</p>
+                    <p>common questions</p>
+                </div>
+            </a>
+            <a href="contact.html" class="connection-item">
+                <div class="status active"></div>
+                <div class="connection-details">
+                    <p>Contact</p>
+                    <p>micahcrandell.dev@gmail.com</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer Nav Bar -->
+    <div class="footer-nav">
+        <a href="contact.html">Support</a>
+        <a href="faq.html">FAQ</a>
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contact</a>
+    </div>
+
+    <script>
+        // Dynamic content example for the username
+        document.getElementById('username').textContent = 'Micah';
+    </script>
+</body>
+</html>
