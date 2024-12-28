@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Merger</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #e0e4e7, #f5f7fa);
+      overflow: hidden;
+    }
+
+    .navigation {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        font-size: 14px;
+        z-index: 9002;
+        background: rgba(0, 0, 0, 0.0);
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .navigation .menu-toggle {
+        display: none;
+        font-size: 24px;
+        background: none;
+        color: rgb(11, 11, 11);
+        border: none;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    @media (max-width: 1050px) {
+        .navigation {
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.0);
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .nav-links {
+            display: flex; 
+            flex-direction: row; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 10px;
+            padding: 0 10px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .nav-links div {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .nav-links a {
+            font-size: clamp(12px, 2.5vw, 16px);
+            padding: 5px 8px;
+            border-radius: 3px;
+            text-align: center;
+            transition: 0.3s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+    }
+
+    a {
+        color: #111111;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 30px;
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    input[type="file"] {
+      margin-bottom: 20px;
+      display: block;
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      outline: none;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      max-height: 200px;
+      overflow-y: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    ul li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 4px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    ul li span {
+      font-size: 14px;
+      font-weight: 400;
+      color: #2c3e50;
+    }
+
+    ul li .controls {
+      display: flex;
+      gap: 5px;
+    }
+
+    ul li button {
+      background: #007aff;
+      color: #fff;
+      border: none;
+      padding: 4px 6px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    ul li button:hover {
+      opacity: 0.8;
+    }
+
+    ul li button.remove {
+      background: #ff3b30;
+    }
+
+    button#mergeBtn {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button#mergeBtn:hover {
+      background: #005ecb;
+    }
+
+    a#downloadLink {
+      margin-top: 15px;
+      display: block;
+      font-weight: bold;
+      text-decoration: none;
+      color: #007aff;
+    }
+
+    a#downloadLink:hover {
+      text-decoration: underline;
+    }
+
+    .typing-animation {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+        position: relative;
+        margin-top: 20px;
+        text-align: middle; 
+        transition: color 0.3s ease;
+        height: 2.5rem;
+        line-height: 2.5rem; 
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="navigation">
+    <button class="menu-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+        <div><a href="../index.html">Home</a></div>
+        <div><a href="../control_it/index.html">Control It</a></div>
+        <div><a href="../inbox_for_menu_bar/index.html">Mineral</a></div>
+        <div><a href="https://github.com/micah1crandell" target="_blank">Github</a></div>
+        <div><a href="random.html">Random</a></div>
+    </div>
+</div>  
+
+<div class="container">
+    <div class="typing-animation" id="typing-animation"></div>
+    <input type="file" id="pdfInput" multiple accept="application/pdf">
+    <ul id="fileList"></ul>
+    <button id="mergeBtn">Merge PDFs</button>
+    <a id="downloadLink" style="display:none;">Download Merged PDF</a>
+</div>
+
+<script>
+    const text = "PDF Merger";
+    let index = 0;
+    let isDeleting = false;
+
+    function type() {
+        const typingAnimation = document.getElementById('typing-animation');
+        const speed = 200;
+
+        if (isDeleting) {
+            typingAnimation.textContent = text.substring(0, index - 1);
+            index--;
+        } else {
+            typingAnimation.textContent = text.substring(0, index + 1);
+            index++;
+        }
+
+        if (index === text.length + 1) {
+            isDeleting = true;
+        }
+
+        if (index === 0) {
+            isDeleting = false;
+        }
+
+        setTimeout(type, isDeleting ? speed / 2 : speed);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        type();
+    });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pdfInput = document.getElementById('pdfInput');
+  const fileList = document.getElementById('fileList');
+  const mergeBtn = document.getElementById('mergeBtn');
+  const downloadLink = document.getElementById('downloadLink');
+
+  let pdfFiles = [];
+
+  pdfInput.addEventListener('change', (event) => {
+    const selectedFiles = Array.from(event.target.files);
+    selectedFiles.forEach(file => {
+      if (!pdfFiles.includes(file)) {
+        pdfFiles.push(file);
+        displayFile(file);
+      }
+    });
+    pdfInput.value = '';
+  });
+
+  function displayFile(file) {
+    const li = document.createElement('li');
+    li.dataset.index = pdfFiles.indexOf(file);
+    li.innerHTML = `
+      <span>${file.name}</span>
+      <div class="controls">
+        <button class="up">↑</button>
+        <button class="down">↓</button>
+        <button class="remove">✖</button>
+      </div>
+    `;
+
+    li.querySelector('.remove').addEventListener('click', () => removeFile(file, li));
+    li.querySelector('.up').addEventListener('click', () => moveFile(file, -1));
+    li.querySelector('.down').addEventListener('click', () => moveFile(file, 1));
+
+    fileList.appendChild(li);
+  }
+
+  function removeFile(file, li) {
+    pdfFiles = pdfFiles.filter(f => f !== file);
+    fileList.removeChild(li);
+  }
+
+  function moveFile(file, direction) {
+    const index = pdfFiles.indexOf(file);
+    const newIndex = index + direction;
+    if (newIndex >= 0 && newIndex < pdfFiles.length) {
+      [pdfFiles[index], pdfFiles[newIndex]] = [pdfFiles[newIndex], pdfFiles[index]];
+      updateFileList();
+    }
+  }
+
+  function updateFileList() {
+    fileList.innerHTML = '';
+    pdfFiles.forEach(displayFile);
+  }
+
+  mergeBtn.addEventListener('click', async () => {
+    const mergedPdf = await PDFLib.PDFDocument.create();
+    for (const file of pdfFiles) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach(page => mergedPdf.addPage(page));
+    }
+
+    const blob = new Blob([await mergedPdf.save()], { type: 'application/pdf' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const tempLink = document.createElement('a');
+    tempLink.href = blobUrl;
+    tempLink.download = 'merged.pdf';
+    tempLink.style.display = 'none';
+
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
+    URL.revokeObjectURL(blobUrl);
+  });
+});
+</script>
+</body>
+</html>
