@@ -1,6 +1,6 @@
 // All boid simulation based on https://www.nickfrosst.com/
 
-var MAX_SPEED = 6;
+var MAX_SPEED = 5;
 var MAX_FORCE = 0.1;
 var DESIRED_SEPARATION = 40;
 var MOUSE_DESIRED_SEPARATION = 150;
