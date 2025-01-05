@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager Assistant</title>
+    <style>body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    
+    #api-key-container {
+        margin: 50px auto;
+        text-align: center;
+    }
+    
+    #api-key {
+        padding: 8px;
+        width: 300px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    
+    #api-key {
+        pointer-events: auto;
+        user-select: auto;
+    }
+    
+    #save-key {
+        margin-left: 5px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+    
+    #chat-container {
+        width: 400px;
+        margin: 50px auto;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    #chat-box {
+        height: 300px;
+        overflow-y: scroll;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    
+    #input-container {
+        display: flex;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+    
+    #user-input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    #send-btn {
+        margin-left: 5px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+    
+    #planner-login-container {
+        text-align: center;
+        margin: 30px auto;
+    }
+    
+    #planner-login-container button {
+        margin-top: 10px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #0078D4;
+        color: white;
+        cursor: pointer;
+    }
+    
+    #settings-btn {
+        margin: 10px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #FFA500;
+        color: white;
+        cursor: pointer;
+    }
+    
+    #settings-container {
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        padding: 20px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+    
+    #settings-container label {
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    #settings-container input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    #settings-container button {
+        margin-right: 10px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    #logout-microsoft {
+        background-color: #FF4C4C;
+        color: white;
+    }
+    </style>
+</head>
+<body>
+    <div id="api-key-container">
+        <h2>Enter your OpenAI API Key:</h2>
+        <input type="password" id="api-key" placeholder="sk-..." autocomplete="off">
+        <button id="save-key">Save Key</button>
+    </div>
+    <div id="planner-login-container">
+        <h2>Microsoft Planner Login</h2>
+        <button id="microsoft-login-btn">Login with Microsoft</button>
+    </div>
+    <div id="chat-container" style="display:none;">
+        <h1>Task Manager Assistant</h1>
+        <div id="chat-box"></div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Ask something...">
+            <button id="send-btn">Send</button>
+        </div>
+        <button id="settings-btn">Settings</button>
+    </div>
+    <div id="settings-container" style="display:none;">
+        <h2>Settings</h2>
+        <label for="edit-api-key">API Key:</label>
+        <input type="password" id="edit-api-key" placeholder="sk-...">
+        <button id="save-edit-key">Save API Key</button>
+        <h3>Microsoft Account</h3>
+        <button id="logout-microsoft">Logout from Microsoft</button>
+        <button id="close-settings">Close Settings</button>
+    </div>
+    <script src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.min.js"></script>
+    <script>let apiKey = '';
+
+        // DOM Elements
+        const apiKeyInput = document.getElementById('api-key');
+        const saveKeyBtn = document.getElementById('save-key');
+        const apiKeyContainer = document.getElementById('api-key-container');
+        const chatContainer = document.getElementById('chat-container');
+        const plannerLoginContainer = document.getElementById('planner-login-container');
+        const microsoftLoginBtn = document.getElementById('microsoft-login-btn');
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsContainer = document.getElementById('settings-container');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const logoutMicrosoftBtn = document.getElementById('logout-microsoft');
+        const saveEditKeyBtn = document.getElementById('save-edit-key');
+        const editApiKeyInput = document.getElementById('edit-api-key');
+        
+        // --- API Key Management ---
+        
+        saveKeyBtn.addEventListener('click', () => {
+            apiKey = apiKeyInput.value.trim();
+            if (apiKey === '') {
+                alert('Please enter a valid OpenAI API key!');
+                return;
+            }
+            apiKeyContainer.style.display = 'none';
+            plannerLoginContainer.style.display = 'block';
+        });
+        
+        // Enable API key paste detection
+        apiKeyInput.addEventListener('paste', (e) => {
+            setTimeout(() => {
+                apiKey = apiKeyInput.value.trim();
+            }, 0);
+        });
+        
+        // --- Microsoft Login and Authentication ---
+        
+        const msalConfig = {
+            auth: {
+                clientId: "de347113-7d61-404e-9687-e6481d5e0e9e", // Replace with your Application (client) ID
+                authority: "https://login.microsoftonline.com/d3b55d67-1dd4-41a5-860e-ca7b10dd2b98", // Replace with your tenant ID
+                redirectUri: window.location.origin // The URL to redirect after login
+            }
+        };
+        
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+        
+        // Login Button
+        microsoftLoginBtn.addEventListener('click', async () => {
+            try {
+                const loginResponse = await msalInstance.loginPopup({
+                    scopes: ["https://graph.microsoft.com/.default"]
+                });
+                console.log("Login Successful:", loginResponse);
+                alert('Microsoft Planner Login successful!');
+                plannerLoginContainer.style.display = 'none';
+                chatContainer.style.display = 'block';
+            } catch (error) {
+                console.error('Login failed:', error);
+                alert('Microsoft Login failed. Check console for details.');
+            }
+        });
+        
+        // Acquire Token for Microsoft Graph API
+        async function getAccessToken() {
+            try {
+                const account = msalInstance.getAllAccounts()[0];
+                if (!account) throw new Error("No account logged in.");
+        
+                const response = await msalInstance.acquireTokenSilent({
+                    account,
+                    scopes: ["https://graph.microsoft.com/.default"]
+                });
+        
+                return response.accessToken;
+            } catch (error) {
+                console.warn("Silent token acquisition failed. Attempting popup token acquisition:", error);
+                const response = await msalInstance.acquireTokenPopup({
+                    scopes: ["https://graph.microsoft.com/.default"]
+                });
+                return response.accessToken;
+            }
+        }
+        
+        // Logout
+        logoutMicrosoftBtn.addEventListener('click', () => {
+            msalInstance.logoutPopup();
+            alert('Logged out from Microsoft successfully!');
+            plannerLoginContainer.style.display = 'block';
+            chatContainer.style.display = 'none';
+        });
+        
+        // --- Microsoft Planner Functions ---
+        
+        async function getAllPlans() {
+            const token = await getAccessToken();
+            const response = await fetch("https://graph.microsoft.com/v1.0/me/planner/plans", {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            return await response.json();
+        }
+        
+        async function getBuckets(planId) {
+            const token = await getAccessToken();
+            const response = await fetch(`https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            return await response.json();
+        }
+        
+        async function getTasks(bucketId) {
+            const token = await getAccessToken();
+            const response = await fetch(`https://graph.microsoft.com/v1.0/planner/buckets/${bucketId}/tasks`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            return await response.json();
+        }
+        
+        async function addTask(planId, bucketId, title, dueDate) {
+            const token = await getAccessToken();
+            const payload = {
+                planId,
+                bucketId,
+                title,
+                dueDateTime: dueDate || null
+            };
+        
+            const response = await fetch("https://graph.microsoft.com/v1.0/planner/tasks", {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+        
+            return await response.json();
+        }
+        
+        async function editTask(taskId, title, percentComplete, dueDate) {
+            const token = await getAccessToken();
+            const payload = {};
+            if (title) payload.title = title;
+            if (percentComplete !== undefined) payload.percentComplete = percentComplete;
+            if (dueDate) payload.dueDateTime = dueDate;
+        
+            const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: "PATCH",
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+        
+            return response.ok;
+        }
+        
+        // --- OpenAI Chat Integration ---
+        
+        sendBtn.addEventListener('click', async () => {
+            const userMessage = userInput.value.trim();
+            if (userMessage === '') return;
+        
+            appendMessage('user', userMessage);
+            userInput.value = '';
+        
+            try {
+                let actionResponse = '';
+        
+                if (userMessage.startsWith('add task')) {
+                    const [_, title, planId, bucketId, dueDate] = userMessage.split(',');
+                    const result = await addTask(planId.trim(), bucketId.trim(), title.trim(), dueDate?.trim());
+                    actionResponse = `Task added: ${result.id}`;
+                } 
+                else if (userMessage.startsWith('edit task')) {
+                    const [_, taskId, title, percentComplete, dueDate] = userMessage.split(',');
+                    const result = await editTask(
+                        taskId.trim(),
+                        title?.trim(),
+                        percentComplete ? parseInt(percentComplete.trim()) : undefined,
+                        dueDate?.trim()
+                    );
+                    actionResponse = result ? "Task edited successfully" : "Failed to edit task";
+                } 
+                else if (userMessage.startsWith('get plans')) {
+                    const plans = await getAllPlans();
+                    actionResponse = JSON.stringify(plans);
+                } 
+                else {
+                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: 'gpt-4o-mini',
+                            messages: [
+                                {
+                                    role: 'system',
+                                    content: 'You are a Microsoft Planner Assistant. You can view, edit, and add tasks to your Microsoft Planner.'
+                                },
+                                { role: 'user', content: userMessage }
+                            ]
+                        })
+                    });
+        
+                    const data = await response.json();
+                    actionResponse = data.choices?.[0]?.message?.content || 'No valid response received.';
+                }
+        
+                appendMessage('bot', actionResponse);
+            } catch (error) {
+                console.error(error);
+                appendMessage('bot', 'An error occurred. Check console for details.');
+            }
+        });
+        
+        // --- Message Display ---
+        
+        function appendMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        // --- Settings ---
+        
+        settingsBtn.addEventListener('click', () => settingsContainer.style.display = 'block');
+        closeSettingsBtn.addEventListener('click', () => settingsContainer.style.display = 'none');
+        saveEditKeyBtn.addEventListener('click', () => {
+            apiKey = editApiKeyInput.value.trim();
+            alert('API Key updated!');
+            settingsContainer.style.display = 'none';
+        });
+        </script>    
+</body>
+</html>
