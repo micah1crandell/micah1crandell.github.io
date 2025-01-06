@@ -171,7 +171,12 @@
         <button id="close-settings">Close Settings</button>
     </div>
     <script src="https://alcdn.msauth.net/browser/2.31.0/js/msal-browser.min.js"></script>
-    <script>let apiKey = '';
+    <script>
+
+        let apiKey = '';
+        let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory')) || [
+            { role: 'system', content: 'You are a Microsoft Planner AI Assistant. You can view, edit, and add tasks to the user\'s Microsoft Planner. You will be given previous messages from the user for context if available. Your goal is to keep the user updated about their tasks and create/edit any tasks as the user completes or updates them.' }
+        ];
 
         // DOM Elements
         const apiKeyInput = document.getElementById('api-key');
@@ -189,12 +194,6 @@
         const logoutMicrosoftBtn = document.getElementById('logout-microsoft');
         const saveEditKeyBtn = document.getElementById('save-edit-key');
         const editApiKeyInput = document.getElementById('edit-api-key');
-        const conversationHistory = [
-            {
-                role: 'system',
-                content: 'You are a Microsoft Planner Assistant. You can view, edit, and add tasks to your Microsoft Planner.'
-            }
-        ];
 
         // --- API Key Management ---
         
@@ -268,6 +267,10 @@
         logoutMicrosoftBtn.addEventListener('click', () => {
             msalInstance.logoutPopup();
             alert('Logged out from Microsoft successfully!');
+            localStorage.removeItem('conversationHistory'); // Clear history
+            conversationHistory = [
+                { role: 'system', content: 'You are a Microsoft Planner Assistant. You can view, edit, and add tasks to your Microsoft Planner.' }
+            ];
             plannerLoginContainer.style.display = 'block';
             chatContainer.style.display = 'none';
         });
@@ -349,6 +352,8 @@
 
             // Add the user's message to the history
             conversationHistory.push({ role: 'user', content: userMessage });
+            // Save to local storage
+            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
 
             try {
                 let actionResponse = '';
@@ -391,6 +396,8 @@
 
                 // Add the assistant's response to the history
                 conversationHistory.push({ role: 'assistant', content: actionResponse });
+                // Save to local storage
+                localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
 
                 appendMessage('bot', actionResponse);
             } catch (error) {
