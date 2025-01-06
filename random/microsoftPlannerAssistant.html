@@ -189,7 +189,13 @@
         const logoutMicrosoftBtn = document.getElementById('logout-microsoft');
         const saveEditKeyBtn = document.getElementById('save-edit-key');
         const editApiKeyInput = document.getElementById('edit-api-key');
-        
+        const conversationHistory = [
+            {
+                role: 'system',
+                content: 'You are a Microsoft Planner Assistant. You can view, edit, and add tasks to your Microsoft Planner.'
+            }
+        ];
+
         // --- API Key Management ---
         
         saveKeyBtn.addEventListener('click', () => {
@@ -337,13 +343,16 @@
         sendBtn.addEventListener('click', async () => {
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
-        
+
             appendMessage('user', userMessage);
             userInput.value = '';
-        
+
+            // Add the user's message to the history
+            conversationHistory.push({ role: 'user', content: userMessage });
+
             try {
                 let actionResponse = '';
-        
+
                 if (userMessage.startsWith('add task')) {
                     const [_, title, planId, bucketId, dueDate] = userMessage.split(',');
                     const result = await addTask(planId.trim(), bucketId.trim(), title.trim(), dueDate?.trim());
@@ -372,20 +381,17 @@
                         },
                         body: JSON.stringify({
                             model: 'gpt-4o-mini',
-                            messages: [
-                                {
-                                    role: 'system',
-                                    content: 'You are a Microsoft Planner Assistant. You can view, edit, and add tasks to your Microsoft Planner.'
-                                },
-                                { role: 'user', content: userMessage }
-                            ]
+                            messages: conversationHistory
                         })
                     });
-        
+
                     const data = await response.json();
                     actionResponse = data.choices?.[0]?.message?.content || 'No valid response received.';
                 }
-        
+
+                // Add the assistant's response to the history
+                conversationHistory.push({ role: 'assistant', content: actionResponse });
+
                 appendMessage('bot', actionResponse);
             } catch (error) {
                 console.error(error);
