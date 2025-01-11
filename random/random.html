@@ -11,7 +11,7 @@
             font-weight: 700;
             margin: 0;
             padding: 0;
-            background-color: #000000;
+            background-color: #ebb25d;
             color: #ececec;
             line-height: 1.6;
             overflow-x: hidden;
@@ -40,10 +40,14 @@
             margin-bottom: 10px;
         }
 
-        .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        .nav-links a {
+            font-size: 16px;
+            color: #ececec;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s ease; 
+            text-transform: uppercase; 
+            /* text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); */
         }
 
         @media (max-width: 1050px) {
@@ -86,7 +90,8 @@
             }
 
             .nav-links a:hover {
-                background: rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                color: #ececec; 
             }
 
             body {
@@ -106,8 +111,10 @@
         .page-title {
             text-align: center;
             margin: 10vh 15vw 0;
-            font-size: clamp(24px, 5vw, 36px); 
-            letter-spacing: 2px;
+            font-size: clamp(28px, 6vw, 42px); 
+            letter-spacing: 3px;
+            color: #ececec; 
+            text-shadow: 2px 2px 4px #22476ab2;
             word-break: break-word; 
         }
 
@@ -115,7 +122,7 @@
             text-align: center;
             font-size: clamp(14px, 2.5vw, 16px);
             margin-top: 10px;
-            color: #a0a0a0;
+            color: #63B8EE;
             padding: 0 5vw;
         }
 
@@ -133,39 +140,11 @@
         .link-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 60px 60px;
-            margin-top: 40px;
-        }
-
-        .link-item {
-            text-align: center;
-            background: rgba(20, 20, 20, 0.9);
-            border-radius: 5px;
-            overflow: hidden;
-            transition: transform 0.3s ease-in-out;
-            padding-bottom: 10px;
-        }
-
-        .link-item:hover {
-            transform: scale(1.05);
-        }
-
-        .link-item img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .link-item h3 {
-            margin: 10px 0 5px;
-            font-size: 18px;
-        }
-
-        .link-item p {
-            margin: 0 10px;
-            font-size: 14px;
-            color: #a0a0a0;
+            gap: 8vw;
+            padding: 60px;
+            margin: 40px auto 0;
+            max-width: 1200px; 
+            width: fit-content;
         }
 
         canvas {
@@ -177,6 +156,129 @@
             height: 100vh;
             z-index: -1; 
             pointer-events: auto;
+        }
+
+        /* From Uiverse.io by JkHuger */ 
+        .testbutton {
+        display: block;
+        margin: 20px auto;
+        font-family: helvetica;
+        color: #eeeeee;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 9px 8px 0px -1px#BEE2F9, 9px 8px 0px 1px #000;
+        padding: 12px 25px;
+        border-radius: 11px;
+        border: 2px solid #000;
+        background: linear-gradient(to bottom, #63B8EE, #468CCF);
+        transition: .3s;
+        cursor: pointer;
+        }
+
+        .testbutton:hover {
+        transition: .3s;
+        transform: translate(-.3em, -.3em);
+        box-shadow: 14px 13px 0px -1px #BEE2F9, 14px 13px 0px 1px #000;
+        border: 2px solid #000;
+        }
+
+        .testbutton:active {
+        transition: .3s;
+        transform: translate(.6em, .6em);
+        box-shadow: 0px 0px 0px -1px #BEE2F9, 0px 0px 0px 0.1px#000;
+        }
+
+        /* From Uiverse.io by ElSombrero2 */ 
+        .card {
+            width: 190px;
+            height: 254px;
+            overflow: visible;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card::before, .content {
+            border-radius: 11px; /* Matches button border-radius */
+            box-shadow: 9px 8px 0px -1px #BEE2F9, 9px 8px 0px 1px #000; /* Matches button shadow */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card::before {
+            position: absolute;
+            content: ' ';
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #63B8EE, #468CCF); /* Button gradient */
+            transform: rotateZ(5deg);
+        }
+
+        .card .content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #63B8EE, #468CCF); /* Button gradient */
+            border: 2px solid #000; /* Matches button border */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: rotateZ(-5deg);
+            color: #eeeeee; /* Matches button text color */
+            font-weight: bold;
+        }
+
+        .content .img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 8px; /* Optional for rounded images */
+        }
+
+        .description {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .description h3 {
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .description p {
+            margin: 0;
+            font-size: 14px;
+            color: #eeeeeea0; /* Slightly muted for secondary text */
+        }
+
+        .card:hover::before, .card:hover .content {
+            transform: rotateZ(0deg);
+            box-shadow: 14px 13px 0px -1px #BEE2F9, 14px 13px 0px 1px #000; /* Hover shadow */
+        }
+
+        .card:active::before, .card:active .content {
+            transform: translate(0.6em, 0.6em); /* Active translation effect */
+            box-shadow: 0px 0px 0px 0px #BEE2F9, 0px 0px 0px 0px #000; /* Active shadow */
+        }
+
+        @media (max-width: 768px) {
+            .link-grid {
+                grid-template-columns: 1fr; /* Stack cards vertically */
+                gap: 20px; /* Space between cards */
+                padding: 20px;
+                margin: 20px auto;
+            }
+
+            .card {
+                width: 90%; /* Adjust card width */
+                max-width: 300px;
+                margin: 0 auto;
+                aspect-ratio: 3 / 4; /* Maintain a 3:4 aspect ratio */
+            }
         }
 
     </style>
@@ -210,27 +312,43 @@
 
     <!-- Link Grid -->
     <section class="link-grid">
-        <a href="pdfMerger.html" class="link-item">
-            <img src="pdfMerger.png" alt="PDF Merger">
-            <h3>PDF Merger</h3>
-            <p>All logic happens in the browser using JavaScript and the PDF-Lib library. No files are uploaded to a server. Files are processed locally in the user's browser memory.</p>
+        <a href="pdfMerger.html" class="card">
+            <div class="content">
+                <div class="description">
+                    <h3>PDF Merger</h3>
+                    <p>All logic happens in the browser using JavaScript and the PDF-Lib library. No files are uploaded to a server. Files are processed locally in the user's browser memory.</p>
+                </div>
+            </div>
         </a>
-        <a href="https://github.com/micah1crandell/cliHartley" class="link-item">
-            <img src="cliHartley.png" alt="cliHartley">
-            <h3>cliHartley</h3>
-            <p>A terminal assistant designed to generate terminal commands using Google Gemini API. Easily generate terminal commands and run all within the terminal.</p>
+        <a href="https://github.com/micah1crandell/cliHartley" class="card" target="_blank">
+            <div class="content">
+                <div class="description">
+                    <h3>cliHartley</h3>
+                    <p>A terminal assistant designed to generate terminal commands using Google Gemini API. Easily generate terminal commands and run all within the terminal.</p>
+                </div>
+            </div>
         </a>
-        <a href="microsoftPlannerAssistant.html" class="link-item">
-            <img src="dbx.png" alt="Microsoft-Planner-Assistant">
-            <h3>Microsoft Planner Assistant</h3>
-            <p>An AI assistant aimed to know and help monitor and track Microsoft Planner tasks. &lt;UNDER DEVELOPMENT&gt;</p>
+        <a href="microsoftPlannerAssistant.html" class="card">
+            <div class="content">
+                <div class="description">
+                    <h3>Microsoft Planner Assistant</h3>
+                    <p>An AI assistant aimed to know and help monitor and track Microsoft Planner tasks. &lt;UNDER DEVELOPMENT&gt;</p>
+                </div>
+            </div>
         </a>
-        <a href="https://github.com/micah1crandell/AI-File-Organizer" class="link-item">
-            <img src="aiFile.png" alt="AI-File-Organizer">
-            <h3>AI File Organizer</h3>
-            <p>A program I made which utilizes the Google Gemini API to sort files into folders for quick organization.</p>
+        <a href="https://github.com/micah1crandell/AI-File-Organizer" class="card" target="_blank">
+            <div class="content">
+                <div class="description">
+                    <h3>AI File Organizer</h3>
+                    <p>A program I made which utilizes the Google Gemini API to sort files into folders for quick organization.</p>
+                </div>
+            </div>
         </a>
-    </section>
+    </section>       
+
+    <button class="testbutton" onclick="location.href='more.html'">
+        MORE
+    </button>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <title>Random</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ececec;
+            line-height: 1.6;
+            overflow-x: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px; 
+        }
+
+        .navigation {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 14px;
+            z-index: 9002;
+            background: rgba(0, 0, 0, 0.0);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .navigation .menu-toggle {
+            display: none;
+            font-size: 24px;
+            background: none;
+            color: rgb(241, 241, 241);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        @media (max-width: 1050px) {
+            .navigation {
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.0);
+                padding: 10px 0;
+                display: flex;
+                justify-content: center;
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+
+            .nav-links {
+                display: flex; 
+                flex-direction: row; 
+                justify-content: center; 
+                flex-wrap: wrap; 
+                gap: 10px;
+                padding: 0 10px;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .nav-links div {
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .nav-links a {
+                font-size: clamp(12px, 2.5vw, 16px);
+                padding: 5px 8px;
+                border-radius: 3px;
+                text-align: center;
+                transition: 0.3s;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .nav-links a:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            body {
+                overflow-x: hidden;
+            }
+        }
+
+        a {
+            color: #a0a0a0;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .page-title {
+            text-align: center;
+            margin: 10vh 15vw 0;
+            font-size: clamp(24px, 5vw, 36px); 
+            letter-spacing: 2px;
+            word-break: break-word; 
+        }
+
+        .page-description {
+            text-align: center;
+            font-size: clamp(14px, 2.5vw, 16px);
+            margin-top: 10px;
+            color: #a0a0a0;
+            padding: 0 5vw;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: clamp(20px, 5vw, 28px);
+                margin: 8vh 5vw 0;
+            }
+
+            .page-description {
+                font-size: clamp(12px, 2.5vw, 14px);
+            }
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 60px 60px;
+            margin-top: 40px;
+        }
+
+        .link-item {
+            text-align: center;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+            padding-bottom: 10px;
+        }
+
+        .link-item:hover {
+            transform: scale(1.05);
+        }
+
+        .link-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .link-item h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+        }
+
+        .link-item p {
+            margin: 0 10px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; 
+            pointer-events: auto;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="standardBoids/vector.js"></script>
+    <script src="standardBoids/boid.js"></script>
+    <script src="standardBoids/obstacle.js"></script>
+    <script src="standardBoids/simulation.js"></script>
+    <script src="standardBoids/canvas_init.js"></script>
+    <script src="standardBoids/boids.js"></script>
+</head>
+<body>
+    <canvas id="boids1"></canvas>
+    <!-- Navigation Bar -->
+    <div class="navigation">
+        <button class="menu-toggle" aria-label="Toggle navigation">&#9776;</button>
+        <div class="nav-links">
+            <div><a href="../index.html">home</a></div>
+            <div><a href="../control_it/index.html">control it</a></div>
+            <div><a href="../mineral/index.html">inbox for menu bar</a></div>
+            <div><a href="https://github.com/micah1crandell" target="_blank">github</a></div>
+            <div><a href="random.html">&lt;random&gt;</a></div>
+        </div>
+    </div>    
+
+    <!-- Page Title and Description -->
+    <section>
+        <h1 class="page-title">Welcome to random things i think maybe deserve a webpage</h1>
+        <p class="page-description">Spoiler alert, they don't deserve a webpage :0</p>
+    </section>
+
+    <!-- Link Grid -->
+    <section class="link-grid">
+        <a href="pdfMerger.html" class="link-item">
+            <img src="pdfMerger.png" alt="PDF Merger">
+            <h3>PDF Merger</h3>
+            <p>All logic happens in the browser using JavaScript and the PDF-Lib library. No files are uploaded to a server. Files are processed locally in the user's browser memory.</p>
+        </a>
+        <a href="https://github.com/micah1crandell/cliHartley" class="link-item">
+            <img src="cliHartley.png" alt="cliHartley">
+            <h3>cliHartley</h3>
+            <p>A terminal assistant designed to generate terminal commands using Google Gemini API. Easily generate terminal commands and run all within the terminal.</p>
+        </a>
+        <a href="microsoftPlannerAssistant.html" class="link-item">
+            <img src="dbx.png" alt="Microsoft-Planner-Assistant">
+            <h3>Microsoft Planner Assistant</h3>
+            <p>An AI assistant aimed to know and help monitor and track Microsoft Planner tasks. &lt;UNDER DEVELOPMENT&gt;</p>
+        </a>
+        <a href="https://github.com/micah1crandell/AI-File-Organizer" class="link-item">
+            <img src="aiFile.png" alt="AI-File-Organizer">
+            <h3>AI File Organizer</h3>
+            <p>A program I made which utilizes the Google Gemini API to sort files into folders for quick organization.</p>
+        </a>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+    
+            menuToggle.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+            });
+        });
+    </script>    
+</body>
+</html>
