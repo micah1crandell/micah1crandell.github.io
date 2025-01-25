@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiant Church</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #fffffff8; /* White background */
+            border-radius: 0 0 70px 0; /* Rounded bottom-right corner */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            z-index: 1000; /* Ensure it stays on top */
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 40px;
+        }
+
+        /* Logo Text */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #000000; /* Black text */
+            text-decoration: none;
+            display: flex; /* Make the logo a flex container */
+            align-items: center; /* Center the icon vertically with the text */
+            gap: 20px; /* Add space between the text and the icon */
+        }
+
+        .material-symbols-outlined {
+            transform: scale(1.3);
+            color: #000; /* Black color for the icon */
+            transition: transform 0.3s ease; /* Smooth scaling animation */
+        }
+
+        /* Optional: Add hover effect to scale the logo */
+        .logo:hover .material-symbols-outlined {
+            transform: scale(1.4); /* Scale it slightly on hover */
+        }
+
+
+        /* CTA Buttons */
+        .cta {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: inline-block; /* Ensure links and buttons align properly */
+            padding: 3px; /* Remove default button padding */
+        }
+
+        .cta span {
+            padding-bottom: 7px;
+            letter-spacing: 4px;
+            font-size: 14px;
+            padding-right: 15px;
+        }
+
+        .cta svg {
+            transform: translateX(1);
+            transition: all 0.3s ease;
+        }
+
+        .cta:hover svg {
+            transform: translateX(1);
+        }
+
+        .cta:active svg {
+            transform: scale(1);
+        }
+
+        /* Hover Underline Animation */
+        .hover-underline-animation {
+            position: relative;
+            color: #000000; /* Black text */
+            padding-bottom: 5px;
+            font-size: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .hover-underline-animation:hover {
+            color: #444444; /* Darker color on hover */
+        }
+
+        .hover-underline-animation:after {
+            content: "";
+            position: absolute;
+            width: 120%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #000000; /* Black underline */
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .cta:hover .hover-underline-animation:after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Navigation Links Container */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Add space between links */
+        }
+
+        .nav-links a {
+            display: inline-block; /* Ensure proper spacing and alignment */
+        }
+
+        .nav-links a {
+            font-size: 1rem;
+            color: #000000; /* Black text */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #444444; /* Darker color on hover */
+        }
+
+
+        /* Hidden state for animation */
+        .nav-header.hidden {
+            transform: translateY(-100%); /* Move header off-screen */
+            opacity: 0; /* Fade out */
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            color: #000000;
+            min-width: 200px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #000000;
+            text-decoration: none;
+            padding: 12px 16px;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Show Dropdown on Hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Align content to the right */
+            padding: 0 0px;
+            overflow: hidden;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%; /* Taller background to accommodate parallax scrolling */
+            background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/hero/29.jpg?raw=true');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            transform: translateY(0); /* Default transform */
+            will-change: transform; /* Optimizes animation performance */
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 800px;
+            background: #ffffffbf; /* White background for content block */
+            padding: 40px 30px;
+            border-radius: 50px 0px 0px 50px; /* Rounded corner on the right */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000000; /* Black text for contrast */
+            text-transform: uppercase;
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #666666; /* Neutral dark gray */
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background-color: #000000; /* Black button */
+            color: #ffffff; /* White text */
+            padding: 12px 24px;
+            border-radius: 25px; /* Rounded button */
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-btn:hover {
+            background-color: #444444; /* Slightly lighter on hover */
+        }
+
+        /* Rounded Divider Shape */
+        .section-divider {
+            position: absolute;
+            left: 0;
+            top: calc(100vh - 60px); /* Adjust to sit between hero and gallery */
+            width: 40%; /* 40% of the screen width */
+            height: 100px; /* Adjust the height as needed */
+            background-color: #ffffff; /* Match the gallery background or use a transition color */
+            border-radius: 0 100px 100px 0; /* Only round the top-right and bottom-right corners */
+            z-index: 3; /* Place above the hero and gallery sections */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a shadow for depth */
+
+            /* Flexbox for Text Centering */
+            display: flex;
+            align-items: center; /* Vertically center */
+            justify-content: flex-end; /* Favor the right side */
+
+            padding-right: 40px; /* Add spacing from the right edge */
+            color: #000000c6; /* Black text for contrast */
+            font-size: 1.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 50px 20px;
+            text-align: end;
+            background-image: url("https://github.com/micah1crandell/websiteImages/blob/main/backgrounds/gradBg.png?raw=true");
+            background-color: #0b0b0b;
+            overflow: hidden; /* Prevent overflow */
+            position: relative;
+        }
+
+        .gallery h2 {
+            font-size: 2rem;
+            padding-top: 10px;
+            margin-right: 420px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.07);
+        }
+
+        .gallery-carousel {
+            display: flex;
+            padding-top: 20px;
+            gap: 20px;
+            position: relative;
+            will-change: transform; /* Optimize performance for smooth animations */
+        }
+
+        .gallery-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .gallery-item img {
+            width: 300px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-item.portrait img {
+            height: 410px;
+            object-fit: cover;
+        }
+
+        /* Fade edges for seamless effect */
+        .gallery::before,
+        .gallery::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 10%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .gallery::before {
+            left: 0;
+            background: linear-gradient(to right, #1A1A1A, transparent);
+        }
+
+        .gallery::after {
+            right: 0;
+            background: linear-gradient(to left, #1A1A1A, transparent);
+        }
+
+
+        /* YouTube Section */
+        .youtube-videos {
+            padding: 50px 20px;
+            background-color: #f2f2f2; /* Light neutral background */
+            position: relative;
+            overflow: hidden; /* Ensure no elements overflow */
+        }
+
+        .youtube-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            gap: 20px;
+        }
+
+        /* Left Content */
+        .youtube-text {
+            flex: 1;
+            padding: 20px;
+            background: #ffffff; /* White background */
+            border-radius: 50px 0 0 50px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            z-index: 2;
+        }
+
+        .youtube-text h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #000000; /* Black text for contrast */
+        }
+
+        .youtube-text p {
+            margin: 10px 0 20px;
+            color: #666666; /* Neutral text */
+            font-size: 1rem;
+        }
+
+        .view-messages-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #000000;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 25px; /* Rounded button */
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .view-messages-btn:hover {
+            background-color: #444444; /* Slightly lighter on hover */
+        }
+
+        /* Right Content */
+        .youtube-thumbnail {
+            position: relative;
+            flex: 1;
+            margin-top: -50px; /* Move thumbnail up for overlap */
+            z-index: 1;
+        }
+
+        .youtube-thumbnail img {
+            width: 100%;
+            max-width: 560px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+        }
+
+        .youtube-thumbnail .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+
+        /* MY FANCY STUFF */
+        button {
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+            color: white;
+            background-color: #171717;
+            padding: 1em 2em;
+            border: none;
+            border-radius: .6rem;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        button span:not(:nth-child(6)) {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            height: 30px;
+            width: 30px;
+            background-color: #0c66ed;
+            border-radius: 50%;
+            transition: .6s ease;
+        }
+        
+        button span:nth-child(6) {
+            position: relative;
+        }
+        
+        button span:nth-child(1) {
+            transform: translate(-3.3em, -4em);
+        }
+        
+        button span:nth-child(2) {
+            transform: translate(-6em, 3em);
+        }
+        
+        button span:nth-child(3) {
+            transform: translate(-.2em, 1.8em);
+        }
+        
+        button span:nth-child(4) {
+            transform: translate(5em, 5em);
+        }
+        
+        button span:nth-child(5) {
+            transform: translate(3.5em, -3.8em);
+        }
+        
+        button:hover span:not(:nth-child(6)) {
+            transform: translate(-50%, -50%) scale(4);
+            transition: 1.5s ease;
+        }
+
+    </style>
+</head>
+<body> 
+
+    <header class="nav-header">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="material-symbols-outlined">graphic_eq</span>
+                RADIANT PRODUCTION
+            </a>
+            <nav class="nav-links">
+                <button class="cta">
+                    <a href="#home" class="hover-underline-animation">Home</a>
+                </button>
+                <button class="cta">
+                    <a href="#stage" class="hover-underline-animation">Stage Design History</a>
+                </button>
+                <div class="dropdown">
+                    <button class="cta">
+                        <a href="#gear" class="hover-underline-animation">Our Gear &#9660;</a>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#cameras">Cameras</a>
+                        <a href="#lighting">Lighting</a>
+                        <a href="#audio">Audio Equipment</a>
+                    </div>
+                </div>               
+                <button class="cta">
+                    <a href="#events" class="hover-underline-animation">Events</a>
+                </button>
+                <button class="cta">
+                    <a href="#photos" class="hover-underline-animation">Photos</a>
+                </button>
+            </nav>
+        </div>
+    </header>            
+
+    <!-- Rounded Shape Overlap -->
+    <div class="section-divider">PSALM 150 | Praise the Lord</div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="parallax-bg"></div>
+        <div class="hero-content">
+            <h1>Creative Arts |</h1>        
+            <div>
+                <button href="https://www.radiantchurch.com">
+                    <span class="circle1"></span>
+                    <span class="circle2"></span>
+                    <span class="circle3"></span>
+                    <span class="circle4"></span>
+                    <span class="circle5"></span>
+                    <span class="text">VISIT RADIANT CHURCH</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <h2>
+            imgs/creative
+        </h2>
+        <div class="gallery-carousel">
+            <div class="gallery-item">
+                <!-- Lazy Loaded Images -->
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/hero/3.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/hero/3.jpg?raw=true" alt="Landscape Image 2" class="lazy-image">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" alt="Landscape Image 1" class="lazy-image">
+            </div>
+            <div class="gallery-item portrait">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+            </div>
+            <div class="gallery-item">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
+            </div>
+            <div class="gallery-item portrait">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+            </div>
+            <div class="gallery-item">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
+            </div>
+            <div class="gallery-item portrait">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+            </div>
+            <div class="gallery-item">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
+            </div>
+            <div class="gallery-item portrait">
+                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/17.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/17.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+            </div>
+        </div>
+    </section>
+
+    <section class="youtube-videos">
+        <div class="youtube-wrapper">
+            <!-- Left Content -->
+            <div class="youtube-text">
+                <h2>FAVORITE MOMENTS</h2>
+                <p>Watch some of our favorite moments from services and events</p>
+                <a href="#" class="view-messages-btn">Visit YouTube</a>
+            </div>
+            <!-- Right Content -->
+            <div class="youtube-thumbnail">
+                <img src="images/youtube-thumbnail.jpg" alt="Latest Sermon Thumbnail">
+                <span class="play-icon">&#9658;</span> <!-- Add a play button if needed -->
+            </div>
+        </div>
+    </section>    
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Radiant Church | All rights reserved</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Parallax effect for hero background
+        const parallaxBg = document.querySelector('.parallax-bg');
+
+        window.addEventListener('scroll', () => {
+            // Calculate scroll position relative to the hero section
+            const scrollTop = window.scrollY;
+            const offset = scrollTop * 0.5; // Adjust the multiplier for slower/faster scroll
+
+            // Apply the transform for parallax effect
+            parallaxBg.style.transform = `translateY(${offset}px)`;
+        });
+
+
+        const galleryCarousel = document.querySelector('.gallery-carousel');
+        const galleryItems = [...galleryCarousel.children];
+        let scrollPosition = 0; // Track the current scroll position
+        const scrollSpeed = 1; // Adjust speed as needed
+
+        // Function to duplicate items dynamically
+        const duplicateItems = () => {
+            galleryItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                galleryCarousel.appendChild(clone);
+            });
+        };
+
+        // Function to scroll continuously
+        const scrollContinuously = () => {
+            scrollPosition -= scrollSpeed; // Scroll to the left
+            galleryCarousel.style.transform = `translateX(${scrollPosition}px)`;
+
+            // Check if nearing the end of the carousel
+            if (Math.abs(scrollPosition) >= galleryCarousel.scrollWidth / 2) {
+                duplicateItems(); // Append more items offscreen
+            }
+
+            requestAnimationFrame(scrollContinuously); // Continue scrolling
+        };
+
+        // Initialize duplication and scrolling
+        duplicateItems(); // Initial duplication to start the loop
+        scrollContinuously();
+
+        // HEADER
+
+        const navHeader = document.querySelector('.nav-header');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY) {
+                // User is scrolling down
+                navHeader.classList.add('hidden');
+            } else {
+                // User is scrolling up
+                navHeader.classList.remove('hidden');
+            }
+
+            lastScrollY = currentScrollY;
+        });
+
+        // RANDOMIZE HERO IMAGE
+
+        // JavaScript to set a random background image
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagesFolder = 'images/hero/';
+            const images = [
+                '3.jpg',
+                '11.jpg'
+            ];
+
+            // Select a random image
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+
+            // Apply the random image to the specified background
+            //const parallaxBg = document.querySelector('.parallax-bg');
+            //if (parallaxBg) {
+            //    parallaxBg.style.backgroundImage = `url('${imagesFolder}${randomImage}')`;
+            //}
+        });
+
+        // PSALM SCROLL
+        document.addEventListener("scroll", function () {
+            const psalmScroll = document.querySelector(".psalm-scroll");
+            const heroSection = document.getElementById("hero");
+
+            // Get hero section dimensions and scroll percentage
+            const heroRect = heroSection.getBoundingClientRect();
+            const heroHeight = heroSection.offsetHeight;
+
+            // Faster scroll reveal by scaling the scroll percentage
+            const scrollPercentage = Math.min(
+                Math.max((heroHeight - heroRect.bottom) / heroHeight, 0),
+                1
+            ) * 1.5; // Increase multiplier to reveal faster (1.5 times)
+
+            // Adjust the height of the psalm-scroll dynamically
+            const fullHeight = psalmScroll.scrollHeight;
+            psalmScroll.style.height = `${Math.min(scrollPercentage, 1) * fullHeight}px`;
+        });
+    </script>
+</body>
+</html>
