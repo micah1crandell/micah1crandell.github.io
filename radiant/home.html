@@ -352,85 +352,67 @@
         /* YouTube Section */
         .youtube-videos {
             padding: 50px 20px;
-            background-color: #f2f2f2; /* Light neutral background */
+            background-color: #0b0b0b; /* Match the church aesthetic */
             position: relative;
-            overflow: hidden; /* Ensure no elements overflow */
         }
 
         .youtube-wrapper {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
             gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        /* Left Content */
-        .youtube-text {
-            flex: 1;
-            padding: 20px;
-            background: #ffffff; /* White background */
-            border-radius: 50px 0 0 50px; /* Rounded corners */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            z-index: 2;
+        .youtube-item {
+            flex: 1 1 300px;
+            max-width: 300px;
+            text-align: center;
         }
 
-        .youtube-text h2 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #000000; /* Black text for contrast */
-        }
-
-        .youtube-text p {
-            margin: 10px 0 20px;
-            color: #666666; /* Neutral text */
-            font-size: 1rem;
-        }
-
-        .view-messages-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #000000;
-            color: #ffffff;
-            text-transform: uppercase;
-            font-weight: bold;
-            border-radius: 25px; /* Rounded button */
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-        }
-
-        .view-messages-btn:hover {
-            background-color: #444444; /* Slightly lighter on hover */
-        }
-
-        /* Right Content */
         .youtube-thumbnail {
             position: relative;
-            flex: 1;
-            margin-top: -50px; /* Move thumbnail up for overlap */
-            z-index: 1;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .youtube-thumbnail img {
             width: 100%;
-            max-width: 560px;
             border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+            transition: transform 0.3s ease;
         }
 
-        .youtube-thumbnail .play-icon {
+        .youtube-thumbnail:hover img {
+            transform: scale(1.05);
+        }
+
+        .play-icon {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 3rem;
-            color: rgba(255, 255, 255, 0.8);
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
+        .youtube-thumbnail:hover .play-icon {
+            opacity: 1;
+        }
+
+        .youtube-description h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .youtube-description p {
+            font-size: 1rem;
+            color: #cccccc;
+        }
 
         /* MY FANCY STUFF */
         button {
@@ -584,17 +566,42 @@
     </section>
 
     <section class="youtube-videos">
-        <div class="youtube-wrapper">
-            <!-- Left Content -->
-            <div class="youtube-text">
-                <h2>FAVORITE MOMENTS</h2>
-                <p>Watch some of our favorite moments from services and events</p>
-                <a href="#" class="view-messages-btn">Visit YouTube</a>
+        <h2 style="text-align: center; color: white; margin-bottom: 20px;">SOME OF OUR FAVORITE MOMENTS</h2>
+        <div class="youtube-wrapper" style="flex-wrap: wrap;">
+            <!-- Video 1 -->
+            <div class="youtube-item">
+                <div class="youtube-thumbnail">
+                    <img src="https://i.ytimg.com/an_webp/UVa_uvkxoaE/mqdefault_6s.webp?du=3000&sqp=CKn60bwG&rs=AOn4CLAuDHoTI5K2W6wkYiAAF0S7UQxMxQ" alt="Video 1 Thumbnail">
+                    <a href="https://www.youtube.com/watch?v=UVa_uvkxoaE" target="_blank" class="play-icon">&#9658;</a>
+                </div>
+                <div class="youtube-description">
+                    <h3 style="color: white;">Winter Snow</h3>
+                    <p style="color: #999;">A beautiful moment from our 2024 Christmas Service.</p>
+                </div>
             </div>
-            <!-- Right Content -->
-            <div class="youtube-thumbnail">
-                <img src="images/youtube-thumbnail.jpg" alt="Latest Sermon Thumbnail">
-                <span class="play-icon">&#9658;</span> <!-- Add a play button if needed -->
+    
+            <!-- Video 2 -->
+            <div class="youtube-item">
+                <div class="youtube-thumbnail">
+                    <img src="https://i.ytimg.com/an_webp/TC4zVlmtQp8/mqdefault_6s.webp?du=3000&sqp=CP_x0bwG&rs=AOn4CLDUDT00r0XAhf76sVVks1Et55061Q" alt="Video 2 Thumbnail">
+                    <a href="https://www.youtube.com/watch?v=TC4zVlmtQp8&t=0s" target="_blank" class="play-icon">&#9658;</a>
+                </div>
+                <div class="youtube-description">
+                    <h3 style="color: white;">Worship</h3>
+                    <p style="color: #999;">A full recording from a Wednesday Prayer & Worship service.</p>
+                </div>
+            </div>
+    
+            <!-- Video 3 -->
+            <div class="youtube-item">
+                <div class="youtube-thumbnail">
+                    <img src="https://i.ytimg.com/vi/Rs5lla8-Pys/hqdefault.jpg?sqp=-oaymwEnCPYBEIoBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLA2mOVBFagwbAYuikJq-ls_sJsGqA" alt="Video 3 Thumbnail">
+                    <a href="https://youtu.be/Rs5lla8-Pys?list=PLgV80mDgFbj_-RR7zfYgaqKjRPyQT3UE8&t=0s" target="_blank" class="play-icon">&#9658;</a>
+                </div>
+                <div class="youtube-description">
+                    <h3 style="color: white;">Sanctuary Sessions</h3>
+                    <p style="color: #999;">A stripped back worship session.</p>
+                </div>
             </div>
         </div>
     </section>    
