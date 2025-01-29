@@ -11,7 +11,8 @@
         /* General Styles */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #000000;
+            /*background-image: url("https://radiantchurch.wpenginepowered.com/wp-content/uploads/2024/06/Grit-Background.jpg");*/
+            background-color: #f0f0f0;
             color: white;
             margin: 0;
             padding: 0;
@@ -24,7 +25,7 @@
             left: 0;
             width: 100%;
             height: 100px;
-            background-color: #fffffff8; /* White background */
+            background-color: #f0f0f0f8; /* White background */
             border-radius: 0 0 70px 0; /* Rounded bottom-right corner */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
             z-index: 1000; /* Ensure it stays on top */
@@ -166,7 +167,7 @@
             position: absolute;
             top: 100%;
             left: 0;
-            background-color: #ffffff;
+            background-color: #f0f0f0;
             color: #000000;
             min-width: 200px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
@@ -199,6 +200,7 @@
             justify-content: flex-end; /* Align content to the right */
             padding: 0 0px;
             overflow: hidden;
+            border-bottom-right-radius: 100px;
         }
 
         .parallax-bg {
@@ -215,45 +217,76 @@
             will-change: transform; /* Optimizes animation performance */
         }
 
-        .hero-content {
-            position: relative;
-            max-width: 800px;
-            background: #ffffffbf; /* White background for content block */
-            padding: 40px 30px;
-            border-radius: 50px 0px 0px 50px; /* Rounded corner on the right */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        /* Hero Main Button */
+        .hero-main {
+            position: absolute;
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Proper centering */
             z-index: 2;
+            text-align: center;
         }
 
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #000000; /* Black text for contrast */
-            text-transform: uppercase;
-        }
-
-        .hero h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: #666666; /* Neutral dark gray */
-        }
-
-        .hero-btn {
-            display: inline-block;
-            background-color: #000000; /* Black button */
-            color: #ffffff; /* White text */
-            padding: 12px 24px;
-            border-radius: 25px; /* Rounded button */
+        /* Button Styling */
+        .button1 {
+            line-height: 1;
             text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: #f0f0f0b2;
+            color: #000000;
+            border-radius: 10rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+            padding: 1.25rem 2rem; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: background-color 0.3s;
         }
 
-        .hero-btn:hover {
-            background-color: #444444; /* Slightly lighter on hover */
+        .button1__icon-wrapper {
+            flex-shrink: 0;
+            width: 40px; 
+            height: 40px; 
+            position: relative;
+            color: #f0f0f0;
+            background-color: #000000;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .button1:hover {
+            background-color: #000000b2;
+            color: rgb(255, 255, 255);
+        }
+
+        .button1:hover .button1__icon-wrapper {
+            color: #000000;
+            background-color: #f0f0f0;
+        }
+
+        .button1__icon-svg {
+            width: 16px; /* Increase icon size */
+            height: 16px; /* Match the size of the SVG */
+        }
+
+        .button1__icon-svg--copy {
+            position: absolute;
+            transform: translate(-150%, 150%);
+        }
+
+        .button1:hover .button1__icon-svg:first-child {
+            transition: transform 0.3s ease-in-out;
+            transform: translate(150%, -150%);
+        }
+
+        .button1:hover .button1__icon-svg--copy {
+            transition: transform 0.3s ease-in-out 0.1s;
+            transform: translate(0);    
         }
 
         /* Rounded Divider Shape */
@@ -263,7 +296,7 @@
             top: calc(100vh - 60px); /* Adjust to sit between hero and gallery */
             width: 40%; /* 40% of the screen width */
             height: 100px; /* Adjust the height as needed */
-            background-color: #ffffff; /* Match the gallery background or use a transition color */
+            background-color: #1e1e1e; /* Match the gallery background or use a transition color */
             border-radius: 0 100px 100px 0; /* Only round the top-right and bottom-right corners */
             z-index: 3; /* Place above the hero and gallery sections */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a shadow for depth */
@@ -274,7 +307,7 @@
             justify-content: flex-end; /* Favor the right side */
 
             padding-right: 40px; /* Add spacing from the right edge */
-            color: #000000c6; /* Black text for contrast */
+            color: #f0f0f0; /* Black text for contrast */
             font-size: 1.5rem;
             text-decoration: none;
             font-weight: bold;
@@ -282,13 +315,20 @@
         }
 
         /* Gallery Section */
+        .gallery-wrapper {
+            background-color: #f0f0f0;
+        }
+
         .gallery {
             padding: 50px 20px;
             text-align: end;
             background-image: url("https://github.com/micah1crandell/websiteImages/blob/main/backgrounds/gradBg.png?raw=true");
-            background-color: #0b0b0b;
+            background-color: #f0f0f0;
             overflow: hidden; /* Prevent overflow */
             position: relative;
+
+            z-index: 1;
+            border-bottom-left-radius: 100px;
         }
 
         .gallery h2 {
@@ -338,80 +378,134 @@
             pointer-events: none;
         }
 
-        .gallery::before {
-            left: 0;
-            background: linear-gradient(to right, #1A1A1A, transparent);
+        /* Info Section */
+        .info-section {
+            background-color: #f0f0f0;
+            padding: 20px 20px;
+            text-align: center;
+            color: #000000;
         }
 
-        .gallery::after {
-            right: 0;
-            background: linear-gradient(to left, #1A1A1A, transparent);
+        .info-section .info-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-
-        /* YouTube Section */
-        .youtube-videos {
-            padding: 50px 20px;
-            background-color: #0b0b0b; /* Match the church aesthetic */
-            position: relative;
+        .info-section h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
 
-        .youtube-wrapper {
-            display: flex;
+        .info-section p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .info-section h3 {
+            color: #0000006b;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Volunteer Positions */
+        .volunteer-positions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
+            margin-top: 40px;
         }
 
-        .youtube-item {
-            flex: 1 1 300px;
-            max-width: 300px;
+        .position-card {
             text-align: center;
         }
 
-        .youtube-thumbnail {
+        .image-container {
             position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
         }
 
-        .youtube-thumbnail img {
-            width: 100%;
-            border-radius: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .youtube-thumbnail:hover img {
-            transform: scale(1.05);
-        }
-
-        .play-icon {
+        .rounded-shape {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            top: -10px;
+            left: -10px;
+            width: 120%;
+            height: 120%;
+            background-color: #ffcc00; /* Base color */
+            z-index: 1;
         }
 
-        .youtube-thumbnail:hover .play-icon {
-            opacity: 1;
+        /* Target each .position-card and style its .rounded-shape */
+        .position-card:nth-child(1) .rounded-shape {
+            border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%;
+            transform: rotate(-10deg);
+            background-color: #0549DF; /* Coral */
         }
 
-        .youtube-description h3 {
-            font-size: 1.2rem;
+        .position-card:nth-child(2) .rounded-shape {
+            border-radius: 50% 30% 60% 40% / 60% 50% 70% 40%;
+            transform: rotate(5deg);
+            background-color: #0549DF; /* Purple */
+        }
+
+        .position-card:nth-child(3) .rounded-shape {
+            border-radius: 40% 60% 30% 70% / 70% 40% 60% 50%;
+            transform: rotate(-15deg);
+            background-color: #0549DF; /* Green */
+        }
+
+        .position-card:nth-child(4) .rounded-shape {
+            border-radius: 70% 30% 50% 60% / 40% 70% 50% 60%;
+            transform: rotate(10deg);
+            background-color: #0549DF; /* Orange */
+        }
+
+        .position-card:nth-child(5) .rounded-shape {
+            border-radius: 30% 70% 40% 60% / 60% 50% 70% 40%;
+            transform: rotate(-5deg);
+            background-color: #0549DF; /* Light Blue */
+        }
+
+        .position-card:nth-child(6) .rounded-shape {
+            border-radius: 50% 60% 40% 70% / 70% 50% 60% 40%;
+            transform: rotate(15deg);
+            background-color: #0549DF; /* Pink */
+        }
+
+        .position-card:nth-child(7) .rounded-shape {
+            border-radius: 60% 50% 70% 40% / 40% 60% 50% 70%;
+            transform: rotate(-20deg);
+            background-color: #0549DF; /* Maroon */
+        }
+
+        .position-card:nth-child(8) .rounded-shape {
+            border-radius: 40% 70% 50% 60% / 60% 40% 70% 50%;
+            transform: rotate(0deg);
+            background-color: #0549DF; /* Mauve */
+        }
+
+        .position-card img {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .position-card h3 {
+            font-size: 1.5rem;
             margin-bottom: 10px;
-            color: #ffffff;
         }
 
-        .youtube-description p {
+        .position-card p {
             font-size: 1rem;
-            color: #cccccc;
+            line-height: 1.4;
+            color: #555;
         }
 
         /* MY FANCY STUFF */
@@ -419,13 +513,15 @@
             font-family: 'Roboto', sans-serif;
             font-weight: bold;
             color: white;
-            background-color: #171717;
+            background-color: #1e1e1e;
             padding: 1em 2em;
             border: none;
             border-radius: .6rem;
             position: relative;
             cursor: pointer;
             overflow: hidden;
+            margin-bottom: 10px;
+            margin-left: 10px;
         }
         
         button span:not(:nth-child(6)) {
@@ -449,7 +545,7 @@
         }
         
         button span:nth-child(2) {
-            transform: translate(-6em, 3em);
+            transform: translate(-6em, 2em);
         }
         
         button span:nth-child(3) {
@@ -457,7 +553,7 @@
         }
         
         button span:nth-child(4) {
-            transform: translate(5em, 5em);
+            transform: translate(4em, 2em);
         }
         
         button span:nth-child(5) {
@@ -484,23 +580,23 @@
                     <a href="#home" class="hover-underline-animation">Home</a>
                 </button>
                 <button class="cta">
-                    <a href="#stage" class="hover-underline-animation">Stage Design History</a>
+                    <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
                 </button>
                 <div class="dropdown">
                     <button class="cta">
-                        <a href="#gear" class="hover-underline-animation">Our Gear &#9660;</a>
+                        <a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a>
                     </button>
                     <div class="dropdown-content">
-                        <a href="#cameras">Cameras</a>
-                        <a href="#lighting">Lighting</a>
-                        <a href="#audio">Audio Equipment</a>
+                        <a href="audio_gear.html">Audio</a>
+                        <a href="video_gear.html">Video</a>
+                        <a href="lighting_gear.html">Lighting</a>
                     </div>
                 </div>               
                 <button class="cta">
-                    <a href="#events" class="hover-underline-animation">Events</a>
+                    <a href="events.html" class="hover-underline-animation">Events</a>
                 </button>
                 <button class="cta">
-                    <a href="#photos" class="hover-underline-animation">Photos</a>
+                    <a href="photos.html" class="hover-underline-animation">Photos</a>
                 </button>
             </nav>
         </div>
@@ -512,103 +608,205 @@
     <!-- Hero Section -->
     <section class="hero" id="hero">
         <div class="parallax-bg"></div>
-        <div class="hero-content">
-            <h1>Creative Arts |</h1>        
-            <div>
-                <button href="https://www.radiantchurch.com">
+        <div class="hero-main">
+            <a href="https://radiant-church-63467.churchcenter.com/people/forms/893000" class="button1" style="--clr: #7808d0">
+                <span class="button1__icon-wrapper">
+                <svg
+                    viewBox="0 0 14 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="button1__icon-svg"
+                    width="10"
+                >
+                    <path
+                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                    fill="currentColor"
+                    ></path>
+                </svg>
+            
+                <svg
+                    viewBox="0 0 14 15"
+                    fill="none"
+                    width="10"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="button1__icon-svg button1__icon-svg--copy"
+                >
+                    <path
+                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                    fill="currentColor"
+                    ></path>
+                </svg>
+                </span>
+                Join the Team
+            </a>  
+        </div>                         
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-wrapper">
+        <section class="gallery" id="gallery">
+            <h2>
+                imgs/creative
+            </h2>
+            <div class="gallery-carousel">
+                <div class="gallery-item">
+                    <!-- Lazy Loaded Images -->
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/hero/3.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/hero/3.jpg?raw=true" alt="Landscape Image 2" class="lazy-image">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" alt="Landscape Image 1" class="lazy-image">
+                </div>
+                <div class="gallery-item portrait">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+                </div>
+                <div class="gallery-item">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
+                </div>
+                <div class="gallery-item portrait">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+                </div>
+                <div class="gallery-item">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
+                </div>
+                <div class="gallery-item portrait">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+                </div>
+                <div class="gallery-item">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
+                </div>
+                <div class="gallery-item portrait">
+                    <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/17.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/17.jpg?raw=true" alt="Portrait Image" class="lazy-image">
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="info-content">
+            <h2>Join the Radiant Production Team</h2>
+            <div class="button-group">
+                <button>
                     <span class="circle1"></span>
                     <span class="circle2"></span>
                     <span class="circle3"></span>
                     <span class="circle4"></span>
                     <span class="circle5"></span>
-                    <span class="text">VISIT RADIANT CHURCH</span>
+                    <span class="text"><a href="#volunteer-details" style="text-decoration: none; color: white;">VOLUNTEER POSITIONS</a></span>
+                </button>
+                <button>
+                    <span class="circle1"></span>
+                    <span class="circle2"></span>
+                    <span class="circle3"></span>
+                    <span class="circle4"></span>
+                    <span class="circle5"></span>
+                    <span class="text"><a href="#open-email" target="_blank" style="text-decoration: none; color: white;">HAVE QUESTIONS?</a></span>
+                </button>
+                <button>
+                    <span class="circle1"></span>
+                    <span class="circle2"></span>
+                    <span class="circle3"></span>
+                    <span class="circle4"></span>
+                    <span class="circle5"></span>
+                    <span class="text"><a href="#training-resources" style="text-decoration: none; color: white;">TRAINING RESOURCES</a></span>
                 </button>
             </div>
-        </div>
-    </section>
+            <p>
+                Our mission is to create worship experiences that inspire and engage through the power of creativity and innovation. Our team collaborates to design captivating visuals, seamless audio, and immersive lighting that elevate every service and event.
+            </p>          
+            <div style="margin-top: 20px;">
+                <h3>Not sure where to start? Reach out to our team for guidance on the best fit for your skills and interests. Training and resources are provided to ensure you feel confident and prepared to contribute!</h3>
+            </div>
 
-    <!-- Gallery Section -->
-    <section class="gallery" id="gallery">
-        <h2>
-            imgs/creative
-        </h2>
-        <div class="gallery-carousel">
-            <div class="gallery-item">
-                <!-- Lazy Loaded Images -->
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/hero/3.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/hero/3.jpg?raw=true" alt="Landscape Image 2" class="lazy-image">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" alt="Landscape Image 1" class="lazy-image">
-            </div>
-            <div class="gallery-item portrait">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" alt="Portrait Image" class="lazy-image">
-            </div>
-            <div class="gallery-item">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
-            </div>
-            <div class="gallery-item portrait">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" alt="Portrait Image" class="lazy-image">
-            </div>
-            <div class="gallery-item">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
-            </div>
-            <div class="gallery-item portrait">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" alt="Portrait Image" class="lazy-image">
-            </div>
-            <div class="gallery-item">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Landscape Image 4" class="lazy-image">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" alt="Landscape Image 3" class="lazy-image">
-            </div>
-            <div class="gallery-item portrait">
-                <img data-src="https://github.com/micah1crandell/websiteImages/blob/main/video/17.jpg?raw=true" src="https://github.com/micah1crandell/websiteImages/blob/main/video/17.jpg?raw=true" alt="Portrait Image" class="lazy-image">
-            </div>
-        </div>
-    </section>
+            <!-- Volunteer Positions -->
+            <div class="volunteer-positions">
+                <!-- Audio Engineer -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true" alt="Audio Engineer">
+                    </div>
+                    <h3>Audio Engineer (Broadcast and FOH)</h3>
+                    <p>Mix front-of-house audio and broadcast feeds to create an immersive and distraction-free worship experience.</p>
+                </div>
 
-    <section class="youtube-videos">
-        <h2 style="text-align: center; color: white; margin-bottom: 20px;">SOME OF OUR FAVORITE MOMENTS</h2>
-        <div class="youtube-wrapper" style="flex-wrap: wrap;">
-            <!-- Video 1 -->
-            <div class="youtube-item">
-                <div class="youtube-thumbnail">
-                    <img src="https://i.ytimg.com/an_webp/UVa_uvkxoaE/mqdefault_6s.webp?du=3000&sqp=CKn60bwG&rs=AOn4CLAuDHoTI5K2W6wkYiAAF0S7UQxMxQ" alt="Video 1 Thumbnail">
-                    <a href="https://www.youtube.com/watch?v=UVa_uvkxoaE" target="_blank" class="play-icon">&#9658;</a>
+                <!-- Lighting Engineer -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" alt="Lighting Engineer">
+                    </div>
+                    <h3>Lighting Engineer (GrandMA3)</h3>
+                    <p>Design and execute lighting cues using the GrandMA3 console to enhance the atmosphere of worship services and events.</p>
                 </div>
-                <div class="youtube-description">
-                    <h3 style="color: white;">Winter Snow</h3>
-                    <p style="color: #999;">A beautiful moment from our 2024 Christmas Service.</p>
+
+                <!-- Video Director -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/25.jpg?raw=true" alt="Video Director">
+                    </div>
+                    <h3>Video Director</h3>
+                    <p>Lead the video team by operating the video switcher and directing camera operators to deliver professional-quality video for broadcasts and live streams.</p>
                 </div>
-            </div>
-    
-            <!-- Video 2 -->
-            <div class="youtube-item">
-                <div class="youtube-thumbnail">
-                    <img src="https://i.ytimg.com/an_webp/TC4zVlmtQp8/mqdefault_6s.webp?du=3000&sqp=CP_x0bwG&rs=AOn4CLDUDT00r0XAhf76sVVks1Et55061Q" alt="Video 2 Thumbnail">
-                    <a href="https://www.youtube.com/watch?v=TC4zVlmtQp8&t=0s" target="_blank" class="play-icon">&#9658;</a>
+
+                <!-- Camera Operator -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/12.jpg?raw=true" alt="Camera Operator">
+                    </div>
+                    <h3>Camera Operator</h3>
+                    <p>Operate RED Komodo 6K cameras to capture stunning visuals for live broadcasts and recorded content.</p>
                 </div>
-                <div class="youtube-description">
-                    <h3 style="color: white;">Worship</h3>
-                    <p style="color: #999;">A full recording from a Wednesday Prayer & Worship service.</p>
+
+                <!-- Computer Graphics Operator -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" alt="Computer Graphics Operator">
+                    </div>
+                    <h3>Computer Graphics Operator</h3>
+                    <p>Manage all on-screen visuals, including graphics, videos, lower thirds, and LED wall content.</p>
                 </div>
-            </div>
-    
-            <!-- Video 3 -->
-            <div class="youtube-item">
-                <div class="youtube-thumbnail">
-                    <img src="https://i.ytimg.com/vi/Rs5lla8-Pys/hqdefault.jpg?sqp=-oaymwEnCPYBEIoBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLA2mOVBFagwbAYuikJq-ls_sJsGqA" alt="Video 3 Thumbnail">
-                    <a href="https://youtu.be/Rs5lla8-Pys?list=PLgV80mDgFbj_-RR7zfYgaqKjRPyQT3UE8&t=0s" target="_blank" class="play-icon">&#9658;</a>
+
+                <!-- Stage Manager -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Stage Manager">
+                    </div>
+                    <h3>Stage Manager</h3>
+                    <p>Oversee all stage activities, including communicating with the worship team, coordinating transitions, and ensuring the service runs on schedule. Handle microphones, props, and other stage elements to support pastors and speakers.</p>
                 </div>
-                <div class="youtube-description">
-                    <h3 style="color: white;">Sanctuary Sessions</h3>
-                    <p style="color: #999;">A stripped back worship session.</p>
+
+                <!-- Photographer -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/photography/5.jpg?raw=true" alt="Photographer">
+                    </div>
+                    <h3>Photographer</h3>
+                    <p>Capture the essence of Radiant’s services and events through high-quality photography. Document moments from the parking lot to the stage, creating visual content that tells the story of Radiant’s mission and community.</p>
+                </div>
+
+                <!-- Online Host -->
+                <div class="position-card">
+                    <div class="image-container">
+                        <div class="rounded-shape"></div>
+                        <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/20.jpg?raw=true" alt="Online Host">
+                    </div>
+                    <h3>Online Host</h3>
+                    <p>Engage with the online audience during livestreams, fostering a welcoming and interactive virtual environment.</p>
                 </div>
             </div>
         </div>
-    </section>    
+    </section>  
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 Radiant Church | All rights reserved</p>
+        <p>&copy; 2025 Micah Crandell | All rights reserved</p>
     </footer>
 
     <script>
@@ -632,6 +830,20 @@
             parallaxBg.style.transform = `translateY(${offset}px)`;
         });
 
+        // PARALLAX FOR YOUTUBE
+        document.addEventListener("scroll", () => {
+            const youtubeSection = document.querySelector(".youtube-videos");
+            const bg = youtubeSection.querySelector("::before"); // Targets the pseudo-element indirectly
+            
+            const rect = youtubeSection.getBoundingClientRect();
+            const scrollPosition = window.scrollY;
+            const offset = scrollPosition * 0.2; // Adjust multiplier for slower/faster parallax
+            
+            // Only apply the effect when the section is visible
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                youtubeSection.style.setProperty("--parallax-offset", `${offset}px`);
+            }
+        });
 
         const galleryCarousel = document.querySelector('.gallery-carousel');
         const galleryItems = [...galleryCarousel.children];
@@ -720,6 +932,26 @@
             // Adjust the height of the psalm-scroll dynamically
             const fullHeight = psalmScroll.scrollHeight;
             psalmScroll.style.height = `${Math.min(scrollPercentage, 1) * fullHeight}px`;
+        });
+
+        // YOUTUBE ANIMATION
+        document.addEventListener("DOMContentLoaded", () => {
+            const youtubeItems = document.querySelectorAll(".youtube-item");
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("active");
+                        }
+                    });
+                },
+                {
+                    threshold: 0.6, // Trigger when 20% of the element is visible
+                }
+            );
+
+            youtubeItems.forEach((item) => observer.observe(item));
         });
     </script>
 </body>
