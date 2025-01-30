@@ -13,7 +13,7 @@
             font-family: 'Roboto', sans-serif;
             /*background-image: url("https://radiantchurch.wpenginepowered.com/wp-content/uploads/2024/06/Grit-Background.jpg");*/
             background-color: #f0f0f0;
-            color: white;
+            color: #f0f0f0f8;
             margin: 0;
             padding: 0;
         }
@@ -153,8 +153,9 @@
 
         /* Hidden state for animation */
         .nav-header.hidden {
-            transform: translateY(-100%); /* Move header off-screen */
-            opacity: 0; /* Fade out */
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
         /* Dropdown Menu */
@@ -509,22 +510,22 @@
         }
 
         /* MY FANCY STUFF */
-        button {
+        .fancy-button {
             font-family: 'Roboto', sans-serif;
             font-weight: bold;
             color: white;
             background-color: #1e1e1e;
             padding: 1em 2em;
             border: none;
-            border-radius: .6rem;
+            border-radius: 0.6rem;
             position: relative;
             cursor: pointer;
             overflow: hidden;
             margin-bottom: 10px;
             margin-left: 10px;
         }
-        
-        button span:not(:nth-child(6)) {
+
+        .fancy-button span:not(:nth-child(6)) {
             position: absolute;
             left: 50%;
             top: 50%;
@@ -533,41 +534,231 @@
             width: 30px;
             background-color: #0c66ed;
             border-radius: 50%;
-            transition: .6s ease;
+            transition: 0.6s ease;
         }
-        
-        button span:nth-child(6) {
+
+        .fancy-button span:nth-child(6) {
             position: relative;
         }
-        
-        button span:nth-child(1) {
+
+        .fancy-button span:nth-child(1) {
             transform: translate(-3.3em, -4em);
         }
-        
-        button span:nth-child(2) {
+        .fancy-button span:nth-child(2) {
             transform: translate(-6em, 2em);
         }
-        
-        button span:nth-child(3) {
-            transform: translate(-.2em, 1.8em);
+        .fancy-button span:nth-child(3) {
+            transform: translate(-0.2em, 1.8em);
         }
-        
-        button span:nth-child(4) {
+        .fancy-button span:nth-child(4) {
             transform: translate(4em, 2em);
         }
-        
-        button span:nth-child(5) {
+        .fancy-button span:nth-child(5) {
             transform: translate(3.5em, -3.8em);
         }
-        
-        button:hover span:not(:nth-child(6)) {
+
+        .fancy-button:hover span:not(:nth-child(6)) {
             transform: translate(-50%, -50%) scale(4);
             transition: 1.5s ease;
         }
 
+        .menu-toggle {
+            display: none;
+        }
+
+        /* HAVE DIFFERENT CONTENT ON DEVICES */
+        @media screen and (max-width: 992px) {
+            .gallery h2 {
+                color: #00000000;
+            }
+
+            /* Make the header smaller for mobile */
+            .nav-header {
+                height: 60px;
+                border-radius: 0; /* Remove large desktop rounding if you prefer */
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                z-index: 1000; 
+            }
+
+            /* Ensure .nav-content is spaced properly */
+            .nav-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px;
+                height: 100%;
+                /* Remove or reduce any large left/right padding from desktop styles */
+            }
+
+            /* ---- HIDE THE NAV LINKS BY DEFAULT (we'll slide them in) ---- */
+            .nav-links {
+                position: fixed; 
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 60%;           /* Adjust width as you see fit */
+                background-color: #f0f0f0;
+                box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+                
+                /* Keep nav off-screen by default */
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+                
+                /* Vertically stack items for mobile navigation */
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 80px 20px;   /* Some top padding so content isn't under header */
+                gap: 20px;            /* Spacing between nav buttons/links */
+            }
+
+            /* When a JavaScript toggle adds .open (or .active), the menu slides in */
+            .nav-links.open {
+                transform: translateX(0);
+            }
+
+            /* Make sure nav links or button items fill the width in vertical layout */
+            .nav-links a {
+                display: block;        /* Full-width for easy tapping */
+                width: 100%;
+                font-size: 1.2rem;     /* Slightly larger text for mobile */
+            }
+
+            /* Hide dropdown hover logic on mobile or adapt it to a click event */
+            .dropdown-content {
+                position: static;     /* or 'relative' if you want it below the button */
+                background-color: #f0f0f0;   /* Solid white (or pick another color) */
+                margin-top: 8px;          /* Slight gap if you like */
+                padding: 8px 16px;        /* Some padding */
+                border-radius: 6px;       /* Optional rounding */
+            }
+
+            .dropdown-content a {
+                padding: 8px 0;
+            }
+
+            /* ---- BLACK & WHITE HAMBURGER MENU BUTTON ---- */
+            .menu-toggle {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                background-color: #1e1e1e; /* Black background */
+                border-radius: 10px;
+                cursor: pointer;
+                border: none;
+                box-shadow: 0px 0px 0px 2px #fff; /* White outline */
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                z-index: 1001;
+                transition: 0.3s ease-in-out;
+            }
+
+            .bar {
+                width: 50%;
+                height: 2px;
+                background-color: #f0f0f0; /* White bars */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                border-radius: 2px;
+            }
+
+            .bar::before {
+                content: "";
+                width: 2px;
+                height: 2px;
+                background-color: #1e1e1e; /* Black dot */
+                position: absolute;
+                border-radius: 50%;
+                border: 2px solid #f0f0f0;
+                transition: all 0.3s;
+                box-shadow: 0px 0px 5px white;
+            }
+
+            .bar1::before {
+                transform: translateX(-4px);    
+            }
+
+            .bar2::before {
+                transform: translateX(4px);
+            }
+
+            /* Hover Effect */
+            .menu-toggle.open .bar1::before {
+                transform: translateX(4px);
+            }
+
+            .menu-toggle.open .bar2::before {
+                transform: translateX(-4px);
+            }
+
+            /* Hide the original nav buttons inside the menu */
+            .nav-links button {
+                display: block;
+            }
+            
+            /* Adjust the logo (if you want smaller text/icon on mobile) */
+            .logo {
+                font-size: 1.3rem;
+                max-width: 200px;
+            }
+            .material-symbols-outlined {
+                font-size: 2rem;
+                margin-right: 4px;
+            }
+
+            /* Hero Section */
+            .hero {
+                position: relative;
+                height: 60vh;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end; /* Align content to the right */
+                padding: 0 0px;
+                overflow: hidden;
+                border-bottom-right-radius: 100px;
+            }
+            .section-divider {
+                position: absolute;
+                left: 0;
+                top: calc(60vh - 60px);
+
+                font-size: 1.3rem;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            /*Buttons with blue circles */
+            .fancy-button span:nth-child(1) {
+                transform: translate(-3.3em, -6em);
+            }
+            .fancy-button span:nth-child(2) {
+                transform: translate(-6em, 3em);
+            }
+            .fancy-button span:nth-child(3) {
+                transform: translate(-0.2em, 3em);
+            }
+            .fancy-button span:nth-child(4) {
+                transform: translate(4em, 3em);
+            }
+            .fancy-button span:nth-child(5) {
+                transform: translate(3.5em, -6em);
+            }
+        }
+
     </style>
 </head>
-<body> 
+<body>   
 
     <header class="nav-header">
         <div class="nav-content">
@@ -575,6 +766,14 @@
                 <span class="material-symbols-outlined">graphic_eq</span>
                 RADIANT PRODUCTION
             </a>
+
+            <!-- Hamburger Menu Button -->
+            <button class="menu-toggle" aria-label="Open menu">
+                <span class="bar bar1"></span>
+                <span class="bar bar2"></span>
+                <span class="bar bar1"></span>
+            </button> 
+
             <nav class="nav-links">
                 <button class="cta">
                     <a href="#home" class="hover-underline-animation">Home</a>
@@ -598,7 +797,7 @@
                 <button class="cta">
                     <a href="photos.html" class="hover-underline-animation">Photos</a>
                 </button>
-            </nav>
+            </nav>   
         </div>
     </header>            
 
@@ -687,7 +886,7 @@
         <div class="info-content">
             <h2>Join the Radiant Production Team</h2>
             <div class="button-group">
-                <button>
+                <button class="fancy-button">
                     <span class="circle1"></span>
                     <span class="circle2"></span>
                     <span class="circle3"></span>
@@ -695,7 +894,7 @@
                     <span class="circle5"></span>
                     <span class="text"><a href="#volunteer-details" style="text-decoration: none; color: white;">VOLUNTEER POSITIONS</a></span>
                 </button>
-                <button>
+                <button class="fancy-button">
                     <span class="circle1"></span>
                     <span class="circle2"></span>
                     <span class="circle3"></span>
@@ -703,7 +902,7 @@
                     <span class="circle5"></span>
                     <span class="text"><a href="#open-email" target="_blank" style="text-decoration: none; color: white;">HAVE QUESTIONS?</a></span>
                 </button>
-                <button>
+                <button class="fancy-button">
                     <span class="circle1"></span>
                     <span class="circle2"></span>
                     <span class="circle3"></span>
@@ -711,7 +910,7 @@
                     <span class="circle5"></span>
                     <span class="text"><a href="#training-resources" style="text-decoration: none; color: white;">TRAINING RESOURCES</a></span>
                 </button>
-            </div>
+            </div>            
             <p>
                 Our mission is to create worship experiences that inspire and engage through the power of creativity and innovation. Our team collaborates to design captivating visuals, seamless audio, and immersive lighting that elevate every service and event.
             </p>          
@@ -810,6 +1009,39 @@
     </footer>
 
     <script>
+        //Show Nav Bar on Mobile when at TOP of page
+        const navHeader = document.querySelector('.nav-header');
+
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        
+        // If user scrolled down and not at the top:
+        if (currentScrollY > lastScrollY && currentScrollY > 0) {
+            navHeader.classList.add('hidden');  // Hide nav
+        } else {
+            // Scrolled up OR is at/near top
+            navHeader.classList.remove('hidden'); // Show nav
+        }
+
+        lastScrollY = currentScrollY;
+        });
+
+        // Menu Toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+
+            menuToggle.addEventListener('click', function () {
+                // Toggle the 'open' class on the nav to slide it in/out
+                navLinks.classList.toggle('open');
+
+                // Toggle .open on the button itself (if you have a hamburger -> X animation)
+                menuToggle.classList.toggle('open');
+            });
+        });
+
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -875,27 +1107,7 @@
         duplicateItems(); // Initial duplication to start the loop
         scrollContinuously();
 
-        // HEADER
-
-        const navHeader = document.querySelector('.nav-header');
-        let lastScrollY = window.scrollY;
-
-        window.addEventListener('scroll', () => {
-            const currentScrollY = window.scrollY;
-
-            if (currentScrollY > lastScrollY) {
-                // User is scrolling down
-                navHeader.classList.add('hidden');
-            } else {
-                // User is scrolling up
-                navHeader.classList.remove('hidden');
-            }
-
-            lastScrollY = currentScrollY;
-        });
-
         // RANDOMIZE HERO IMAGE
-
         // JavaScript to set a random background image
         document.addEventListener('DOMContentLoaded', () => {
             const imagesFolder = 'images/hero/';
