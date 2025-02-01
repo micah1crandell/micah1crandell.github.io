@@ -11,11 +11,14 @@
         /* General Styles */
         body {
             font-family: 'Roboto', sans-serif;
-            /*background-image: url("https://radiantchurch.wpenginepowered.com/wp-content/uploads/2024/06/Grit-Background.jpg");*/
             background-color: #f0f0f0;
             color: #f0f0f0f8;
             margin: 0;
             padding: 0;
+        }
+
+        .menu-toggle {
+            display: none;
         }
 
         /* Navigation Header */
@@ -47,11 +50,13 @@
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #000000; /* Black text */
+            color: #1e1e1ed0; /* Black text */
             text-decoration: none;
             display: flex; /* Make the logo a flex container */
             align-items: center; /* Center the icon vertically with the text */
             gap: 20px; /* Add space between the text and the icon */
+
+            letter-spacing: 4px;
         }
 
         .material-symbols-outlined {
@@ -141,13 +146,13 @@
 
         .nav-links a {
             font-size: 1rem;
-            color: #000000; /* Black text */
+            color: #1e1e1ed0; /* Black text */
             text-decoration: none;
             font-weight: bold;
         }
 
         .nav-links a:hover {
-            color: #444444; /* Darker color on hover */
+            color: #0e0e0e;
         }
 
 
@@ -169,7 +174,7 @@
             top: 100%;
             left: 0;
             background-color: #f0f0f0;
-            color: #000000;
+            color: #1e1e1ed0;
             min-width: 200px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
@@ -177,7 +182,7 @@
         }
 
         .dropdown-content a {
-            color: #000000;
+            color: #1e1e1ed0;
             text-decoration: none;
             padding: 12px 16px;
             display: block;
@@ -195,7 +200,7 @@
         /* Hero Section */
         .hero {
             position: relative;
-            height: 100vh;
+            height: 60vh;
             display: flex;
             align-items: center;
             justify-content: flex-end; /* Align content to the right */
@@ -294,7 +299,7 @@
         .section-divider {
             position: absolute;
             left: 0;
-            top: calc(100vh - 60px); /* Adjust to sit between hero and gallery */
+            top: calc(60vh - 60px); /* Adjust to sit between hero and gallery */
             width: 40%; /* 40% of the screen width */
             height: 100px; /* Adjust the height as needed */
             background-color: #1e1e1e; /* Match the gallery background or use a transition color */
@@ -560,10 +565,6 @@
         .fancy-button:hover span:not(:nth-child(6)) {
             transform: translate(-50%, -50%) scale(4);
             transition: 1.5s ease;
-        }
-
-        .menu-toggle {
-            display: none;
         }
 
         /* HAVE DIFFERENT CONTENT ON DEVICES */
@@ -845,7 +846,7 @@
     <section class="gallery-wrapper">
         <section class="gallery" id="gallery">
             <h2>
-                imgs/creative
+                    
             </h2>
             <div class="gallery-carousel">
                 <div class="gallery-item">
