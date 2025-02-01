@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiant Church - Audio Gear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            color: #1e1e1ef8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #f0f0f0f8; /* White background */
+            border-radius: 0 0 70px 0; /* Rounded bottom-right corner */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            z-index: 1000; /* Ensure it stays on top */
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 40px;
+        }
+
+        /* Logo Text */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e1e1ed0; /* Black text */
+            text-decoration: none;
+            display: flex; /* Make the logo a flex container */
+            align-items: center; /* Center the icon vertically with the text */
+            gap: 20px; /* Add space between the text and the icon */
+
+            letter-spacing: 4px;
+        }
+
+        .material-symbols-outlined {
+            transform: scale(1.3);
+            color: #000; /* Black color for the icon */
+            transition: transform 0.3s ease; /* Smooth scaling animation */
+        }
+
+        /* Optional: Add hover effect to scale the logo */
+        .logo:hover .material-symbols-outlined {
+            transform: scale(1.4); /* Scale it slightly on hover */
+        }
+
+
+        /* CTA Buttons */
+        .cta {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: inline-block; /* Ensure links and buttons align properly */
+            padding: 3px; /* Remove default button padding */
+        }
+
+        .cta span {
+            padding-bottom: 7px;
+            letter-spacing: 4px;
+            font-size: 14px;
+            padding-right: 15px;
+        }
+
+        .cta svg {
+            transform: translateX(1);
+            transition: all 0.3s ease;
+        }
+
+        .cta:hover svg {
+            transform: translateX(1);
+        }
+
+        .cta:active svg {
+            transform: scale(1);
+        }
+
+        /* Hover Underline Animation */
+        .hover-underline-animation {
+            position: relative;
+            color: #000000; /* Black text */
+            padding-bottom: 5px;
+            font-size: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .hover-underline-animation:hover {
+            color: #444444; /* Darker color on hover */
+        }
+
+        .hover-underline-animation:after {
+            content: "";
+            position: absolute;
+            width: 120%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #000000; /* Black underline */
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .cta:hover .hover-underline-animation:after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Navigation Links Container */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Add space between links */
+        }
+
+        .nav-links a {
+            display: inline-block; /* Ensure proper spacing and alignment */
+        }
+
+        .nav-links a {
+            font-size: 1rem;
+            color: #1e1e1ed0; /* Black text */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #0e0e0e;
+        }
+
+
+        /* Hidden state for animation */
+        .nav-header.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f0f0f0;
+            color: #1e1e1ed0;
+            min-width: 200px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #1e1e1ed0;
+            text-decoration: none;
+            padding: 12px 16px;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Show Dropdown on Hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Gear Section Styles */
+        .gear-section {
+            padding: 100px 40px 40px;
+        }
+
+        .gear-category {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .gear-category h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            padding-left: 15px;
+            border-left: 4px solid #0549DF;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .gear-item {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gear-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gear-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .gear-info {
+            padding: 25px;
+            color: #f0f0f0;
+        }
+
+        .gear-model {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .gear-specs {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .gear-specs li {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .gear-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Supplementary Lists */
+        .gear-lists {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .subcategory {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .subcategory-header {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #0549DF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gear-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            columns: 2;
+            column-gap: 30px;
+        }
+
+        .gear-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+            color: #444;
+            break-inside: avoid;
+        }
+
+        @media (max-width: 768px) {
+            .gear-section {
+                padding: 80px 20px 30px;
+            }
+
+            .gear-list {
+                columns: 1;
+            }
+
+            .subcategory-header {
+                font-size: 1.2rem;
+            }
+
+            .featured-grid {
+                gap: 20px;
+            }
+
+            .nav-content {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>   
+    <header class="nav-header">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="material-symbols-outlined">graphic_eq</span>
+                RADIANT PRODUCTION
+            </a>
+
+            <button class="menu-toggle" aria-label="Open menu">
+                <span class="bar bar1"></span>
+                <span class="bar bar2"></span>
+                <span class="bar bar1"></span>
+            </button>
+
+            <nav class="nav-links">
+                <button class="cta">
+                    <a href="home.html" class="hover-underline-animation">Home</a>
+                </button>
+                <button class="cta">
+                    <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
+                </button>
+                <div class="dropdown">
+                    <button class="cta">
+                        <a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="audio_gear.html">Audio</a>
+                        <a href="video_gear.html">Video</a>
+                        <a href="lighting_gear.html">Lighting</a>
+                    </div>
+                </div>
+                <button class="cta">
+                    <a href="events.html" class="hover-underline-animation">Events</a>
+                </button>
+                <button class="cta">
+                    <a href="photos.html" class="hover-underline-animation">Photos</a>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="gear-section" id="gear-sections">
+        <!-- Microphones Section -->
+        <section class="gear-category" id="mics">
+            <h2>Microphones</h2>
+            <div class="featured-grid">
+                <div class="gear-item">
+                    <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/audio/36.jpg?raw=true')"></div>
+                    <div class="gear-info">
+                        <h3 class="gear-model">Shure DPA 2028</h3>
+                        <ul class="gear-specs">
+                            <li>Type: Condenser</li>
+                            <li>Pattern: Cardioid</li>
+                            <li>Frequency: 20Hz-20kHz</li>
+                        </ul>
+                        <p class="gear-description">Our primary choice for worship vocals</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gear-lists">
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Dynamic Microphones
+                    </h3>
+                    <ul class="gear-list">
+                        <li>Shure SM58 (x4) - Vocal mics</li>
+                        <li>Shure Beta 91A (x1) - Kick drum</li>
+                        <li>Sennheiser e604 (x2) - Tom mics</li>
+                        <li>Audix D6 (x1) - Alternative kick option</li>
+                        <li>Shure SM57 (x2) - Snare</li>
+                    </ul>
+                </div>
+
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Wireless Systems
+                    </h3>
+                    <ul class="gear-list">
+                        <li>Shure ULX-D (8 channels) - Digital handhelds</li>
+                        <li>Sennheiser EW 300 (4 channels) - Instrument packs</li>
+                        <li>Audio-Technica System 10 (2 channels) - Backup units</li>
+                        <li>Shure SLX-D (4 channels) - Monitoring systems</li>
+                        <li>I'm literally making all this up rn - lol</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PA Systems Section -->
+        <section class="gear-category" id="pa">
+            <h2>PA Systems</h2>
+            <div class="featured-grid">
+                <div class="gear-item">
+                    <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/24.jpg?raw=true')"></div>
+                    <div class="gear-info">
+                        <h3 class="gear-model">L-Acoustics Arc Wifo</h3>
+                        <ul class="gear-specs">
+                            <li>Power: 105dB SPL</li>
+                            <li>Coverage: 120°</li>
+                            <li>Amp Powered</li>
+                        </ul>
+                        <p class="gear-description">Main front-of-house array system</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gear-lists">
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Speaker Components
+                    </h3>
+                    <ul class="gear-list">
+                        <li>L-Acoustics KARA (8 boxes/side) - Main hangs</li>
+                        <li>JBL - Outdoor speakers</li>
+                        <li>L-Acoustics SB28 (x4) - Front-facing subs</li>
+                    </ul>
+                </div>
+
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Amplification
+                    </h3>
+                    <ul class="gear-list">
+                        <li>L-Acoustics LA4X (x4) - Main system amps</li>
+                        <li>Crown XTi 4002 (x2) - Backup amplifiers</li>
+                        <li>QSC PLD 4.5 (x2) - Monitor amps</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consoles Section -->
+        <section class="gear-category" id="console">
+            <h2>Mixing Consoles</h2>
+            <div class="featured-grid">
+                <div class="gear-item">
+                    <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true')"></div>
+                    <div class="gear-info">
+                        <h3 class="gear-model">Allen & Heath dLive S5000</h3>
+                        <ul class="gear-specs">
+                            <li>128 Input Channels</li>
+                            <li>64 Mix Buses</li>
+                            <li>Dual 64-bit DSP</li>
+                        </ul>
+                        <p class="gear-description">Primary FOH mixing console</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gear-lists">
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Control Surfaces
+                    </h3>
+                    <ul class="gear-list">
+                        <li>Allen & Heath dLive S5000 - FOH desk</li>
+                    </ul>
+                </div>
+
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Stageboxes
+                    </h3>
+                    <ul class="gear-list">
+                        <li>dLive DM32 (x2) - Primary stage racks</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Signal Processing Section -->
+        <section class="gear-category" id="processing">
+            <h2>Signal Processing</h2>
+            <div class="featured-grid">
+                <div class="gear-item">
+                    <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/worship/20.jpg?raw=true')"></div>
+                    <div class="gear-info">
+                        <h3 class="gear-model">XTA DP548</h3>
+                        <ul class="gear-specs">
+                            <li>4-in/8-out Processor</li>
+                            <li>96kHz Processing</li>
+                            <li>Advanced FIR Filters</li>
+                        </ul>
+                        <p class="gear-description">Main system alignment processor</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gear-lists">
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Outboard Gear
+                    </h3>
+                    <ul class="gear-list">
+                        <li>DBX 160A (x4) - Compressors</li>
+                        <li>Lexicon PCM96 - Reverb unit</li>
+                        <li>TC Electronic M3000 - Effects processor</li>
+                    </ul>
+                </div>
+
+                <div class="subcategory">
+                    <h3 class="subcategory-header">
+                        Network Components
+                    </h3>
+                    <ul class="gear-list">
+                        <li>Netgear AV M4250 - Network switch</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Radiant Church | All rights reserved</p>
+    </footer>
+
+    <script>
+        // Navigation Scroll Behavior
+        const navHeader = document.querySelector('.nav-header');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > lastScrollY && currentScrollY > 0) {
+                navHeader.classList.add('hidden');
+            } else {
+                navHeader.classList.remove('hidden');
+            }
+            lastScrollY = currentScrollY;
+        });
+
+        // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+
+            menuToggle.addEventListener('click', function () {
+                navLinks.classList.toggle('open');
+                menuToggle.classList.toggle('open');
+            });
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
