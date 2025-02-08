@@ -211,6 +211,46 @@ body {
     display: block;
 }
 
+/* LOADING SCREEN */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: transparent; /* Fully transparent background */
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 9999;
+    pointer-events: none; /* Prevents user interaction */
+}
+
+.square {
+    width: 5vw; /* Responsive square size */
+    height: 5vw;
+    background-color: black; /* Fully covers screen at the start */
+    position: absolute;
+    opacity: 1;
+    transform: scale(1);
+    animation: waveAnimation 1s forwards ease-in-out;
+}
+
+@keyframes waveAnimation {
+    0% { transform: scale(1); opacity: 1; } /* Fully covers at start */
+    50% { transform: scale(1.3); opacity: 0.5; } /* Midway fade */
+    100% { transform: scale(0); opacity: 0; } /* Fully disappears */
+}
+
+/* Hides loading screen after animation */
+#loading-screen.hidden {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    100% { opacity: 0; visibility: hidden; }
+}
+/* END LOADING SCREEEN */
+
 /* HAVE DIFFERENT CONTENT ON DEVICES */
 @media screen and (max-width: 992px) {
 
