@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stage Design History - Radiant Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="global.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+  <style>
+
+    /* Custom styles for the stage design grid layout */
+    .site-content {
+      padding: 2 0px;
+    }
+
+    /* Grid Container with Max 3 Columns */
+    .setdesigncontainer {
+      margin-top: 100px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* Always 3 columns on large screens */
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Set Design Items - More Square Shape */
+    .setdesignlink {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      width: 100%;
+      padding-bottom: 100%; /* Forces a square shape */
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .setdesignlink:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Dark Gradient Overlay */
+    .setdesignlink::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+      z-index: 1;
+    }
+
+    /* Text Content on Each Set Design Item */
+    .setdesigncontent {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .setdesigntitle {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    .setdesigndate {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-top: 5px;
+    }
+
+    /* Responsive Layout for Smaller Screens */
+    @media (max-width: 1024px) {
+      .setdesigncontainer {
+        margin-top: 100px;
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .setdesigncontainer {
+        margin-top: 60px;
+        grid-template-columns: repeat(1, 1fr); /* 1 column on mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header class="nav-header">
+    <div class="nav-content">
+      <a href="index.html" class="logo">
+        <span class="material-symbols-outlined">graphic_eq</span>
+        RADIANT PRODUCTION
+      </a>
+      <!-- Hamburger Menu Button -->
+      <button class="menu-toggle" aria-label="Open menu">
+        <span class="bar bar1"></span>
+        <span class="bar bar2"></span>
+        <span class="bar bar1"></span>
+      </button>
+      <nav class="nav-links">
+        <button class="cta">
+          <a href="home.html" class="hover-underline-animation">Home</a>
+        </button>
+        <button class="cta">
+          <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
+        </button>
+        <div class="dropdown">
+          <button class="cta">
+            <a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a>
+          </button>
+          <div class="dropdown-content">
+            <a href="audio_gear.html">Audio</a>
+            <a href="video_gear.html">Video</a>
+            <a href="lighting_gear.html">Lighting</a>
+          </div>
+        </div>
+        <button class="cta">
+          <a href="events.html" class="hover-underline-animation">Events</a>
+        </button>
+        <button class="cta">
+          <a href="photos.html" class="hover-underline-animation">Photos</a>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main id="site-content" role="main">
+    <div class="setdesigncontainer">
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">Fearless Conference 2024</h3>
+          <div class="setdesigndate">October 20-21st, 2024</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/24.jpg?raw=true');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">Women's Worship Night</h3>
+          <div class="setdesigndate">July 21-23rd, 2024</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/42.jpg?raw=true');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">2023</h3>
+          <div class="setdesigndate">2023-2023</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://bethelproduction.com/wp-content/uploads/2020/10/IMG_0180-512x341.jpg');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">School of the Prophets 2020</h3>
+          <div class="setdesigndate">August 3-7th, 2020</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://bethelproduction.com/wp-content/uploads/2021/09/IMG_0037-384x512.jpeg');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">360° Box Set</h3>
+          <div class="setdesigndate">Early 2020</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://bethelproduction.com/wp-content/uploads/2020/07/IMG_0287-copy-512x448.jpg');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">Leaders Conference 2019</h3>
+          <div class="setdesigndate">November 6-8th, 2019</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://bethelproduction.com/wp-content/uploads/2020/07/IMG_0202-342x512.jpg');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">Young Saints 2019</h3>
+          <div class="setdesigndate">October 18th &amp; 19th, 2019</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://bethelproduction.com/wp-content/uploads/2020/07/IMG_0077-512x342.jpg');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">Open Heavens 2019</h3>
+          <div class="setdesigndate">October 2-4th, 2019</div>
+        </div>
+      </a>
+
+      <a href="#.html" class="setdesignlink" style="background-image: url('https://bethelproduction.com/wp-content/uploads/2020/07/IMG_2408-512x341.jpg');">
+        <div class="setdesigncontent">
+          <h3 class="setdesigntitle">Heaven Come Dallas 2019</h3>
+          <div class="setdesigndate">August 29-31st, 2019</div>
+        </div>
+      </a>
+
+      <!-- Add additional set design items as needed -->
+    </div>
+  </main>
+  
+  <script>
+    // Mobile navigation: Hide/show nav header on scroll
+    const navHeader = document.querySelector('.nav-header');
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 0) {
+        navHeader.classList.add('hidden');
+      } else {
+        navHeader.classList.remove('hidden');
+      }
+      lastScrollY = currentScrollY;
+    });
+  
+    // Hamburger Menu Toggle
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      menuToggle.addEventListener('click', function () {
+        navLinks.classList.toggle('open');
+        menuToggle.classList.toggle('open');
+      });
+    });
+  
+    // Smooth scrolling for any anchor links (if needed)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>

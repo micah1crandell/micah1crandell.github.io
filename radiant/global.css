@@ -21,6 +21,14 @@ body[data-theme="dark"] {
     --border-color: #0a84ff;
 }
 
+/* Global Body */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f0f0;
+    color: #f0f0f0f8;
+    margin: 0;
+    padding: 0;
+}
 
 /* NAV HEADER AND HAMBURGER MENU */
 .menu-toggle {
