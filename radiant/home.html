@@ -192,14 +192,85 @@
         }
 
         /* Info Section */
+        /* Ensure the info-section is the positioning context */
         .info-section {
+            position: relative;
+            overflow: hidden; /* So shapes don’t cause unwanted scrollbars */
             background-color: #f0f0f0;
+        }
+
+        /* Background Shapes Container (behind the content) */
+        .info-bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;          /* Behind .info-content */
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        /* Base styles for each background shape */
+        .info-bg-shapes .bg-shape {
+            position: absolute;
+            opacity: 0.8;  /* Adjust transparency if needed */
+        }
+
+        /* Shape 1 */
+        .info-bg-shapes .bg-shape:nth-child(1) {
+            border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%;
+            transform: rotate(-10deg);
+            background-color: #0549DF;
+            width: 650px;
+            height: 650px;
+            top: 10%;
+            left: -150px;
+        }
+
+        /* Shape 2 */
+        .info-bg-shapes .bg-shape:nth-child(2) {
+            border-radius: 40% 60% 30% 70% / 70% 40% 60% 50%;
+            transform: rotate(-15deg);
+            background-color: #0549DF;
+            width: 500px;
+            height: 500px;
+            bottom: -5%;
+            left: -100px;
+        }
+
+        /* Shape 7 */
+        .info-bg-shapes .bg-shape:nth-child(3) {
+            border-radius: 60% 50% 70% 40% / 40% 60% 50% 70%;
+            transform: rotate(-20deg);
+            background-color: #0549DF;
+            width: 600px;
+            height: 600px;
+            top: 0;
+            right: -150px;
+        }
+
+        /* Shape 8 */
+        .info-bg-shapes .bg-shape:nth-child(4) {
+            border-radius: 40% 70% 50% 60% / 60% 40% 70% 50%;
+            transform: rotate(0deg);
+            background-color: #0549DF;
+            width: 650px;
+            height: 650px;
+            bottom: 0px;
+            left: 75%;
+        }
+
+        /* Make sure your content appears on top */
+        .info-content {
             padding: 20px 20px;
             text-align: center;
             color: #000000;
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
         }
 
-        .info-section .info-content {
+        .info-content {
             max-width: 800px;
             margin: 0 auto;
         }
@@ -211,13 +282,14 @@
         }
 
         .info-section p {
+            color: #000000;
             font-size: 1.2rem;
             line-height: 1.6;
             margin-bottom: 20px;
         }
 
         .info-section h3 {
-            color: #0000006b;
+            color: #000000;
             font-size: 1rem;
             line-height: 1.6;
             margin-bottom: 20px;
@@ -417,6 +489,23 @@
             .fancy-button span:nth-child(5) {
                 transform: translate(3.5em, -6em);
             }
+
+            .info-bg-shapes .bg-shape:nth-child(1) {
+                left: -550px;
+            }
+
+            .info-bg-shapes .bg-shape:nth-child(2) {
+                left: -400px;
+            }
+
+            .info-bg-shapes .bg-shape:nth-child(3) {
+                right: -550px;
+            }
+
+            .info-bg-shapes .bg-shape:nth-child(4) {
+                bottom: 800px;
+                left: 75%;
+            }
         }
 
     </style>
@@ -549,6 +638,14 @@
 
     <!-- Info Section -->
     <section class="info-section">
+        <!-- Background Shapes Container -->
+        <div class="info-bg-shapes">
+            <div class="bg-shape"></div>
+            <div class="bg-shape"></div>
+            <div class="bg-shape"></div>
+            <div class="bg-shape"></div>
+        </div>
+
         <div class="info-content">
             <h2>Join the Radiant Production Team</h2>
             <div class="button-group">
@@ -825,6 +922,18 @@
             );
 
             youtubeItems.forEach((item) => observer.observe(item));
+        });
+
+        // INFO SECTION PARALLAX
+        const infoSection = document.querySelector('.info-section');
+        const infoBgShapes = document.querySelector('.info-bg-shapes');
+
+        window.addEventListener('scroll', () => {
+        // Get the info section's distance from the top of the viewport
+        const rect = infoSection.getBoundingClientRect();
+        // Multiply the offset by a factor (e.g., 0.3) for a slower movement
+        const offset = rect.top * 0.3;
+        infoBgShapes.style.transform = `translateY(${offset}px)`;
         });
     </script>
 </body>
