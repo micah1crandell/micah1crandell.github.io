@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteers – Radiant Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+  <style>
+    /* ========= GLOBAL STYLES & FONTS ========= */
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* ========= HERO SECTION ========= */
+    .hero {
+      position: relative;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 20px;
+      overflow: hidden;
+      border-bottom-right-radius: 100px;
+    }
+    .parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/hero/29.jpg?raw=true');
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+      transform: translateY(0);
+      will-change: transform;
+    }
+    .hero-main {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+    }
+    .hero-main h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .hero-main p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    /* ========= BUTTON STYLING (Reuse from homepage) ========= */
+    .button1 {
+      line-height: 1;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background-color: #f0f0f0b2;
+      color: #000;
+      border-radius: 10rem;
+      font-weight: 600;
+      font-size: 1.5rem;
+      padding: 1.25rem 2rem; 
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background-color 0.3s;
+    }
+    .button1__icon-wrapper {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      position: relative;
+      color: #f0f0f0;
+      background-color: #000;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .button1:hover {
+      background-color: #000000b2;
+      color: #fff;
+    }
+    .button1:hover .button1__icon-wrapper {
+      color: #000;
+      background-color: #f0f0f0;
+    }
+    .button1__icon-svg {
+      width: 16px;
+      height: 16px;
+    }
+    .button1__icon-svg--copy {
+      position: absolute;
+      transform: translate(-150%, 150%);
+    }
+    .button1:hover .button1__icon-svg:first-child {
+      transition: transform 0.3s ease-in-out;
+      transform: translate(150%, -150%);
+    }
+    .button1:hover .button1__icon-svg--copy {
+      transition: transform 0.3s ease-in-out 0.1s;
+      transform: translate(0);    
+    }
+    /* ========= SECTION DIVIDER ========= */
+    .section-divider {
+      position: absolute;
+      left: 0;
+      top: calc(60vh - 60px);
+      width: 40%;
+      height: 100px;
+      background-color: #1e1e1e;
+      border-radius: 0 100px 100px 0;
+      z-index: 3;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 40px;
+      color: #f0f0f0;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    /* ========= INFO SECTION & BACKGROUND SHAPES ========= */
+    .info-section {
+      position: relative;
+      overflow: hidden;
+      padding: 50px 0px;
+    }
+    .info-bg-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .info-bg-shapes .bg-shape {
+      position: absolute;
+      opacity: 0.8;
+      background-color: #0549DF;
+    }
+    /* Example shape positions – adjust as desired */
+    .info-bg-shapes .bg-shape:nth-child(1) {
+      border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%;
+      transform: rotate(-10deg);
+      width: 550px;
+      height: 550px;
+      top: 0%;
+      left: -20%;
+    }
+    .info-bg-shapes .bg-shape:nth-child(2) {
+      border-radius: 40% 60% 30% 70% / 70% 40% 60% 50%;
+      transform: rotate(-15deg);
+      width: 550px;
+      height: 550px;
+      bottom: -5%;
+      left: -15%;
+    }
+    .info-bg-shapes .bg-shape:nth-child(3) {
+      border-radius: 60% 50% 70% 40% / 40% 60% 50% 70%;
+      transform: rotate(-20deg);
+      width: 500px;
+      height: 500px;
+      bottom: 70%;
+      left: 77%;
+    }
+    .info-bg-shapes .bg-shape:nth-child(4) {
+      border-radius: 40% 70% 50% 60% / 60% 40% 70% 50%;
+      transform: rotate(0deg);
+      width: 505px;
+      height: 505px;
+      bottom: 38%;
+      left: 83%;
+    }
+    .info-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      color: #000;
+    }
+    .info-content h2 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .info-content p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    /* ========= FANCY BUTTONS ========= */
+    .fancy-button {
+      font-family: 'Roboto', sans-serif;
+      font-weight: bold;
+      color: #fff;
+      background-color: #1e1e1e;
+      padding: 1em 2em;
+      border: none;
+      border-radius: 0.6rem;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      margin: 10px;
+    }
+    .fancy-button span:not(:nth-child(6)) {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      height: 30px;
+      width: 30px;
+      background-color: #0c66ed;
+      border-radius: 50%;
+      transition: 0.6s ease;
+    }
+    .fancy-button span:nth-child(6) {
+      position: relative;
+      z-index: 2;
+    }
+    .fancy-button span:nth-child(1) { transform: translate(-3.3em, -4em); }
+    .fancy-button span:nth-child(2) { transform: translate(-6em, 2em); }
+    .fancy-button span:nth-child(3) { transform: translate(-0.2em, 1.8em); }
+    .fancy-button span:nth-child(4) { transform: translate(4em, 2em); }
+    .fancy-button span:nth-child(5) { transform: translate(3.5em, -3.8em); }
+    .fancy-button:hover span:not(:nth-child(6)) {
+      transform: translate(-50%, -50%) scale(4);
+      transition: 1.5s ease;
+    }
+    /* ========= RESPONSIVE STYLES ========= */
+    @media screen and (max-width: 992px) {
+      .section-divider {
+        font-size: 1.3rem;
+        padding: 0 20px;
+      }
+      .fancy-button span:nth-child(1) { transform: translate(-3.3em, -6em); }
+      .fancy-button span:nth-child(2) { transform: translate(-6em, 3em); }
+      .fancy-button span:nth-child(3) { transform: translate(-0.2em, 3em); }
+      .fancy-button span:nth-child(4) { transform: translate(4em, 3em); }
+      .fancy-button span:nth-child(5) { transform: translate(3.5em, -6em); }
+      .info-bg-shapes .bg-shape:nth-child(1) { left: -550px; }
+      .info-bg-shapes .bg-shape:nth-child(2) { left: -400px; }
+      .info-bg-shapes .bg-shape:nth-child(3) { right: -550px; }
+      .info-bg-shapes .bg-shape:nth-child(4) { bottom: 800px; left: 75%; }
+    }
+    /* ========= NEW STYLES FOR VOLUNTEER POSITIONS SECTION ========= */
+    .dropdown-nav {
+      margin: 20px 0;
+      text-align: center;
+    }
+    .dropdown-nav select {
+      font-size: 1.2rem;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .position-section {
+      margin: 40px 0;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      text-align: left;
+    }
+    .position-section h3 {
+      margin-top: 0;
+      color: #0549DF;
+    }
+    .position-section h4 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .position-section ul {
+      list-style: disc inside;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Transition Overlay -->
+  <div class="transition-overlay animate-in">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>   
+
+  <header class="nav-header">
+    <div class="nav-content">
+      <a href="#" class="logo">
+        <span class="material-symbols-outlined">graphic_eq</span>
+        RADIANT PRODUCTION
+      </a>
+
+      <!-- Hamburger Menu Button -->
+      <button class="menu-toggle" aria-label="Open menu">
+        <span class="bar bar1"></span>
+        <span class="bar bar2"></span>
+        <span class="bar bar1"></span>
+      </button> 
+
+      <nav class="nav-links">
+        <button class="cta">
+          <a href="home.html" class="hover-underline-animation">Home</a>
+        </button>
+        <button class="cta">
+          <a href="volunteers" class="hover-underline-animation">Volunteers</a>
+        </button>
+        <div class="dropdown">
+          <button class="cta">
+            <a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a>
+          </button>
+          <div class="dropdown-content">
+            <a href="audio_gear.html">Audio</a>
+            <a href="video_gear.html">Video</a>
+            <a href="lighting_gear.html">Lighting</a>
+          </div>
+        </div>               
+        <button class="cta">
+          <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
+        </button>
+        <button class="cta">
+          <a href="photos.html" class="hover-underline-animation">Photos</a>
+        </button>
+      </nav>   
+    </div>
+  </header> 
+
+  <!-- Rounded Divider Shape -->
+  <div class="section-divider">PSALM 150 | Praise the Lord</div>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div class="parallax-bg"></div>
+    <div class="hero-main">
+      <a href="https://radiant-church-63467.churchcenter.com/people/forms/893000" class="button1" style="--clr: #7808d0">
+        <span class="button1__icon-wrapper">
+          <svg viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="button1__icon-svg" width="10">
+            <path d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z" fill="currentColor"></path>
+          </svg>
+          <svg viewBox="0 0 14 15" fill="none" width="10" xmlns="http://www.w3.org/2000/svg" class="button1__icon-svg button1__icon-svg--copy">
+            <path d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z" fill="currentColor"></path>
+          </svg>
+        </span>
+        Sign Up to Volunteer
+      </a>
+    </div>
+  </section>
+
+  <!-- VOLUNTEER RESOURCES SECTION -->
+  <section class="info-section">
+    <div class="info-bg-shapes">
+      <div class="bg-shape"></div>
+      <div class="bg-shape"></div>
+      <div class="bg-shape"></div>
+      <div class="bg-shape"></div>
+    </div>
+    <div class="info-content">
+      <h2>Volunteer Resources</h2>
+      <p>
+        Welcome! Here you can find training materials, FAQs, and all the information you need to get started on your journey with us. Explore the resources below to enhance your skills and join our community.
+      </p>
+      <div class="button-group">
+        <button class="fancy-button">
+          <span class="circle1"></span>
+          <span class="circle2"></span>
+          <span class="circle3"></span>
+          <span class="circle4"></span>
+          <span class="circle5"></span>
+          <span class="text"><a href="volunteer_positions.html" style="text-decoration: none; color: white;">Volunteer Positions</a></span>
+        </button>
+        <button class="fancy-button">
+          <span class="circle1"></span>
+          <span class="circle2"></span>
+          <span class="circle3"></span>
+          <span class="circle4"></span>
+          <span class="circle5"></span>
+          <span class="text"><a href="training_resources.html" target="_blank" style="text-decoration: none; color: white;">Training Resources</a></span>
+        </button>
+        <button class="fancy-button">
+          <span class="circle1"></span>
+          <span class="circle2"></span>
+          <span class="circle3"></span>
+          <span class="circle4"></span>
+          <span class="circle5"></span>
+          <span class="text"><a href="faq.html" style="text-decoration: none; color: white;">FAQ</a></span>
+        </button>
+        <button class="fancy-button">
+          <span class="circle1"></span>
+          <span class="circle2"></span>
+          <span class="circle3"></span>
+          <span class="circle4"></span>
+          <span class="circle5"></span>
+          <span class="text"><a href="#volunteer-positions" style="text-decoration: none; color: white;">Volunteer Positions</a></span>
+        </button>
+      </div>
+    </div>
+    <section class="info-section" style="padding: 50px 20px;">
+      <div class="info-content">
+        <h2>Helpful Videos and Channels</h2>
+        <p>Watch these videos for training tips, behind‐the‐scenes insights, and inspiration.</p>
+        <div class="youtube-videos">
+          <div class="youtube-item">
+            <iframe width="100%" height="270" src="https://www.youtube.com/embed/jrONaLRl6jA" title="Volunteer Training Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="youtube-item">
+            <iframe width="100%" height="270" src="https://www.youtube.com/embed/wg3jbSQAsdE?si=vFPRy3FBhmVT0F5L&amp;start=2285" title="Volunteer Training Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="youtube-item">
+            <iframe width="100%" height="270" src="https://www.youtube.com/embed/Fvga_hVFrG4?si=yK5xsBEnMHfHnkxq&amp;start=2529" title="Volunteer Training Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-content">
+        <h2>Volunteer Positions</h2>
+        <p>
+          Below you’ll find detailed responsibilities for each volunteer role. Use the dropdown menu below to quickly navigate to a position’s section and review the tasks for PRESERVICE, SERVICE, and POSTSERVICE.
+        </p>
+        <div class="dropdown-nav">
+          <select id="positionSelect">
+            <option value="">Select a Position</option>
+            <option value="audio-engineer">Audio Engineer (Broadcast and FOH)</option>
+            <option value="lighting-engineer">Lighting Engineer (GrandMA3)</option>
+            <option value="video-director">Video Director</option>
+            <option value="camera-operator">Camera Operator</option>
+            <option value="graphics-operator">Computer Graphics Operator</option>
+            <option value="stage-manager">Stage Manager</option>
+            <option value="photographer">Photographer</option>
+            <option value="online-host">Online Host</option>
+          </select>
+        </div>
+  
+        <!-- Stage Manager Section -->
+        <div class="position-section" id="stage-manager">
+          <h3>Stage Manager</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+              <li>Conduct microphone and in-ear battery checks.</li>
+              <li>Verify that communion elements, baby dedication items, and illustrations are in place.</li>
+              <li>Ensure all instruments are properly positioned and spike-taped.</li>
+              <li>Launch and monitor Planning Center Live.</li>
+          </ul>
+          <h4>SERVICE</h4>
+          <ul>
+              <li>Operate and manage Planning Center Live throughout the service.</li>
+              <li>Verbally communicate service transitions, upcoming songs, and cues from PCO.</li>
+              <li>Bring communion elements, baby dedication items, and illustration props on stage as needed.</li>
+              <li>Move instruments after worship to clear the stage for the message.</li>
+              <li>Bring podium to the front of the for message stage.</li>
+              <li>Coordinate with the worship team to prepare for the final song or underscore.</li>
+              <li>Coordinate with the speakers for when to go onstage.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+              <li>Collect and store all microphones and batteries.</li>
+          </ul>
+        </div>
+  
+        <!-- Video Director Section -->
+        <div class="position-section" id="video-director">
+          <h3>Video Director</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+              <li>Ensure all cameras are correctly set up and positioned.</li>
+              <li>Distribute and test headsets for track cameras.</li>
+          </ul>
+          <h4>SERVICE</h4>
+          <ul>
+              <li>Direct all camera operations.</li>
+              <li>Coordinate with the graphics team on slide timing.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+              <li>Take down all cameras.</li>
+              <li>Store all headsets.</li>
+          </ul>
+          </div>
+  
+        <!-- Audio Engineer Section -->
+        <div class="position-section" id="audio-engineer">
+          <h3>Audio Engineer (Broadcast and FOH)</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+            <li>Set up audio equipment and cables before service.</li>
+            <li>Conduct sound checks and adjust levels for optimal performance.</li>
+            <li>Coordinate with the technical team to ensure broadcast readiness.</li>
+          </ul>
+          <h4>SERVICE</h4>
+          <ul>
+            <li>Mix front-of-house audio to create an immersive worship experience.</li>
+            <li>Manage broadcast feeds for clear and uninterrupted transmission.</li>
+            <li>Monitor and adjust audio levels in real time during the service.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Safely break down and store all audio equipment.</li>
+            <li>Review recorded audio for quality and consistency.</li>
+            <li>Log any technical issues for follow-up and improvement.</li>
+          </ul>
+        </div>
+    
+        <!-- Lighting Section -->
+        <div class="position-section" id="lighting-engineer">
+          <h3>Lighting Engineer (GrandMA3)</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+            <li>Adjust lighting colors during practice if needed.</li>
+            <li>Ensure cue stack aligns with PCO.</li>
+            <li>Test all cues to confirm smooth transitions and proper functionality.</li>
+          </ul>
+          <h4>SERVICE</h4>
+          <ul>
+            <li>Anticipate transitions to ensure seamless lighting changes.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Set end service cue.</li>
+          </ul>
+        </div>
+    
+        <!-- Camera Operators Section -->
+        <div class="position-section" id="camera-operators">
+          <h3>Camera Operators</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+            <li>Ensure assigned camera is set up, operational, and service-ready.</li>
+            <li>Have a functioning headset.</li>
+            <li>Familiarize yourself with the service order to anticipate key moments (e.g., communion, dedications).</li>
+          </ul>
+          <h4>SERVICE</h4>
+          <ul>
+            <li>Follow all cues from the service and video directors.</li>
+            <li><strong>Cam 3:</strong> Set up the camera on a tripod after worship.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Properly store camera and headset.</li>
+            <li>Charge all batteries.</li>
+          </ul>
+        </div>
+    
+        <!-- Computer Graphics Section -->
+        <div class="position-section" id="computer-graphics">
+          <h3>Computer Graphics</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+            <li>Attend worship practice.</li>
+            <li>Ensure ProPresenter is complete and follows PCO.</li>
+            <li>Understand service elements to anticipate transitions.</li>
+            <li>Test all videos and graphics.</li>
+          </ul>
+          <h4>SERVICE</h4>
+          <ul>
+            <li>Follow cues from the video and service directors for slide transitions.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Display end service graphic.</li>
+          </ul>
+        </div>
+    
+        <!-- Photographer Section (Unchanged) -->
+        <div class="position-section" id="photographer">
+          <h3>Photographer</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+            <li>Plan a shot list and set camera parameters according to the venue and lighting.</li>
+            <li>Scout the venue for optimal photo opportunities.</li>
+            <li>Coordinate with the creative team to capture the intended mood.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Capture key moments during the service, balancing candid and posed shots.</li>
+            <li>Adjust camera settings in response to changing lighting conditions.</li>
+            <li>Continuously monitor composition and framing.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Backup and edit photos to enhance quality.</li>
+            <li>Prepare digital galleries for sharing with the team and congregation.</li>
+            <li>Report any equipment issues for prompt repair or replacement.</li>
+          </ul>
+        </div>
+    
+        <!-- Online Host Section (Unchanged) -->
+        <div class="position-section" id="online-host">
+          <h3>Online Host</h3>
+          <h4>PRE-SERVICE</h4>
+          <ul>
+            <li>Prepare virtual engagement tools and ensure all online platforms are tested.</li>
+            <li>Coordinate with the technical team to guarantee a stable connection.</li>
+            <li>Test audio and video settings for online streaming.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Engage with the online audience during the live service.</li>
+            <li>Monitor social media and live chat for real-time interaction.</li>
+            <li>Coordinate with on-site teams to ensure a seamless broadcast experience.</li>
+          </ul>
+          <h4>POST-SERVICE</h4>
+          <ul>
+            <li>Review online feedback and interaction logs.</li>
+            <li>Compile audience engagement reports for the team.</li>
+            <li>Prepare for subsequent online sessions based on received feedback.</li>
+          </ul>
+        </div>
+  
+      </div>
+    </section>
+  </section>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="global.js"></script>
+  <script>
+    // Show/hide nav on scroll
+    const navHeader = document.querySelector('.nav-header');
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 0) {
+        navHeader.classList.add('hidden');
+      } else {
+        navHeader.classList.remove('hidden');
+      }
+      lastScrollY = currentScrollY;
+    });
+
+    // Menu Toggle for Mobile
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      menuToggle.addEventListener('click', function () {
+        navLinks.classList.toggle('open');
+        menuToggle.classList.toggle('open');
+      });
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Parallax effect for hero background
+    const parallaxBg = document.querySelector('.parallax-bg');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const offset = scrollTop * 0.5;
+      parallaxBg.style.transform = `translateY(${offset}px)`;
+    });
+
+    // YouTube Intersection Observer (for optional animations)
+    const youtubeItems = document.querySelectorAll('.youtube-item');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, {
+      threshold: 0.6,
+    });
+    youtubeItems.forEach((item) => observer.observe(item));
+
+    // Parallax effect for info section background shapes
+    const infoSections = document.querySelectorAll('.info-section');
+    infoSections.forEach(section => {
+      const infoBgShapes = section.querySelector('.info-bg-shapes');
+      window.addEventListener('scroll', () => {
+        const rect = section.getBoundingClientRect();
+        const offset = rect.top * 0.3;
+        if (infoBgShapes) {
+          infoBgShapes.style.transform = `translateY(${offset}px)`;
+        }
+      });
+    });
+
+    // Dropdown navigation for volunteer positions
+    const positionSelect = document.getElementById('positionSelect');
+    positionSelect.addEventListener('change', function() {
+      const targetId = this.value;
+      if(targetId) {
+        const targetElem = document.getElementById(targetId);
+        if(targetElem) {
+          targetElem.scrollIntoView({behavior: 'smooth'});
+        }
+      }
+    });
+  </script>
+</body>
+</html>
