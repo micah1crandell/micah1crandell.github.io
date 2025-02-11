@@ -135,26 +135,21 @@
         /* Gallery Section */
         .gallery-wrapper {
             background-color: #f0f0f0;
+            padding-top: 40px;
         }
 
         .gallery {
             padding: 50px 20px;
             text-align: end;
-            background-image: url("https://github.com/micah1crandell/websiteImages/blob/main/backgrounds/gradBg.png?raw=true");
+            background-image: url("https://github.com/micah1crandell/websiteImages/blob/main/backgrounds/gradBG2.png?raw=true");
             background-color: #f0f0f0;
             overflow: hidden; /* Prevent overflow */
             position: relative;
+            background-size: 105% 115%;
+            background-repeat: no-repeat;
 
             z-index: 1;
             border-bottom-left-radius: 100px;
-        }
-
-        .gallery h2 {
-            font-size: 2rem;
-            padding-top: 10px;
-            margin-right: 420px;
-            margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.07);
         }
 
         .gallery-carousel {
@@ -426,7 +421,13 @@
 
     </style>
 </head>
-<body>   
+<body>
+    <!-- Transition Overlay -->
+  <div class="transition-overlay animate-in">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>   
 
     <header class="nav-header">
         <div class="nav-content">
@@ -447,7 +448,7 @@
                     <a href="#home" class="hover-underline-animation">Home</a>
                 </button>
                 <button class="cta">
-                    <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
+                    <a href="volunteers.html" class="hover-underline-animation">Volunteers</a>
                 </button>
                 <div class="dropdown">
                     <button class="cta">
@@ -460,7 +461,7 @@
                     </div>
                 </div>               
                 <button class="cta">
-                    <a href="events.html" class="hover-underline-animation">Events</a>
+                    <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
                 </button>
                 <button class="cta">
                     <a href="photos.html" class="hover-underline-animation">Photos</a>
@@ -512,9 +513,6 @@
     <!-- Gallery Section -->
     <section class="gallery-wrapper">
         <section class="gallery" id="gallery">
-            <h2>
-                    
-            </h2>
             <div class="gallery-carousel">
                 <div class="gallery-item">
                     <!-- Lazy Loaded Images -->
