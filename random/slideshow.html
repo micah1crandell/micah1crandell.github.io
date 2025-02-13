@@ -134,9 +134,36 @@
         fetchAndUpdatePrayer();
       });
 
-      // Process raw text by splitting into nonempty, trimmed lines.
+      /**
+       * Process the raw prayer text by splitting it into nonempty, trimmed lines.
+       * If there is only one line (likely from pasted text without line breaks)
+       * then we further break it into smaller chunks (grouping words) so that the
+       * slideshow can cycle through multiple slides.
+       */
       function processPrayer(rawText) {
-        return rawText.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        let lines = rawText.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        if (lines.length === 1 && lines[0].length > 50) {  // adjust threshold as needed
+          const text = lines[0];
+          const maxChunkLength = 100; // maximum characters per slide
+          let chunks = [];
+          let currentChunk = "";
+          // Split text by words, grouping them until maxChunkLength is reached.
+          text.split(' ').forEach(word => {
+            if ((currentChunk + word).length > maxChunkLength) {
+              chunks.push(currentChunk.trim());
+              currentChunk = word + " ";
+            } else {
+              currentChunk += word + " ";
+            }
+          });
+          if (currentChunk.trim().length > 0) {
+            chunks.push(currentChunk.trim());
+          }
+          if (chunks.length > 1) {
+            return chunks;
+          }
+        }
+        return lines;
       }
 
       // Fetch prayer from the server and update global prayer if content has changed.
