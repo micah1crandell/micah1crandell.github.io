@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prayer Tower Slideshow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #222;
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #333;
+      border-radius: 8px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    label, input, button {
+      font-size: 1em;
+      margin: 5px;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 5px;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 5px;
+      font-size: 1em;
+    }
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    #previewArea {
+      margin-top: 20px;
+      text-align: left;
+      background: #444;
+      padding: 10px;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #slideshowContainer {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3em;
+      text-transform: uppercase;
+      padding: 20px;
+      box-sizing: border-box;
+      cursor: none;
+    }
+    #prayerDisplay {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Configuration & Preview Section -->
+  <div id="configContainer" class="container">
+    <h1>Prayer Tower Slideshow</h1>
+    <p>Prayer Requests will be loaded from the remote server. You can update the server URL below.</p>
+    <label for="serverUrlInput">Server URL:</label>
+    <input type="text" id="serverUrlInput" placeholder="Enter your server URL" />
+    <br />
+    <label for="delayInput">Time between slides (seconds):</label>
+    <input type="number" id="delayInput" min="1" value="10" />
+    <br />
+    <button id="startButton">Start Slideshow</button>
+    <button id="refreshButton">Refresh Now</button>
+    <div id="previewArea">
+      <h3>Text Preview:</h3>
+      <pre id="previewText"></pre>
+    </div>
+    <p class="error" id="errorMessage"></p>
+  </div>
+
+  <!-- Full-screen Slideshow Section -->
+  <div id="slideshowContainer">
+    <div id="prayerDisplay"></div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // Use a default server URL if none is stored.
+      const defaultServerUrl = "http://raspberrypi.local:8080/prayer";
+      let serverUrl = localStorage.getItem("serverUrl") || defaultServerUrl;
+
+      // DOM Elements
+      const configContainer = document.getElementById('configContainer');
+      const slideshowContainer = document.getElementById('slideshowContainer');
+      const prayerDisplay = document.getElementById('prayerDisplay');
+      const delayInput = document.getElementById('delayInput');
+      const startButton = document.getElementById('startButton');
+      const refreshButton = document.getElementById('refreshButton');
+      const errorMessage = document.getElementById('errorMessage');
+      const previewText = document.getElementById('previewText');
+      const serverUrlInput = document.getElementById('serverUrlInput');
+
+      // Set the server URL input field to the current value.
+      serverUrlInput.value = serverUrl;
+
+      // Global variables
+      let prayer = [];
+      let slideshowInterval = null;
+      let currentIndex = 0;
+      let currentFileContent = ""; // to detect changes from server
+
+      // When user updates the server URL, save it.
+      serverUrlInput.addEventListener('change', function() {
+        serverUrl = serverUrlInput.value.trim() || defaultServerUrl;
+        localStorage.setItem("serverUrl", serverUrl);
+        // Refresh the prayer from the new URL.
+        fetchAndUpdatePrayer();
+      });
+
+      // Process raw text by splitting into nonempty, trimmed lines.
+      function processPrayer(rawText) {
+        return rawText.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+      }
+
+      // Fetch prayer from the server and update global prayer if content has changed.
+      async function fetchAndUpdatePrayer() {
+        try {
+          const response = await fetch(serverUrl);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const text = await response.text();
+          // If the file has changed, update our data.
+          if (text !== currentFileContent) {
+            currentFileContent = text;
+            prayer = processPrayer(text);
+            previewText.textContent = text;
+            console.log("Prayer updated from server.");
+          }
+          errorMessage.textContent = "";
+        } catch (err) {
+          errorMessage.textContent = "Error fetching prayer: " + err.message;
+        }
+      }
+
+      // Start the slideshow, cycling through the prayer.
+      async function startSlideshow() {
+        if (prayer.length === 0) {
+          errorMessage.textContent = "No prayer available. Try refreshing.";
+          return;
+        }
+        errorMessage.textContent = "";
+        configContainer.style.display = "none";
+        slideshowContainer.style.display = "flex";
+        currentIndex = 0;
+        prayerDisplay.textContent = prayer[currentIndex].toUpperCase();
+        const delay = parseInt(delayInput.value, 10) * 1000;
+        slideshowInterval = setInterval(() => {
+          currentIndex = (currentIndex + 1) % prayer.length;
+          prayerDisplay.textContent = prayer[currentIndex].toUpperCase();
+        }, delay);
+      }
+
+      // Exit the slideshow and return to configuration.
+      function exitSlideshow() {
+        if (slideshowInterval) clearInterval(slideshowInterval);
+        slideshowContainer.style.display = "none";
+        configContainer.style.display = "block";
+      }
+
+      // Poll the server for updates every 30 seconds.
+      async function pollForUpdates() {
+        await fetchAndUpdatePrayer();
+      }
+
+      // Set an interval to poll for updates.
+      setInterval(pollForUpdates, 30000);
+
+      // Button event handlers.
+      startButton.addEventListener('click', startSlideshow);
+      refreshButton.addEventListener('click', fetchAndUpdatePrayer);
+
+      // Listen for the Esc key to exit the slideshow.
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && slideshowContainer.style.display !== "none") {
+          exitSlideshow();
+        }
+      });
+
+      // Initial fetch on page load.
+      fetchAndUpdatePrayer();
+
+    })();
+  </script>
+</body>
+</html>
