@@ -6,59 +6,106 @@
   <title>Prayer Tower Slideshow</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
-    body {
+    /* Base Styles */
+    * {
       margin: 0;
       padding: 0;
-      background-color: #222;
-      color: #fff;
-      font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
     }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    /* Blue Blob Elements */
+    .blob {
+      position: absolute;
+      background: radial-gradient(circle, #2196F3 0%, transparent 70%);
+      opacity: 0.3;
+      z-index: 0;
+    }
+    .blob-top {
+      top: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+    }
+    .blob-bottom {
+      bottom: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+    }
+    /* Configuration Container */
     .container {
+      position: relative;
+      z-index: 1;
+      background: #1e1e1e;
+      border-radius: 12px;
       max-width: 800px;
       margin: 50px auto;
       padding: 20px;
-      background: #333;
-      border-radius: 8px;
       text-align: center;
     }
-    h1 {
+    .container h1 {
+      font-weight: 700;
       margin-bottom: 20px;
     }
-    label, input, button {
+    .container label,
+    .container input,
+    .container button {
       font-size: 1em;
       margin: 5px;
     }
-    input[type="number"] {
+    .container input[type="number"] {
       width: 60px;
       padding: 5px;
     }
-    input[type="text"] {
+    .container input[type="text"] {
       width: 80%;
       padding: 5px;
       font-size: 1em;
     }
-    button {
+    .container button {
       padding: 10px 20px;
       cursor: pointer;
+      background: #2196F3;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-weight: 700;
+      transition: background 0.3s;
     }
+    .container button:hover {
+      background: #1976D2;
+    }
+    /* Preview Area */
     #previewArea {
       margin-top: 20px;
       text-align: left;
-      background: #444;
+      background: #2a2a2a;
       padding: 10px;
       border-radius: 4px;
       max-height: 200px;
       overflow-y: auto;
     }
+    #previewArea pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    /* Full-Screen Slideshow */
     #slideshowContainer {
       display: none;
-      width: 100vw;
-      height: 100vh;
-      background-color: #000;
       position: fixed;
       top: 0;
       left: 0;
-      color: #fff;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -71,9 +118,16 @@
     #prayerDisplay {
       text-align: center;
     }
+    .error {
+      color: #ff5252;
+    }
   </style>
 </head>
 <body>
+  <!-- Blue Blob Background Elements -->
+  <div class="blob blob-top"></div>
+  <div class="blob blob-bottom"></div>
+
   <!-- Configuration & Preview Section -->
   <div id="configContainer" class="container">
     <h1>Prayer Tower Slideshow</h1>
@@ -103,7 +157,7 @@
       'use strict';
 
       // Use a default server URL if none is stored.
-      const defaultServerUrl = "http://raspberrypi.local:8080/prayer";
+      const defaultServerUrl = "https://raspberrypiIP/prayer";
       let serverUrl = localStorage.getItem("serverUrl") || defaultServerUrl;
 
       // DOM Elements
