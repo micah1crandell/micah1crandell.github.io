@@ -1,535 +1,617 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VSK4JT56BT"></script>
+  <!-- Google Tag Manager, Fonts, CSS, etc. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VSK4JT56BT"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-VSK4JT56BT');
   </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Gear – Radiant Production</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
-    
-    <style>
-        /* CSS remains the same as previous version */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Bird – Radiant Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+  <style>
+    /* Basic Reset & Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+    }
+    body {
+      background-color: #fff;
+      color: #222;
+      overflow: hidden; /* large screens default */
+      touch-action: none;
+    }
+    #character-select {
+        display: flex;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 400px;
+    }
 
-        .under-construction {
-            text-align: center;
-            margin-top: 100px;
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
+    .character-option {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        border: 2px solid #222;
+        border-radius: 8px;
+        background-size: 60%;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: all 0.2s;
+        background-color: #fff;
+    }
 
-        .under-construction h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #222;
-        }
+    .character-option:hover {
+        transform: scale(1.05);
+        border-color: #444;
+    }
 
-        .under-construction p {
-            font-size: 1.1rem;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
+    .selected {
+        border-color: #666;
+        box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        background-color: #f0f0f0;
+    }
+    /* Under Construction Notice */
+    .under-construction {
+      text-align: center;
+      margin-top: 100px;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+    .under-construction h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+    .under-construction p {
+      font-size: 1.1rem;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    /* Container for Game & Leaderboard */
+    #flappyContainer {
+      width: 100%;
+      padding: 20px;
+      display: block;
+    }
+    /* Game Container (existing) */
+    #game-container {
+      position: relative;
+      z-index: 1;
+      width: 40vw;
+      height: 40vh;
+      max-width: 90vw;
+      max-height: 90vw;
+      margin: 0 auto;
+      border: 2px solid #222;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+    #game-canvas {
+      width: 100%;
+      height: 100%;
+    }
+    /* Score & High Score overlay */
+    #score {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #222;
+      z-index: 10;
+    }
+    #high-score {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.2rem;
+      color: #666;
+      z-index: 10;
+    }
+    /* Game Over Screen */
+    #game-over {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.95);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      display: none;
+      max-width: 80%;
+      z-index: 100;
+    }
+    #game-over h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+    #final-score {
+      font-weight: 700;
+      color: #444;
+    }
+    .high-score-display {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: #666;
+    }
+    /* Username Input in Game Over */
+    #nameInputContainer {
+      margin-top: 10px;
+    }
+    #nameInputContainer input {
+      padding: 5px;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 30px;
+      font-size: 1rem;
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.2s;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    button:hover {
+      background: #444;
+      transform: translateY(-2px);
+    }
+    /* Global Leaderboard Container */
+    #globalScoresContainer {
+      width: 40vw;
+      max-width: 90vw;
+      margin: 0 auto;
+      border: 2px solid #222;
+      border-radius: 10px;
+      padding: 20px;
+      background: #fff;
+      height: 40vh;
+      overflow-y: auto;
+    }
+    #globalScoresContainer h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    #globalHighScoresFlappy {
+      list-style-type: none;
+      padding: 0;
+      text-align: left;
+    }
+    #globalHighScoresFlappy li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ccc;
+    }
+    /* Responsive Layout */
+    @media (min-width: 768px) {
+      body {
+        overflow: hidden;
+      }
+      #flappyContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: flex-start;
+      }
+      #game-container,
+      #globalScoresContainer {
+        flex: 1;
+        max-width: 480px;
+      }
+    }
+    @media (max-width: 767px) {
+      body {
+        overflow: auto;
+      }
+      #flappyContainer {
+        display: block;
+      }
+    }
+    /* (Other CSS – character selection and controls – remain unchanged) */
+    /* You can keep your existing CSS for #character-select, .character-option, #controls, etc. */
+  </style>
+  <!-- Firebase App and Database (compat libraries) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyBwZnWdMPpun7CpWiTR2JPtXANDHhBewz0",
+    authDomain: "flappybirdleaderboard-e68a5.firebaseapp.com",
+    databaseURL: "https://flappybirdleaderboard-e68a5-default-rtdb.firebaseio.com",
+    projectId: "flappybirdleaderboard-e68a5",
+    storageBucket: "flappybirdleaderboard-e68a5.firebasestorage.app",
+    messagingSenderId: "483576238087",
+    appId: "1:483576238087:web:e545bd257e2142bf62daa2",
+    measurementId: "G-FVVB6FVKN4"
+    };
 
-        #game-container {
-            position: relative;
-            z-index: 1;
-            width: 40vw;
-            height: 40vh;
-            max-width: 90vw;
-            max-height: 90vw;
-            margin: 0 auto;
-            border: 2px solid #222;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #fff;
-        }
-
-        #game-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        #character-select {
-            display: flex;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 400px;
-        }
-
-        .character-option {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            border: 2px solid #222;
-            border-radius: 8px;
-            background-size: 60%;
-            background-position: center;
-            background-repeat: no-repeat;
-            transition: all 0.2s;
-            background-color: #fff;
-        }
-
-        .character-option:hover {
-            transform: scale(1.05);
-            border-color: #444;
-        }
-
-        .selected {
-            border-color: #666;
-            box-shadow: 0 0 8px rgba(0,0,0,0.2);
-            background-color: #f0f0f0;
-        }
-
-        #controls {
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        button {
-            padding: 12px 30px;
-            font-size: 1rem;
-            background: #222;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            margin: 10px;
-            transition: all 0.2s;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        button:hover {
-            background: #444;
-            transform: translateY(-2px);
-        }
-
-        #score {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #222;
-            z-index: 10;
-        }
-
-        #high-score {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.2rem;
-            color: #666;
-            z-index: 10;
-        }
-
-        #game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            display: none;
-            max-width: 80%;
-        }
-
-        #game-over h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: #222;
-        }
-
-        #final-score {
-            font-weight: 700;
-            color: #444;
-        }
-
-        .high-score-display {
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
-            color: #666;
-        }
-
-        #score, #high-score {
-            z-index: 1001; /* Higher than navbar */
-        }
-
-        @media screen and (max-width: 992px) {
-
-            #game-container {
-                width: 70vw;
-                height: 40vh;
-            }
-
-            .under-construction h1 {
-                font-size: 2rem;
-            }
-            
-            button {
-                padding: 15px 30px;
-                font-size: 1.1rem;
-            }
-        }
-    </style>
+    // Initialize Firebase using the compat API
+    firebase.initializeApp(firebaseConfig);
+    // Initialize Realtime Database and assign it to a variable
+    const database = firebase.database();
+  </script>
 </head>
 <body>
-    <!-- Transition Overlay -->
+  <!-- Transition Overlay (if needed) -->
   <div class="transition-overlay animate-in">
     <div class="circle circle1"></div>
     <div class="circle circle2"></div>
     <div class="circle circle3"></div>
   </div>
 
-    <header class="nav-header">
-        <div class="nav-content">
-            <a href="#" class="logo">
-                <span class="material-symbols-outlined">graphic_eq</span>
-                RADIANT PRODUCTION
-            </a>
-
-            <!-- Hamburger Menu Button -->
-            <button class="menu-toggle" aria-label="Open menu">
-                <span class="bar bar1"></span>
-                <span class="bar bar2"></span>
-                <span class="bar bar1"></span>
-            </button> 
-
-            <nav class="nav-links">
-                <button class="cta">
-                    <a href="home.html" class="hover-underline-animation">Home</a>
-                </button>
-                <button class="cta">
-                    <a href="volunteers.html" class="hover-underline-animation">Volunteers</a>
-                </button>
-                <div class="dropdown">
-                    <button class="cta">
-                        <a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a>
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="audio_gear.html">Audio</a>
-                        <a href="video_gear">Video</a>
-                        <a href="lighting_gear.html">Lighting</a>
-                    </div>
-                </div>               
-                <button class="cta">
-                    <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
-                </button>
-                <button class="cta">
-                    <a href="photos.html" class="hover-underline-animation">Photos</a>
-                </button>
-            </nav>   
+  <header class="nav-header">
+    <div class="nav-content">
+      <a href="#" class="logo">
+        <span class="material-symbols-outlined">graphic_eq</span>
+        RADIANT PRODUCTION
+      </a>
+      <!-- Hamburger Menu Button -->
+      <button class="menu-toggle" aria-label="Open menu">
+        <span class="bar bar1"></span>
+        <span class="bar bar2"></span>
+        <span class="bar bar1"></span>
+      </button>
+      <nav class="nav-links">
+        <button class="cta"><a href="home.html" class="hover-underline-animation">Home</a></button>
+        <button class="cta"><a href="volunteers.html" class="hover-underline-animation">Volunteers</a></button>
+        <div class="dropdown">
+          <button class="cta"><a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a></button>
+          <div class="dropdown-content">
+            <a href="audio_gear.html">Audio</a>
+            <a href="video_gear.html">Video</a>
+            <a href="lighting_gear.html">Lighting</a>
+          </div>
         </div>
-    </header>          
-
-    <div class="under-construction">
-        <h1>Video Gear</h1>
-        <p>Working on this page... in the meantime, play flappy bird</p>
+        <button class="cta"><a href="stage.html" class="hover-underline-animation">Stage Design History</a></button>
+        <button class="cta"><a href="photos.html" class="hover-underline-animation">Photos</a></button>
+      </nav>
     </div>
+  </header>
 
+  <div class="under-construction">
+    <h1>Video Gear</h1>
+    <p>Working on this page... in the meantime, play Flappy Bird!</p>
+  </div>
+
+  <!-- Controls (character selection and start button) remain as before -->
+  <div id="controls">
+    <div id="character-select">
+      <!-- Using PNG versions of SF Symbols -->
+      <div class="character-option" data-char="camera" style="background-image: url('https://img.icons8.com/ios-glyphs/344/compact-camera.png')"></div>
+      <div class="character-option" data-char="mic" style="background-image: url('https://img.icons8.com/ios-glyphs/344/microphone.png')"></div>
+      <div class="character-option" data-char="speaker" style="background-image: url('https://img.icons8.com/ios-glyphs/344/speaker.png')"></div>
+      <div class="character-option" data-char="light" style="background-image: url('https://img.icons8.com/ios-glyphs/344/light-on.png')"></div>
+      <div class="character-option" data-char="timer" style="background-image: url('https://img.icons8.com/ios-glyphs/344/timer.png')"></div>
+      <div class="character-option" data-char="recording" style="background-image: url('https://img.icons8.com/ios-glyphs/344/record.png')"></div>
+    </div>
+    <button id="start-btn">Start Game</button>
+  </div>
+
+  <!-- Flappy Container: wraps game and global leaderboard -->
+  <div id="flappyContainer">
+    <!-- Game Container -->
     <div id="game-container">
-        <div id="score">0</div>
-        <div id="high-score">High Score: 0</div>
-        <div id="game-over">
-            <h2>Game Over</h2>
-            <p>Score: <span id="final-score">0</span></p>
-            <p class="high-score-display">High Score: <span id="final-high-score">0</span></p>
-            <button id="retry-btn">Try Again</button>
+      <div id="score">0</div>
+      <div id="high-score">High Score: 0</div>
+      <!-- Game Over Screen with username input -->
+      <div id="game-over">
+        <h2>Game Over</h2>
+        <p>Score: <span id="final-score">0</span></p>
+        <p class="high-score-display">High Score: <span id="final-high-score">0</span></p>
+        <div id="nameInputContainer">
+          <label for="userName">Your Name: </label>
+          <input type="text" id="userName" placeholder="Update your name">
         </div>
-        <canvas id="game-canvas"></canvas>
+        <button id="retry-btn">Try Again</button>
+      </div>
+      <canvas id="game-canvas"></canvas>
     </div>
-
-    <div id="controls">
-        <div id="character-select">
-            <!-- Using PNG versions of SF Symbols -->
-            <div class="character-option" data-char="camera" style="background-image: url('https://img.icons8.com/ios-glyphs/344/compact-camera.png')"></div>
-            <div class="character-option" data-char="mic" style="background-image: url('https://img.icons8.com/ios-glyphs/344/microphone.png')"></div>
-            <div class="character-option" data-char="speaker" style="background-image: url('https://img.icons8.com/ios-glyphs/344/speaker.png')"></div>
-            <div class="character-option" data-char="light" style="background-image: url('https://img.icons8.com/ios-glyphs/344/light-on.png')"></div>
-            <div class="character-option" data-char="timer" style="background-image: url('https://img.icons8.com/ios-glyphs/344/timer.png')"></div>
-            <div class="character-option" data-char="recording" style="background-image: url('https://img.icons8.com/ios-glyphs/344/record.png')"></div>
-        </div>
-        <button id="start-btn">Start Game</button>
+    <!-- Global Leaderboard Container -->
+    <div id="globalScoresContainer">
+      <h2>Global Leaderboard</h2>
+      <ul id="globalHighScoresFlappy">
+        <!-- Leaderboard entries will be injected here -->
+      </ul>
     </div>
-    <script src="global.js"></script>
-    <script>
+  </div>
 
-        //Show Nav Bar on Mobile when at TOP of page
-        const navHeader = document.querySelector('.nav-header');
+  <script src="global.js"></script>
+  <script>
+    // NAVIGATION & SMOOTH SCROLL (unchanged)
+    const navHeader = document.querySelector('.nav-header');
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 0) {
+        navHeader.classList.add('hidden');
+      } else {
+        navHeader.classList.remove('hidden');
+      }
+      lastScrollY = currentScrollY;
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      menuToggle.addEventListener('click', function () {
+        navLinks.classList.toggle('open');
+        menuToggle.classList.toggle('open');
+      });
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
 
-        let lastScrollY = window.scrollY;
+    // FLAPPY GAME CODE
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('start-btn');
+    const scoreElement = document.getElementById('score');
+    const highScoreElement = document.getElementById('high-score');
+    const gameOverScreen = document.getElementById('game-over');
+    const retryBtn = document.getElementById('retry-btn');
+    const finalScoreElement = document.getElementById('final-score');
+    const finalHighScoreElement = document.getElementById('final-high-score');
 
-        window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
+    // Initialize local high score for Flappy Bird
+    let highScore = localStorage.getItem('flappyHighScore') || 0;
+    highScoreElement.textContent = `High Score: ${highScore}`;
 
-        // If user scrolled down and not at the top:
-        if (currentScrollY > lastScrollY && currentScrollY > 0) {
-            navHeader.classList.add('hidden');  // Hide nav
-        } else {
-            // Scrolled up OR is at/near top
-            navHeader.classList.remove('hidden'); // Show nav
+    // Set canvas dimensions based on container
+    const setCanvasSize = () => {
+      const container = document.getElementById('game-container');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    };
+    setCanvasSize();
+    window.addEventListener('resize', setCanvasSize);
+
+    let selectedCharacter = 'camera';
+    let animationId = null;
+    let score = 0;
+    let gameActive = false;
+
+    // Game objects
+    const bird = {
+      x: 50,
+      y: 200,
+      velocity: 0,
+      size: 30
+    };
+    const pipes = [];
+    const pipeWidth = 40;
+    const gapHeight = 120;
+    const pipeSpacing = 200;
+
+    // Character images
+    const characters = {
+      camera: new Image(),
+      mic: new Image(),
+      speaker: new Image(),
+      light: new Image(),
+      timer: new Image(),
+      recording: new Image()
+    };
+    characters.camera.src = 'https://img.icons8.com/ios-glyphs/344/compact-camera.png';
+    characters.mic.src = 'https://img.icons8.com/ios-glyphs/344/microphone.png';
+    characters.speaker.src = 'https://img.icons8.com/ios-glyphs/344/speaker.png';
+    characters.light.src = 'https://img.icons8.com/ios-glyphs/344/light-on.png';
+    characters.timer.src = 'https://img.icons8.com/ios-glyphs/344/timer.png';
+    characters.recording.src = 'https://img.icons8.com/ios-glyphs/344/record.png';
+
+    // Character selection
+    const characterOptions = document.querySelectorAll('.character-option');
+    characterOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelector('.selected')?.classList.remove('selected');
+        option.classList.add('selected');
+        selectedCharacter = option.dataset.char;
+      });
+    });
+    // Initialize first character as selected
+    document.querySelector('.character-option').click();
+
+    function drawBird() {
+      if (characters[selectedCharacter].complete) {
+        ctx.drawImage(
+          characters[selectedCharacter],
+          bird.x - bird.size / 2,
+          bird.y - bird.size / 2,
+          bird.size,
+          bird.size
+        );
+      }
+    }
+
+    function drawPipes() {
+      ctx.fillStyle = '#222';
+      pipes.forEach(pipe => {
+        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+        ctx.fillRect(pipe.x, pipe.top + gapHeight, pipeWidth, canvas.height - (pipe.top + gapHeight));
+      });
+    }
+
+    function updateGame() {
+      if (!gameActive) return;
+      bird.velocity += 0.5;
+      bird.y += bird.velocity;
+      if (bird.y - bird.size / 2 < 0 || bird.y + bird.size / 2 > canvas.height) {
+        gameOver();
+        return;
+      }
+      pipes.forEach(pipe => {
+        pipe.x -= 2;
+        if (pipe.x + pipeWidth === Math.floor(bird.x)) {
+          score++;
+          scoreElement.textContent = score;
         }
+      });
+      if (pipes.length > 0 && pipes[0].x < -pipeWidth) {
+        pipes.shift();
+      }
+      if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - pipeSpacing) {
+        const minHeight = 60;
+        const maxHeight = canvas.height - gapHeight - minHeight;
+        const top = Math.random() * (maxHeight - minHeight) + minHeight;
+        pipes.push({ x: canvas.width, top: top });
+      }
+      const currentPipe = pipes[0];
+      if (currentPipe) {
+        if (
+          bird.x + bird.size / 2 > currentPipe.x &&
+          bird.x - bird.size / 2 < currentPipe.x + pipeWidth &&
+          (bird.y - bird.size / 2 < currentPipe.top || bird.y + bird.size / 2 > currentPipe.top + gapHeight)
+        ) {
+          gameOver();
+        }
+      }
+    }
 
-        lastScrollY = currentScrollY;
-        });
-
-        // Menu Toggle
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.nav-links');
-
-            menuToggle.addEventListener('click', function () {
-                // Toggle the 'open' class on the nav to slide it in/out
-                navLinks.classList.toggle('open');
-
-                // Toggle .open on the button itself (if you have a hamburger -> X animation)
-                menuToggle.classList.toggle('open');
-            });
-        });
-
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-
-        // GAME
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
-        const startBtn = document.getElementById('start-btn');
-        const scoreElement = document.getElementById('score');
-        const highScoreElement = document.getElementById('high-score');
-        const characterOptions = document.querySelectorAll('.character-option');
-        const gameOverScreen = document.getElementById('game-over');
-        const retryBtn = document.getElementById('retry-btn');
-        const finalScoreElement = document.getElementById('final-score');
-        const finalHighScoreElement = document.getElementById('final-high-score');
-
-        // Initialize high score
-        let highScore = localStorage.getItem('flappyHighScore') || 0;
+    function gameOver() {
+      if (!gameActive) return;
+      gameActive = false;
+      cancelAnimationFrame(animationId);
+      animationId = null;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('flappyHighScore', highScore);
         highScoreElement.textContent = `High Score: ${highScore}`;
+      }
+      finalScoreElement.textContent = score;
+      finalHighScoreElement.textContent = highScore;
+      gameOverScreen.style.display = 'block';
+      updateUserNameField();
+      checkAndSubmitScoreFlappy(score);
+      startBtn.disabled = false;
+    }
 
-        // Set canvas dimensions
-        const setCanvasSize = () => {
-            const container = document.getElementById('game-container');
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-        };
-        setCanvasSize();
-        window.addEventListener('resize', setCanvasSize);
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      updateGame();
+      drawPipes();
+      drawBird();
+      animationId = requestAnimationFrame(gameLoop);
+    }
 
-        let selectedCharacter = 'camera';
-        let animationId = null;
-        let score = 0;
-        let gameActive = false;
-        
-        // Game objects
-        const bird = {
-            x: 50,
-            y: 200,
-            velocity: 0,
-            size: 30
-        };
+    function resetGame() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+      bird.y = canvas.height / 2;
+      bird.velocity = 0;
+      pipes.length = 0;
+      score = 0;
+      scoreElement.textContent = '0';
+      gameOverScreen.style.display = 'none';
+      gameActive = true;
+    }
 
-        const pipes = [];
-        const pipeWidth = 40;
-        const gapHeight = 120;
-        const pipeSpacing = 200;
+    // Username handling for Flappy Bird
+    let storedUserName = localStorage.getItem("userName");
+    if (!storedUserName) {
+      storedUserName = "User-" + Math.floor(Math.random() * 1000000);
+      localStorage.setItem("userName", storedUserName);
+    }
+    function updateUserNameField() {
+      const nameField = document.getElementById("userName");
+      if (nameField && nameField.value.trim() === "") {
+        nameField.value = localStorage.getItem("userName");
+      }
+    }
 
-        // Character images
-        const characters = {
-            camera: new Image(),
-            film: new Image(),
-            video: new Image(),
-            mic: new Image(),
-            speaker: new Image(),
-            light: new Image(),
-            timer: new Image(),
-            recording: new Image()
-        };
-
-        // Load character images
-        characters.camera.src = 'https://img.icons8.com/ios-glyphs/344/compact-camera.png';
-        characters.mic.src = 'https://img.icons8.com/ios-glyphs/344/microphone.png';
-        characters.speaker.src = 'https://img.icons8.com/ios-glyphs/344/speaker.png';
-        characters.light.src = 'https://img.icons8.com/ios-glyphs/344/light-on.png';
-        characters.timer.src = 'https://img.icons8.com/ios-glyphs/344/timer.png';
-        characters.recording.src = 'https://img.icons8.com/ios-glyphs/344/record.png';
-
-        // Character selection
-        characterOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelector('.selected')?.classList.remove('selected');
-                option.classList.add('selected');
-                selectedCharacter = option.dataset.char;
-            });
+    // Firebase functions for global leaderboard for Flappy Bird
+    function submitScoreFlappy(scoreValue) {
+      const nameField = document.getElementById("userName");
+      if (nameField) {
+        const newName = nameField.value.trim();
+        if (newName) {
+          localStorage.setItem("userName", newName);
+        }
+      }
+      const name = localStorage.getItem("userName") || "Anonymous";
+      database.ref('flappyHighScores/').push({
+        name: name,
+        score: scoreValue,
+        timestamp: Date.now()
+      });
+    }
+    function checkAndSubmitScoreFlappy(scoreValue) {
+      const scoresRef = database.ref('flappyHighScores/').orderByChild('score').limitToLast(10);
+      scoresRef.once('value', snapshot => {
+        let scores = [];
+        snapshot.forEach(childSnapshot => {
+          scores.push(childSnapshot.val());
         });
-
-        function drawBird() {
-            if (characters[selectedCharacter].complete) {
-                ctx.drawImage(
-                    characters[selectedCharacter],
-                    bird.x - bird.size/2,
-                    bird.y - bird.size/2,
-                    bird.size,
-                    bird.size
-                );
-            }
+        if (scores.length < 10) {
+          submitScoreFlappy(scoreValue);
+        } else {
+          const lowestTopScore = scores[0].score;
+          if (scoreValue > lowestTopScore) {
+            submitScoreFlappy(scoreValue);
+          }
         }
+        scores.reverse();
+        updateGlobalLeaderboardFlappy(scores);
+      });
+    }
+    function updateGlobalLeaderboardFlappy(scores) {
+      const globalList = document.getElementById("globalHighScoresFlappy");
+      globalList.innerHTML = "";
+      scores.forEach((entry, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${index + 1}. ${entry.name || "Anonymous"} - Score: ${entry.score}`;
+        globalList.appendChild(li);
+      });
+    }
 
-        function drawPipes() {
-            ctx.fillStyle = '#222';
-            pipes.forEach(pipe => {
-                ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
-                ctx.fillRect(pipe.x, pipe.top + gapHeight, pipeWidth, canvas.height - (pipe.top + gapHeight));
-            });
-        }
+    // Input handlers for game control (spacebar/touch)
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && gameActive) {
+        bird.velocity = -8;
+      }
+    });
+    document.addEventListener('touchstart', (e) => {
+      if (gameActive) {
+        e.preventDefault();
+        e.stopPropagation();
+        bird.velocity = -8;
+      }
+    }, { passive: false });
 
-        function updateGame() {
-            if (!gameActive) return;
-
-            // Bird physics
-            bird.velocity += 0.5;
-            bird.y += bird.velocity;
-
-            // Boundary check
-            if (bird.y - bird.size/2 < 0 || bird.y + bird.size/2 > canvas.height) {
-                gameOver();
-                return;
-            }
-
-            // Pipe movement
-            pipes.forEach(pipe => {
-                pipe.x -= 2;
-                
-                if (pipe.x + pipeWidth === bird.x) {
-                    score++;
-                    scoreElement.textContent = score;
-                }
-            });
-
-            if (pipes.length > 0 && pipes[0].x < -pipeWidth) {
-                pipes.shift();
-            }
-
-            if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - pipeSpacing) {
-                const minHeight = 60;
-                const maxHeight = canvas.height - gapHeight - minHeight;
-                const top = Math.random() * (maxHeight - minHeight) + minHeight;
-                
-                pipes.push({
-                    x: canvas.width,
-                    top: top
-                });
-            }
-
-            // Collision detection
-            const currentPipe = pipes[0];
-            if (currentPipe) {
-                if (bird.x + bird.size/2 > currentPipe.x && 
-                    bird.x - bird.size/2 < currentPipe.x + pipeWidth &&
-                    (bird.y - bird.size/2 < currentPipe.top || 
-                     bird.y + bird.size/2 > currentPipe.top + gapHeight)) {
-                    gameOver();
-                }
-            }
-        }
-
-        function gameOver() {
-            if (!gameActive) return;
-            gameActive = false;
-            cancelAnimationFrame(animationId);
-            animationId = null;
-            
-            // Update high score
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('flappyHighScore', highScore);
-                highScoreElement.textContent = `High Score: ${highScore}`;
-            }
-            
-            finalScoreElement.textContent = score;
-            finalHighScoreElement.textContent = highScore;
-            gameOverScreen.style.display = 'block';
-            startBtn.disabled = false;
-        }
-
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateGame();
-            drawPipes();
-            drawBird();
-            animationId = requestAnimationFrame(gameLoop);
-        }
-
-        function resetGame() {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-            }
-            
-            bird.y = canvas.height/2;
-            bird.velocity = 0;
-            pipes.length = 0;
-            score = 0;
-            scoreElement.textContent = '0';
-            gameOverScreen.style.display = 'none';
-            gameActive = true;
-        }
-
-        // Event listeners
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && gameActive) {
-                bird.velocity = -8;
-            }
-        });
-
-        document.addEventListener('touchstart', (e) => {
-            if (gameActive) {
-                e.preventDefault(); // Add this line
-                e.stopPropagation(); // Add this line
-                bird.velocity = -8;
-            }
-        }, { passive: false }); // Add this option
-
-        startBtn.addEventListener('click', () => {
-            resetGame();
-            startBtn.disabled = true;
-            gameLoop();
-        });
-
-        retryBtn.addEventListener('click', () => {
-            resetGame();
-            startBtn.disabled = true;
-            gameLoop();
-        });
-
-        // Initialize first character as selected
-        document.querySelector('.character-option').click();
-    </script>
+    startBtn.addEventListener('click', () => {
+      resetGame();
+      startBtn.disabled = true;
+      gameLoop();
+    });
+    retryBtn.addEventListener('click', () => {
+      resetGame();
+      startBtn.disabled = true;
+      gameLoop();
+    });
+  </script>
 </body>
 </html>
