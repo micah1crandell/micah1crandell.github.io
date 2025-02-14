@@ -39,4 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  // If the page is restored from the cache, the overlay is immediately hidden so it doesn’t block interaction.
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) { // true if the page was restored from bfcache
+      const overlay = document.querySelector('.transition-overlay');
+      overlay.style.display = 'none';
+    }
+  });
   
