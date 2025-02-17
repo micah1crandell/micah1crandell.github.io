@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
   <style>
     /* Global Styles */
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
     body {
       margin: 0;
       font-family: 'Roboto', sans-serif;
@@ -29,8 +34,7 @@
       overflow: hidden;
       border-bottom-right-radius: 100px;
       text-align: center;
-      color: #efefef;
-      background-color: #000;
+      color: #1e1e1e;
     }
     .parallax-bg {
       position: absolute;
@@ -38,7 +42,7 @@
       left: 0;
       width: 100%;
       height: 120%;
-      background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true');
+      background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true');
       background-size: cover;
       background-position: center;
       z-index: -1;
@@ -51,20 +55,6 @@
     }
     .hero-main p {
       font-size: 1.2rem;
-    }
-    /* SVG Divider for Seamless Transition */
-    .svg-divider {
-      display: block;
-      width: 100%;
-      height: 80px;
-      overflow: hidden;
-      line-height: 0;
-    }
-    .svg-divider svg {
-      position: relative;
-      display: block;
-      width: calc(100% + 1.3px);
-      height: 80px;
     }
     /* Button Styling */
     .button1 {
@@ -124,7 +114,6 @@
     .info-section {
       position: relative;
       overflow: hidden;
-      background-color: #f0f0f0;
       padding: 60px 20px;
       text-align: center;
       color: #000;
@@ -146,14 +135,24 @@
       margin-bottom: 20px;
     }
     /* Background Shapes for Info Section */
-    .info-bg-shapes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
+    .shared-bg-container {
+    position: relative;
+    }
+
+    .shared-bg-container .info-bg-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    }
+
+    /* Sections inside the shared container */
+    .shared-bg-container section {
+    position: relative;
+    z-index: 1;
     }
     .info-bg-shapes .bg-shape {
       position: absolute;
@@ -173,7 +172,7 @@
       transform: rotate(-15deg);
       width: 500px;
       height: 500px;
-      bottom: -5%;
+      bottom: 35%;
       left: -100px;
     }
     .info-bg-shapes .bg-shape:nth-child(3) {
@@ -181,7 +180,7 @@
       transform: rotate(-20deg);
       width: 600px;
       height: 600px;
-      top: 0;
+      top: 5%;
       right: -150px;
     }
     .info-bg-shapes .bg-shape:nth-child(4) {
@@ -189,7 +188,7 @@
       transform: rotate(0deg);
       width: 650px;
       height: 650px;
-      bottom: 0;
+      bottom: 25%;
       left: 75%;
     }
     /* Contact Form Styles */
@@ -219,36 +218,48 @@
       line-height: 1.5;
       margin: 10px 0;
     }
+    /* Contact Form Styles */
     .contact-form form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
     }
     .form-group {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
     .form-group label {
-      margin-bottom: 5px;
-      font-weight: bold;
+        margin-bottom: 5px;
+        font-weight: bold;
     }
     .form-group input,
     .form-group textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
     }
     .form-group input:focus,
     .form-group textarea:focus {
-      outline: none;
-      border-color: #0549DF;
+        outline: none;
+        border-color: #0549DF;
     }
-    .contact-form button {
-      align-self: flex-start;
-      cursor: pointer;
+
+    /* New Send Button Style */
+    .contact-form button.send-button {
+        background-color: #0549DF;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .contact-form button.send-button:hover {
+        background-color: #043bb5;
     }
     /* Map Section */
     .map-section {
@@ -374,9 +385,9 @@
 <body>
   <!-- Transition Overlay -->
   <div class="transition-overlay animate-in">
-    <div class="circle"></div>
-    <div class="circle"></div>
-    <div class="circle"></div>
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
   </div>
 
   <!-- Navigation Header -->
@@ -423,217 +434,199 @@
     <div class="parallax-bg"></div>
     <div class="hero-main">
       <h1>Connect With Us</h1>
-      <p>We're here to listen, support, and collaborate. Reach out today!</p>
+      <p></p>
     </div>
   </section>
-
-  <!-- SVG Divider -->
-  <div class="svg-divider">
-    <svg viewBox="0 0 1200 80" preserveAspectRatio="none">
-      <path d="M0,0 C600,80 600,80 1200,0 L1200,80 L0,80 Z" fill="#f0f0f0"></path>
-    </svg>
-  </div>
 
   <!-- Contact Information Section -->
-  <section class="info-section" id="contact-info">
-    <div class="info-bg-shapes">
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-    </div>
-    <div class="info-content">
-      <h2>Get in Touch</h2>
-      <p>
-        Whether you have questions, need support, or want to collaborate, our team is ready to assist. Use the contact form below or reach out through our office details.
-      </p>
-      <div class="contact-container">
-        <!-- Contact Details -->
-        <div class="contact-details">
-          <h3>Our Office</h3>
-          <p>
-            Radiant Production Headquarters<br>
-            1234 Worship Lane<br>
-            City, State, ZIP
-          </p>
-          <p>
-            <strong>Office Hours:</strong><br>
-            Mon - Fri: 9AM - 5PM
-          </p>
-          <p>
-            <strong>Email:</strong> <a href="mailto:info@radiantproduction.com">info@radiantproduction.com</a>
-          </p>
-          <p>
-            <strong>Phone:</strong> <a href="tel:+1234567890">+1 (234) 567-890</a>
-          </p>
+  <div class="shared-bg-container">
+    <section class="info-section" id="contact-info">
+        <div class="info-bg-shapes">
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
         </div>
-        <!-- Contact Form -->
-        <div class="contact-form">
-          <h3>Send Us a Message</h3>
-          <form action="#" method="post">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <div class="info-content">
+        <h2>Get in Touch</h2>
+        <p>
+            Whether you have questions, need support, or want to collaborate, our team is ready to assist. Use the contact form below or reach out through our office details.
+        </p>
+        <div class="contact-container">
+            <!-- Contact Details -->
+            <div class="contact-details">
+            <h3>Radiant Church</h3>
+            <p>
+                Radiant Church<br>
+                15522 W Paradise Ln<br>
+                Surprise, AZ 85374
+            </p>
+            <p>
+                <strong>Office Hours:</strong><br>
+                Mon - Thu: 9AM - 4:30PM
+            </p>
+            <p>
+                <strong>Email:</strong> <a href="mailto:info@radiantchurch.com">info@radiantchurch.com</a>
+            </p>
+            <p>
+                <strong>Phone:</strong> <a href="tel:+1234567890">623-975-2662</a>
+            </p>
             </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <!-- Contact Form -->
+            <div class="contact-form">
+            <h3>Send Us a Message</h3>
+            <form action="#" method="post">
+                <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                </div>
+                <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="send-button">Send Message</button>
+            </form>
             </div>
-            <div class="form-group">
-              <label for="subject">Subject</label>
-              <input type="text" id="subject" name="subject" placeholder="Subject" required>
-            </div>
-            <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="button1">
-              <span class="button1__icon-wrapper">
+        </div>
+        <div class="social-links" style="margin-top: 40px;">
+            <a href="https://www.facebook.com/radiantchurchaz" class="button1" target="_blank">
+            <span class="button1__icon-wrapper">
                 <svg viewBox="0 0 24 24" class="button1__icon-svg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                <path d="M22,12A10,10,0,1,0,10,22V14H7v-3h3V8.5a4,4,0,0,1,4-4h3v3H14a1,1,0,0,0-1,1V11h4l-1,3H13v8A10,10,0,0,0,22,12Z"/>
                 </svg>
                 <svg viewBox="0 0 24 24" class="button1__icon-svg button1__icon-svg--copy" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                <path d="M22,12A10,10,0,1,0,10,22V14H7v-3h3V8.5a4,4,0,0,1,4-4h3v3H14a1,1,0,0,0-1,1V11h4l-1,3H13v8A10,10,0,0,0,22,12Z"/>
                 </svg>
-              </span>
-              Send Message
-            </button>
-          </form>
+            </span>
+            Facebook
+            </a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="button1" target="_blank">
+            <span class="button1__icon-wrapper">
+                <svg viewBox="0 0 24 24" class="button1__icon-svg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.46,6c-.77.35-1.6.59-2.46.69a4.3,4.3,0,0,0,1.88-2.37,8.59,8.59,0,0,1-2.72,1A4.28,4.28,0,0,0,16,4a4.3,4.3,0,0,0-4.3,4.3,4.49,4.49,0,0,0,.11,0.98A12.14,12.14,0,0,1,3,5.16,4.28,4.28,0,0,0,4.34,10.7a4.23,4.23,0,0,1-1.94-.54v0.05A4.3,4.3,0,0,0,4.3,14.25a4.23,4.23,0,0,1-1.93.07,4.3,4.3,0,0,0,4,3A8.6,8.6,0,0,1,2,18.58,12.14,12.14,0,0,0,8.29,20,12.14,12.14,0,0,0,20.43,8.29c0-.18,0-.35,0-.53A8.6,8.6,0,0,0,22.46,6Z"/>
+                </svg>
+                <svg viewBox="0 0 24 24" class="button1__icon-svg button1__icon-svg--copy" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.46,6c-.77.35-1.6.59-2.46.69a4.3,4.3,0,0,0,1.88-2.37,8.59,8.59,0,0,1-2.72,1A4.28,4.28,0,0,0,16,4a4.3,4.3,0,0,0-4.3,4.3,4.49,4.49,0,0,0,.11,0.98A12.14,12.14,0,0,1,3,5.16,4.28,4.28,0,0,0,4.34,10.7a4.23,4.23,0,0,1-1.94-.54v0.05A4.3,4.3,0,0,0,4.3,14.25a4.23,4.23,0,0,1-1.93.07,4.3,4.3,0,0,0,4,3A8.6,8.6,0,0,1,2,18.58,12.14,12.14,0,0,0,8.29,20,12.14,12.14,0,0,0,20.43,8.29c0-.18,0-.35,0-.53A8.6,8.6,0,0,0,22.46,6Z"/>
+                </svg>
+            </span>
+            Twitter
+            </a>
+            <a href="https://www.instagram.com/radiantchurch/" class="button1" target="_blank">
+            <span class="button1__icon-wrapper">
+                <svg viewBox="0 0 24 24" class="button1__icon-svg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.75-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/>
+                </svg>
+                <svg viewBox="0 0 24 24" class="button1__icon-svg button1__icon-svg--copy" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.75-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/>
+                </svg>
+            </span>
+            Instagram
+            </a>
         </div>
-      </div>
-      <div class="social-links" style="margin-top: 40px;">
-        <a href="https://www.facebook.com/radiantproduction" class="button1" target="_blank">
-          <span class="button1__icon-wrapper">
-            <svg viewBox="0 0 24 24" class="button1__icon-svg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22,12A10,10,0,1,0,10,22V14H7v-3h3V8.5a4,4,0,0,1,4-4h3v3H14a1,1,0,0,0-1,1V11h4l-1,3H13v8A10,10,0,0,0,22,12Z"/>
-            </svg>
-            <svg viewBox="0 0 24 24" class="button1__icon-svg button1__icon-svg--copy" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22,12A10,10,0,1,0,10,22V14H7v-3h3V8.5a4,4,0,0,1,4-4h3v3H14a1,1,0,0,0-1,1V11h4l-1,3H13v8A10,10,0,0,0,22,12Z"/>
-            </svg>
-          </span>
-          Facebook
-        </a>
-        <a href="https://twitter.com/radiantprod" class="button1" target="_blank">
-          <span class="button1__icon-wrapper">
-            <svg viewBox="0 0 24 24" class="button1__icon-svg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.46,6c-.77.35-1.6.59-2.46.69a4.3,4.3,0,0,0,1.88-2.37,8.59,8.59,0,0,1-2.72,1A4.28,4.28,0,0,0,16,4a4.3,4.3,0,0,0-4.3,4.3,4.49,4.49,0,0,0,.11,0.98A12.14,12.14,0,0,1,3,5.16,4.28,4.28,0,0,0,4.34,10.7a4.23,4.23,0,0,1-1.94-.54v0.05A4.3,4.3,0,0,0,4.3,14.25a4.23,4.23,0,0,1-1.93.07,4.3,4.3,0,0,0,4,3A8.6,8.6,0,0,1,2,18.58,12.14,12.14,0,0,0,8.29,20,12.14,12.14,0,0,0,20.43,8.29c0-.18,0-.35,0-.53A8.6,8.6,0,0,0,22.46,6Z"/>
-            </svg>
-            <svg viewBox="0 0 24 24" class="button1__icon-svg button1__icon-svg--copy" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.46,6c-.77.35-1.6.59-2.46.69a4.3,4.3,0,0,0,1.88-2.37,8.59,8.59,0,0,1-2.72,1A4.28,4.28,0,0,0,16,4a4.3,4.3,0,0,0-4.3,4.3,4.49,4.49,0,0,0,.11,0.98A12.14,12.14,0,0,1,3,5.16,4.28,4.28,0,0,0,4.34,10.7a4.23,4.23,0,0,1-1.94-.54v0.05A4.3,4.3,0,0,0,4.3,14.25a4.23,4.23,0,0,1-1.93.07,4.3,4.3,0,0,0,4,3A8.6,8.6,0,0,1,2,18.58,12.14,12.14,0,0,0,8.29,20,12.14,12.14,0,0,0,20.43,8.29c0-.18,0-.35,0-.53A8.6,8.6,0,0,0,22.46,6Z"/>
-            </svg>
-          </span>
-          Twitter
-        </a>
-        <a href="https://www.instagram.com/radiantproduction" class="button1" target="_blank">
-          <span class="button1__icon-wrapper">
-            <svg viewBox="0 0 24 24" class="button1__icon-svg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.75-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/>
-            </svg>
-            <svg viewBox="0 0 24 24" class="button1__icon-svg button1__icon-svg--copy" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.75-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/>
-            </svg>
-          </span>
-          Instagram
-        </a>
-      </div>
-    </div>
-  </section>
+        </div>
+        <!-- Map & Directions Section -->
+    <section class="map-section" id="map">
+        <h2>Find Us Here</h2>
+        <div class="map-container">
+        <!-- Google Maps Embed (update the src URL with your actual location) -->
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3315.063036295135!2d-112.38507!3d33.643396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b44d8dcf65f77%3A0x8fb0c4c5a4d70df1!2s15522%20W%20Paradise%20Ln%2C%20Surprise%2C%20AZ%2085374!5e0!3m2!1sen!2sus!4v1708106543210" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>
 
-  <!-- Map & Directions Section -->
-  <section class="map-section" id="map">
-    <h2>Find Us Here</h2>
-    <div class="map-container">
-      <!-- Google Maps Embed (update the src URL with your actual location) -->
-      <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3315.063036295135!2d-112.38507!3d33.643396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b44d8dcf65f77%3A0x8fb0c4c5a4d70df1!2s15522%20W%20Paradise%20Ln%2C%20Surprise%2C%20AZ%2085374!5e0!3m2!1sen!2sus!4v1708106543210" 
-        style="border:0;" 
-        allowfullscreen="" 
-        loading="lazy" 
-        referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-    </div>
-  </section>
-
-  <!-- FAQ Section -->
-  <section class="faq-section" id="faq">
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <details>
-        <summary>What services do you offer?</summary>
-        <p>We provide comprehensive audio, video, lighting, and stage design solutions to make your events truly memorable.</p>
-      </details>
-    </div>
-    <div class="faq-item">
-      <details>
-        <summary>How can I book your services?</summary>
-        <p>You can contact us through the form above or call us directly at +1 (234) 567-890 to discuss your requirements.</p>
-      </details>
-    </div>
-    <div class="faq-item">
-      <details>
-        <summary>Where is your office located?</summary>
-        <p>Our headquarters is located at 1234 Worship Lane, City, State, ZIP. Check the map section for detailed directions.</p>
-      </details>
-    </div>
-    <div class="faq-item">
-      <details>
-        <summary>What are your office hours?</summary>
-        <p>We are open Monday to Friday from 9AM to 5PM. Feel free to leave us a message anytime, and we’ll get back to you as soon as possible.</p>
-      </details>
-    </div>
-  </section>
-
-  <!-- Meet Our Team Section -->
-  <section class="info-section" id="team">
-    <div class="info-content">
-      <h2>Meet Our Team</h2>
-      <p>
-        Our dedicated team works tirelessly behind the scenes to bring you exceptional experiences. Get to know the people making it all happen.
-      </p>
-      <div class="team-grid">
-        <div class="team-card">
-          <div class="image-container">
-            <div class="rounded-shape"></div>
-            <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/47.jpg?raw=true" alt="Pastor Tim Murlatt">
-          </div>
-          <h3>Pastor Tim Murlatt</h3>
-          <p>Creative Director</p>
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <details>
+                <summary>Can I volunteer only once a month?</summary>
+                <p>Yes, we are happy to accommodate your availability. If a specific week works best for you, we will make arrangements accordingly.</p>
+            </details>
         </div>
-        <div class="team-card">
-          <div class="image-container">
-            <div class="rounded-shape"></div>
-            <img src="https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true" alt="Devin Wiles">
-          </div>
-          <h3>Devin Wiles</h3>
-          <p>Audio Director</p>
+        <div class="faq-item">
+            <details>
+                <summary>How do I get started with volunteering?</summary>
+                <p>You can reach out to us using the contact form above or complete a volunteer application at the link provided below.</p>
+            </details>
         </div>
-        <div class="team-card">
-          <div class="image-container">
-            <div class="rounded-shape"></div>
-            <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" alt="Mallorie Celestino">
-          </div>
-          <h3>Mallorie Celestino</h3>
-          <p>Visual Director</p>
+        <div class="faq-item">
+            <details>
+                <summary>Can I volunteer in multiple roles?</summary>
+                <p>Yes, many of our volunteers contribute in various capacities. We welcome and appreciate your willingness to serve in multiple roles.</p>
+            </details>
         </div>
-        <div class="team-card">
-          <div class="image-container">
-            <div class="rounded-shape"></div>
-            <img src="https://github.com/micah1crandell/websiteImages/blob/main/photography/18.jpg?raw=true" alt="CJ Celestino">
-          </div>
-          <h3>CJ Celestino</h3>
-          <p>Social Media Manager</p>
+        <div class="faq-item">
+            <details>
+                <summary>How frequently will I receive scheduling notifications?</summary>
+                <p>Volunteer schedules are distributed during the last week of each month.</p>
+            </details>
         </div>
-        <div class="team-card">
-          <div class="image-container">
-            <div class="rounded-shape"></div>
-            <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/35.jpg?raw=true" alt="Micah Crandell">
-          </div>
-          <h3>Micah Crandell</h3>
-          <p>Production Director</p>
+    </section>    
+    <!-- Meet Our Team Section -->
+    <section class="info-section" id="team">
+        <div class="info-content">
+        <h2>Meet Our Team</h2>
+        <p>
+        </p>
+        <div class="team-grid">
+            <div class="team-card">
+            <div class="image-container">
+                <div class="rounded-shape"></div>
+                <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/47.jpg?raw=true" alt="Pastor Tim Murlatt">
+            </div>
+            <h3>Pastor Tim Murlatt</h3>
+            <p>Creative Director</p>
+            </div>
+            <div class="team-card">
+            <div class="image-container">
+                <div class="rounded-shape"></div>
+                <img src="https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true" alt="Devin Wiles">
+            </div>
+            <h3>Devin Wiles</h3>
+            <p>Audio Director</p>
+            </div>
+            <div class="team-card">
+            <div class="image-container">
+                <div class="rounded-shape"></div>
+                <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" alt="Mallorie Celestino">
+            </div>
+            <h3>Mallorie Celestino</h3>
+            <p>Visual Director</p>
+            </div>
+            <div class="team-card">
+            <div class="image-container">
+                <div class="rounded-shape"></div>
+                <img src="https://github.com/micah1crandell/websiteImages/blob/main/photography/18.jpg?raw=true" alt="CJ Celestino">
+            </div>
+            <h3>CJ Celestino</h3>
+            <p>Social Media Manager</p>
+            </div>
+            <div class="team-card">
+            <div class="image-container">
+                <div class="rounded-shape"></div>
+                <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/35.jpg?raw=true" alt="Micah Crandell">
+            </div>
+            <h3>Micah Crandell</h3>
+            <p>Production Director</p>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+        </div>
+    </section>
+    </section>
+  </div>
 
   <!-- Scripts -->
   <script src="global.js"></script>
@@ -678,6 +671,19 @@
       const scrollTop = window.scrollY;
       const offset = scrollTop * 0.5;
       parallaxBg.style.transform = `translateY(${offset}px)`;
+    });
+
+    // Parallax effect for info section background shapes
+    const infoSections = document.querySelectorAll('.info-section');
+    infoSections.forEach(section => {
+      const infoBgShapes = section.querySelector('.info-bg-shapes');
+      window.addEventListener('scroll', () => {
+        const rect = section.getBoundingClientRect();
+        const offset = rect.top * 0.3;
+        if (infoBgShapes) {
+          infoBgShapes.style.transform = `translateY(${offset}px)`;
+        }
+      });
     });
   </script>
 </body>
