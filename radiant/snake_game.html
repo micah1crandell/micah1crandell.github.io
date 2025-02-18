@@ -1,514 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <!-- Google Tag Manager, Fonts, CSS, etc. -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VSK4JT56BT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-VSK4JT56BT');
-  </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Material Icons and Custom CSS -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
-  <link rel="stylesheet" href="global.css">
-  <title>Snake Game</title>
-  <style>
-    /* Basic Reset & Styling */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      text-align: center;
-    }
-    body {
-      background-color: #1e1e1e;
-      color: #f0f0f0;
-      font-family: Arial, sans-serif;
-      /* On larger screens, prevent scrolling; on small screens, allow it (see media query below) */
-      overflow: hidden;
-      touch-action: auto;
-    }
-    h1 {
-      margin-top: 100px;
-      font-size: 24px;
-    }
-    /* Game Container: wraps game area and leaderboard */
-    #gameContainer {
-      width: 100%;
-      padding: 20px;
-    }
-    /* Default: stacked layout for small screens */
-    #gameContainer {
-      display: block;
-    }
-    /* Game Area: holds the canvas, score info, and arrow controls */
-    #gameArea {
-      margin: 0 auto;
-      max-width: 480px;
-    }
-    #gameCanvas {
-      display: block;
-      margin: 20px auto;
-      background-color: #1e1e1e;
-      border: 5px solid #f0f0f0;
-      max-width: 100%;
-    }
-    #score, #highScore {
-      font-size: 18px;
-      margin-top: 10px;
-    }
-    /* Arrow Controls: visible on small screens only */
-    #arrowControls {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #arrowControls div {
-      display: flex;
-      justify-content: center;
-    }
-    #arrowControls button {
-      font-size: 24px;
-      width: 50px;
-      height: 50px;
-      margin: 5px;
-      border: none;
-      background: #333;
-      color: #f0f0f0;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    /* Global Leaderboard */
-    #globalScoresContainer {
-      margin-top: 20px;
-      padding: 0 20px;
-    }
-    #globalScoresContainer h2 {
-      margin-bottom: 10px;
-    }
-    #globalHighScores {
-      list-style-type: none;
-      padding: 0;
-      max-width: 300px;
-      margin: 0 auto;
-      text-align: left;
-    }
-    #globalHighScores li {
-      padding: 5px 0;
-      border-bottom: 1px solid #444;
-    }
-    /* Game Over Screen */
-    #gameOverScreen {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #f0f0f0;
-      color: #1e1e1e;
-      padding: 20px;
-      border-radius: 5px;
-      text-align: center;
-      z-index: 100;
-    }
-    #nameInputContainer {
-      margin-top: 10px;
-    }
-    #nameInputContainer input {
-      padding: 5px;
-      font-size: 16px;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px;
-      border: none;
-      background: #1e1e1e;
-      color: #f0f0f0;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #333;
-    }
-    /* --- Media Queries --- */
-    /* Large screens: display game and leaderboard side by side */
-    @media (min-width: 768px) {
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Snake Game</title>
+    <style>
+      /* Basic Reset & Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
       body {
+        background-color: #1e1e1e;
+        color: #f0f0f0;
+        font-family: Arial, sans-serif;
+        /* On larger screens, prevent scrolling; on small screens, allow it */
         overflow: hidden;
+        touch-action: auto;
       }
+      h1 {
+        margin-top: 40px;
+        font-size: 24px;
+      }
+      /* Game Container: wraps game area and leaderboard */
       #gameContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-        align-items: flex-start;
-      }
-      #gameArea, #globalScoresContainer {
-        flex: 1;
-        max-width: 480px;
-      }
-      /* Hide arrow controls on large screens */
-      #arrowControls {
-        display: none;
-      }
-    }
-    /* Small screens: allow scrolling */
-    @media (max-width: 767px) {
-      body {
-        overflow: auto;
-      }
-      #gameContainer {
+        width: 100%;
+        padding: 20px;
         display: block;
       }
-      /* Arrow controls remain visible */
-      #arrowControls {
-        display: flex;
+      /* Game Area: holds canvas, score info, and arrow controls */
+      #gameArea {
+        margin: 0 auto;
+        max-width: 480px;
       }
-    }
-  </style>
-  <!-- Firebase App and Database (compat libraries for ease of integration) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyB8lKaCfml1tQLTUSTPapbjTuRRVMrYRhA",
-      authDomain: "snakegameleaderboard.firebaseapp.com",
-      databaseURL: "https://snakegameleaderboard-default-rtdb.firebaseio.com",
-      projectId: "snakegameleaderboard",
-      storageBucket: "snakegameleaderboard.firebasestorage.app",
-      messagingSenderId: "463520134257",
-      appId: "1:463520134257:web:7d42c917b735c0baefd7d0",
-      measurementId: "G-QK38PDQ468"
-    };
-    // Initialize Firebase using the compat API
-    firebase.initializeApp(firebaseConfig);
-    // Initialize Realtime Database and assign it to a variable
-    const database = firebase.database();
-  </script>
-</head>
-<body>
-  <!-- Transition Overlay and Navigation -->
-  <div class="transition-overlay animate-in">
-    <div class="circle circle1"></div>
-    <div class="circle circle2"></div>
-    <div class="circle circle3"></div>
-  </div>
-
-  <header class="nav-header">
-    <div class="nav-content">
-      <a href="#" class="logo">
-        <span class="material-symbols-outlined">graphic_eq</span>
-        RADIANT PRODUCTION
-      </a>
-      <!-- Hamburger Menu Button -->
-      <button class="menu-toggle" aria-label="Open menu">
-        <span class="bar bar1"></span>
-        <span class="bar bar2"></span>
-        <span class="bar bar1"></span>
-      </button>
-      <nav class="nav-links">
-        <button class="cta"><a href="home.html" class="hover-underline-animation">Home</a></button>
-        <button class="cta"><a href="volunteers.html" class="hover-underline-animation">Volunteers</a></button>
-        <div class="dropdown">
-          <button class="cta"><a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a></button>
-          <div class="dropdown-content">
-            <a href="audio_gear.html">Audio</a>
-            <a href="video_gear.html">Video</a>
-            <a href="lighting_gear">Lighting</a>
+      #gameCanvas {
+        display: block;
+        margin: 20px auto;
+        background-color: #1e1e1e;
+        border: 5px solid #f0f0f0;
+        max-width: 100%;
+      }
+      #score,
+      #highScore {
+        font-size: 18px;
+        margin-top: 10px;
+      }
+      /* Arrow Controls: visible on small screens */
+      #arrowControls {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #arrowControls div {
+        display: flex;
+        justify-content: center;
+      }
+      #arrowControls button {
+        font-size: 24px;
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        border: none;
+        background: #333;
+        color: #f0f0f0;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      /* Global Leaderboard */
+      #globalScoresContainer {
+        margin-top: 20px;
+        padding: 0 20px;
+      }
+      #globalScoresContainer h2 {
+        margin-bottom: 10px;
+      }
+      #globalHighScores {
+        list-style-type: none;
+        padding: 0;
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: left;
+      }
+      #globalHighScores li {
+        padding: 5px 0;
+        border-bottom: 1px solid #444;
+      }
+      /* Game Over Screen */
+      #gameOverScreen {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #f0f0f0;
+        color: #1e1e1e;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        z-index: 100;
+      }
+      #nameInputContainer {
+        margin-top: 10px;
+      }
+      #nameInputContainer input {
+        padding: 5px;
+        font-size: 16px;
+      }
+      button {
+        margin-top: 10px;
+        padding: 10px;
+        border: none;
+        background: #1e1e1e;
+        color: #f0f0f0;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #333;
+      }
+      /* --- Media Queries --- */
+      /* Large screens: display game and leaderboard side by side; hide arrow controls */
+      @media (min-width: 768px) {
+        body {
+          overflow: hidden;
+        }
+        #gameContainer {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+          align-items: flex-start;
+        }
+        #gameArea,
+        #globalScoresContainer {
+          flex: 1;
+          max-width: 480px;
+        }
+        #arrowControls {
+          display: none;
+        }
+      }
+      /* Small screens: allow scrolling; arrow controls remain visible */
+      @media (max-width: 767px) {
+        body {
+          overflow: auto;
+        }
+        #gameContainer {
+          display: block;
+        }
+        #arrowControls {
+          display: flex;
+        }
+      }
+    </style>
+    <!-- Firebase App and Database (Compat Libraries) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+      // Firebase configuration – update as needed for production
+      const firebaseConfig = {
+        apiKey: "AIzaSyB8lKaCfml1tQLTUSTPapbjTuRRVMrYRhA",
+        authDomain: "snakegameleaderboard.firebaseapp.com",
+        databaseURL: "https://snakegameleaderboard-default-rtdb.firebaseio.com",
+        projectId: "snakegameleaderboard",
+        storageBucket: "snakegameleaderboard.firebasestorage.app",
+        messagingSenderId: "463520134257",
+        appId: "1:463520134257:web:7d42c917b735c0baefd7d0",
+        measurementId: "G-QK38PDQ468"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+  </head>
+  <body>
+    <h1>Snake Game</h1>
+    <!-- Game Container: wraps the game area and leaderboard -->
+    <div id="gameContainer">
+      <!-- Game Area: Canvas, Score, and Arrow Controls -->
+      <div id="gameArea">
+        <canvas id="gameCanvas"></canvas>
+        <p id="score">Score: 0</p>
+        <p id="highScore">High Score: 0</p>
+        <!-- Arrow Controls for small screens -->
+        <div id="arrowControls">
+          <button onclick="changeDirection('up')">↑</button>
+          <div>
+            <button onclick="changeDirection('left')">←</button>
+            <button onclick="changeDirection('down')">↓</button>
+            <button onclick="changeDirection('right')">→</button>
           </div>
         </div>
-        <button class="cta"><a href="stage.html" class="hover-underline-animation">Stage Design History</a></button>
-        <button class="cta"><a href="contact.html" class="hover-underline-animation">Connect</a></button>
-      </nav>
-    </div>
-  </header>
-
-  <h1>Snake Game</h1>
-
-  <!-- Game Container: Wraps Game Area and Global Leaderboard -->
-  <div id="gameContainer">
-    <!-- Game Area: Canvas, Score, and Arrow Controls -->
-    <div id="gameArea">
-      <canvas id="gameCanvas"></canvas>
-      <p id="score">Score: 0</p>
-      <p id="highScore">High Score: 0</p>
-      <!-- Arrow Controls for small screens -->
-      <div id="arrowControls">
-        <button onclick="changeDirection('up')">↑</button>
-        <div>
-          <button onclick="changeDirection('left')">←</button>
-          <button onclick="changeDirection('down')">↓</button>
-          <button onclick="changeDirection('right')">→</button>
-        </div>
+      </div>
+      <!-- Global Leaderboard Container -->
+      <div id="globalScoresContainer">
+        <h2>Global Leaderboard</h2>
+        <ul id="globalHighScores"></ul>
       </div>
     </div>
-    <!-- Global Leaderboard Container -->
-    <div id="globalScoresContainer">
-      <h2>Global Leaderboard</h2>
-      <ul id="globalHighScores">
-        <!-- Leaderboard entries will be injected here -->
-      </ul>
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen">
+      <h2>Game Over!</h2>
+      <p id="finalScore">Final Score: 0</p>
+      <div id="nameInputContainer">
+        <label for="userName">Your Name: </label>
+        <input type="text" id="userName" placeholder="Update your name" />
+      </div>
+      <button onclick="restartGame()">Restart</button>
     </div>
-  </div>
-
-  <!-- Custom Game Over Screen -->
-  <div id="gameOverScreen">
-    <h2>Game Over!</h2>
-    <p id="finalScore">Final Score: 0</p>
-    <!-- Input for updating the username -->
-    <div id="nameInputContainer">
-      <label for="userName">Your Name: </label>
-      <input type="text" id="userName" placeholder="Update your name">
-    </div>
-    <button onclick="restartGame()">Restart</button>
-  </div>
-
-  <!-- Optional external JS file -->
-  <script src="global.js"></script>
-  <script>
-    // Set default username if none stored; use a random number string.
-    let storedUserName = localStorage.getItem("userName");
-    if (!storedUserName) {
-      storedUserName = "User-" + Math.floor(Math.random() * 1000000);
-      localStorage.setItem("userName", storedUserName);
-    }
-
-    // Update the username input field only if it is empty.
-    function updateUserNameField() {
-      const nameField = document.getElementById("userName");
-      if (nameField && nameField.value.trim() === "") {
-        nameField.value = localStorage.getItem("userName");
+    <script>
+      /***********************
+       * SNAKE GAME CODE
+       ***********************/
+      // Set default username if not already stored.
+      let storedUserName = localStorage.getItem("userName");
+      if (!storedUserName) {
+        storedUserName = "User-" + Math.floor(Math.random() * 1000000);
+        localStorage.setItem("userName", storedUserName);
       }
-    }
-
-    // Navigation menu functionality
-    document.addEventListener('DOMContentLoaded', function () {
-      const menuToggle = document.querySelector('.menu-toggle');
-      const navLinks = document.querySelector('.nav-links');
-      menuToggle.addEventListener('click', function () {
-        navLinks.classList.toggle('open');
-        menuToggle.classList.toggle('open');
-      });
-    });
-
-    // Touch controls (swipe)
-    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
-    document.addEventListener("touchstart", (event) => {
-      touchStartX = event.touches[0].clientX;
-      touchStartY = event.touches[0].clientY;
-    });
-    document.addEventListener("touchend", (event) => {
-      touchEndX = event.changedTouches[0].clientX;
-      touchEndY = event.changedTouches[0].clientY;
-      let diffX = touchEndX - touchStartX;
-      let diffY = touchEndY - touchStartY;
-      if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (diffX > 0 && direction.x === 0) direction = { x: 1, y: 0 };
-        if (diffX < 0 && direction.x === 0) direction = { x: -1, y: 0 };
-      } else {
-        if (diffY > 0 && direction.y === 0) direction = { x: 0, y: 1 };
-        if (diffY < 0 && direction.y === 0) direction = { x: 0, y: -1 };
-      }
-    });
-
-    // Arrow button controls for small screens.
-    function changeDirection(dir) {
-      // Only change if not reversing
-      if (dir === 'up' && direction.y === 0) direction = { x: 0, y: -1 };
-      if (dir === 'down' && direction.y === 0) direction = { x: 0, y: 1 };
-      if (dir === 'left' && direction.x === 0) direction = { x: -1, y: 0 };
-      if (dir === 'right' && direction.x === 0) direction = { x: 1, y: 0 };
-    }
-
-    // Canvas and game settings
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    const tileSize = 20;
-    const gridSize = 20;
-    canvas.width = gridSize * tileSize;
-    canvas.height = gridSize * tileSize;
-
-    // Snake game variables
-    let snake = [{ x: 10, y: 10 }];
-    let direction = { x: 1, y: 0 };
-    let food = { x: 5, y: 5 };
-    let score = 0;
-    let gameRunning = true;
-
-    // Personal high score from localStorage
-    let highScore = localStorage.getItem("highScore") || 0;
-    document.getElementById("highScore").innerText = `High Score: ${highScore}`;
-
-    // Firebase functions for global leaderboard
-
-    // Submit a new score along with username to Firebase.
-    function submitScore(scoreValue) {
-      // Update username if user changed it in the game over screen.
-      const nameField = document.getElementById("userName");
-      if (nameField) {
-        const newName = nameField.value.trim();
-        if (newName) {
-          localStorage.setItem("userName", newName);
+      // Update the username input field if it is empty.
+      function updateUserNameField() {
+        const nameField = document.getElementById("userName");
+        if (nameField && nameField.value.trim() === "") {
+          nameField.value = localStorage.getItem("userName");
         }
       }
-      const name = localStorage.getItem("userName") || "Anonymous";
-      database.ref('highScores/').push({
-        name: name,
-        score: scoreValue,
-        timestamp: Date.now()
-      });
-    }
 
-    // Check if the new score qualifies for the global leaderboard,
-    // then submit it only if it is higher than the lowest of the top 10.
-    function checkAndSubmitScore(scoreValue) {
-      const scoresRef = database.ref('highScores/').orderByChild('score').limitToLast(10);
-      scoresRef.once('value', snapshot => {
-        let scores = [];
-        snapshot.forEach(childSnapshot => {
-          scores.push(childSnapshot.val());
-        });
-        // If there are fewer than 10 scores, submit regardless.
-        if (scores.length < 10) {
-          submitScore(scoreValue);
-        } else {
-          // Since the query orders scores in ascending order,
-          // the first item is the lowest score in the top 10.
-          const lowestTopScore = scores[0].score;
-          if (scoreValue > lowestTopScore) {
-            submitScore(scoreValue);
+      // Canvas and game settings.
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const tileSize = 20;
+      const gridSize = 20;
+      canvas.width = gridSize * tileSize;
+      canvas.height = gridSize * tileSize;
+
+      // Snake game variables.
+      let snake = [{ x: 10, y: 10 }];
+      let direction = { x: 1, y: 0 };
+      let food = { x: 5, y: 5 };
+      let score = 0;
+      let gameRunning = true;
+
+      // Personal high score stored locally.
+      let highScore = localStorage.getItem("highScore") || 0;
+      document.getElementById("highScore").innerText = `High Score: ${highScore}`;
+
+      /************************************
+       * GLOBAL LEADERBOARD (Firebase)
+       ************************************/
+      // Submit the current score along with username to Firebase.
+      function submitScore(scoreValue) {
+        const nameField = document.getElementById("userName");
+        if (nameField) {
+          const newName = nameField.value.trim();
+          if (newName) {
+            localStorage.setItem("userName", newName);
           }
         }
-        // Reverse scores so that the highest score is first.
-        scores.reverse();
-        updateGlobalLeaderboard(scores);
-      });
-    }
-
-    // Update the DOM with the global leaderboard.
-    function updateGlobalLeaderboard(scores) {
-      const globalList = document.getElementById("globalHighScores");
-      globalList.innerHTML = "";
-      scores.forEach((entry, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${index + 1}. ${entry.name || "Anonymous"} - Score: ${entry.score}`;
-        globalList.appendChild(li);
-      });
-    }
-
-    // Game loop and logic.
-    function gameLoop() {
-      if (!gameRunning) return;
-      moveSnake();
-      if (checkCollision()) {
-        gameOver();
-        return;
+        const name = localStorage.getItem("userName") || "Anonymous";
+        database.ref("highScores/").push({
+          name: name,
+          score: scoreValue,
+          timestamp: Date.now()
+        });
       }
-      drawGame();
-      setTimeout(gameLoop, 100);
-    }
-
-    function moveSnake() {
-      const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
-      if (head.x === food.x && head.y === food.y) {
-        snake.unshift(head);
-        score += 10;
-        document.getElementById("score").innerText = `Score: ${score}`;
-        placeFood();
-      } else {
-        snake.pop();
-        snake.unshift(head);
+      // Check if the new score qualifies for the top 10 and submit it if so.
+      function checkAndSubmitScore(scoreValue) {
+        const scoresRef = database
+          .ref("highScores/")
+          .orderByChild("score")
+          .limitToLast(10);
+        scoresRef.once("value", (snapshot) => {
+          let scores = [];
+          snapshot.forEach((childSnapshot) => {
+            scores.push(childSnapshot.val());
+          });
+          if (scores.length < 10) {
+            submitScore(scoreValue);
+          } else {
+            const lowestTopScore = scores[0].score;
+            if (scoreValue > lowestTopScore) {
+              submitScore(scoreValue);
+            }
+          }
+          scores.reverse();
+          updateGlobalLeaderboard(scores);
+        });
       }
-    }
-
-    function checkCollision() {
-      const head = snake[0];
-      if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) return true;
-      for (let i = 1; i < snake.length; i++) {
-        if (snake[i].x === head.x && snake[i].y === head.y) return true;
+      // Update the leaderboard in the DOM.
+      function updateGlobalLeaderboard(scores) {
+        const globalList = document.getElementById("globalHighScores");
+        globalList.innerHTML = "";
+        scores.forEach((entry, index) => {
+          const li = document.createElement("li");
+          li.textContent = `${index + 1}. ${entry.name || "Anonymous"} - Score: ${entry.score}`;
+          globalList.appendChild(li);
+        });
       }
-      return false;
-    }
+      // Fetch global high scores on initial load.
+      function fetchGlobalHighScores() {
+        const scoresRef = database
+          .ref("highScores/")
+          .orderByChild("score")
+          .limitToLast(10);
+        scoresRef.once("value", (snapshot) => {
+          let scores = [];
+          snapshot.forEach((childSnapshot) => {
+            scores.push(childSnapshot.val());
+          });
+          scores.reverse();
+          updateGlobalLeaderboard(scores);
+        });
+      }
 
-    function drawGame() {
-      ctx.fillStyle = "#1e1e1e";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#f0f0f0";
-      snake.forEach(segment => {
-        ctx.fillRect(segment.x * tileSize, segment.y * tileSize, tileSize, tileSize);
+      /************************************
+       * INPUT HANDLERS: Keyboard, Touch, & Buttons
+       ************************************/
+      // Keyboard controls.
+      document.addEventListener("keydown", (event) => {
+        switch (event.key) {
+          case "ArrowUp":
+            if (direction.y === 0) direction = { x: 0, y: -1 };
+            break;
+          case "ArrowDown":
+            if (direction.y === 0) direction = { x: 0, y: 1 };
+            break;
+          case "ArrowLeft":
+            if (direction.x === 0) direction = { x: -1, y: 0 };
+            break;
+          case "ArrowRight":
+            if (direction.x === 0) direction = { x: 1, y: 0 };
+            break;
+        }
       });
-      ctx.fillStyle = "#f0f0f0";
-      ctx.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
-    }
+      // Touch swipe controls.
+      let touchStartX = 0,
+        touchStartY = 0;
+      document.addEventListener("touchstart", (event) => {
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+      });
+      document.addEventListener("touchend", (event) => {
+        const touchEndX = event.changedTouches[0].clientX;
+        const touchEndY = event.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+          if (diffX > 0 && direction.x === 0) direction = { x: 1, y: 0 };
+          if (diffX < 0 && direction.x === 0) direction = { x: -1, y: 0 };
+        } else {
+          if (diffY > 0 && direction.y === 0) direction = { x: 0, y: 1 };
+          if (diffY < 0 && direction.y === 0) direction = { x: 0, y: -1 };
+        }
+      });
+      // Arrow button controls for small screens.
+      function changeDirection(dir) {
+        if (dir === "up" && direction.y === 0) direction = { x: 0, y: -1 };
+        if (dir === "down" && direction.y === 0) direction = { x: 0, y: 1 };
+        if (dir === "left" && direction.x === 0) direction = { x: -1, y: 0 };
+        if (dir === "right" && direction.x === 0) direction = { x: 1, y: 0 };
+      }
 
-    function placeFood() {
-      food = {
-        x: Math.floor(Math.random() * gridSize),
-        y: Math.floor(Math.random() * gridSize)
-      };
-      for (let i = 0; i < snake.length; i++) {
-        if (snake[i].x === food.x && snake[i].y === food.y) {
-          placeFood();
+      /************************************
+       * GAME LOOP & LOGIC
+       ************************************/
+      function gameLoop() {
+        if (!gameRunning) return;
+        moveSnake();
+        if (checkCollision()) {
+          gameOver();
           return;
         }
+        drawGame();
+        setTimeout(gameLoop, 100);
       }
-    }
-
-    document.addEventListener("keydown", (event) => {
-      switch (event.key) {
-        case "ArrowUp":
-          if (direction.y === 0) direction = { x: 0, y: -1 };
-          break;
-        case "ArrowDown":
-          if (direction.y === 0) direction = { x: 0, y: 1 };
-          break;
-        case "ArrowLeft":
-          if (direction.x === 0) direction = { x: -1, y: 0 };
-          break;
-        case "ArrowRight":
-          if (direction.x === 0) direction = { x: 1, y: 0 };
-          break;
+      function moveSnake() {
+        const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+        if (head.x === food.x && head.y === food.y) {
+          snake.unshift(head);
+          score += 10;
+          document.getElementById("score").innerText = `Score: ${score}`;
+          placeFood();
+        } else {
+          snake.pop();
+          snake.unshift(head);
+        }
       }
-    });
-
-    // Handle game over.
-    function gameOver() {
-      gameRunning = false;
-      // Update local high score if current score exceeds it.
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem("highScore", highScore);
-        document.getElementById("highScore").innerText = `High Score: ${highScore}`;
+      function checkCollision() {
+        const head = snake[0];
+        if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize)
+          return true;
+        for (let i = 1; i < snake.length; i++) {
+          if (snake[i].x === head.x && snake[i].y === head.y) return true;
+        }
+        return false;
       }
-      // Check and conditionally submit the score to the global leaderboard.
-      checkAndSubmitScore(score);
-      document.getElementById("finalScore").innerText = `Final Score: ${score}`;
-      // Show game over screen without overwriting any user input already entered.
-      document.getElementById("gameOverScreen").style.display = "block";
-      updateUserNameField();
-    }
+      function drawGame() {
+        ctx.fillStyle = "#1e1e1e";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#f0f0f0";
+        snake.forEach((segment) => {
+          ctx.fillRect(
+            segment.x * tileSize,
+            segment.y * tileSize,
+            tileSize,
+            tileSize
+          );
+        });
+        ctx.fillStyle = "#f0f0f0";
+        ctx.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
+      }
+      function placeFood() {
+        food = {
+          x: Math.floor(Math.random() * gridSize),
+          y: Math.floor(Math.random() * gridSize)
+        };
+        for (let i = 0; i < snake.length; i++) {
+          if (snake[i].x === food.x && snake[i].y === food.y) {
+            placeFood();
+            return;
+          }
+        }
+      }
+      function gameOver() {
+        gameRunning = false;
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem("highScore", highScore);
+          document.getElementById("highScore").innerText = `High Score: ${highScore}`;
+        }
+        // Check and conditionally submit the score to the global leaderboard.
+        checkAndSubmitScore(score);
+        document.getElementById("finalScore").innerText = `Final Score: ${score}`;
+        document.getElementById("gameOverScreen").style.display = "block";
+        updateUserNameField();
+        // Immediately fetch updated global high scores.
+        fetchGlobalHighScores();
+      }
+      function restartGame() {
+        document.getElementById("gameOverScreen").style.display = "none";
+        snake = [{ x: 10, y: 10 }];
+        direction = { x: 1, y: 0 };
+        score = 0;
+        gameRunning = true;
+        document.getElementById("score").innerText = "Score: 0";
+        placeFood();
+        gameLoop();
+      }
 
-    // Restart the game.
-    function restartGame() {
-      document.getElementById("gameOverScreen").style.display = "none";
-      snake = [{ x: 10, y: 10 }];
-      direction = { x: 1, y: 0 };
-      score = 0;
-      gameRunning = true;
-      document.getElementById("score").innerText = `Score: 0`;
+      // Start the game and load the leaderboard on page load.
       placeFood();
       gameLoop();
-    }
-
-    // Start the game.
-    placeFood();
-    gameLoop();
-    // Load global leaderboard on initial load.
-    fetchGlobalHighScores();
-  </script>
-</body>
+      fetchGlobalHighScores();
+    </script>
+  </body>
 </html>
