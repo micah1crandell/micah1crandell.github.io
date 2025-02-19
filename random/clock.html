@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bible Clock</title>
+  <style>
+    :root {
+      --primary-bg: #1e1e1e;
+      --text-color: #f0f0f0;
+
+      --fade-duration: 0.5s;
+
+      --verse-font: "Sans-Serif", "Times New Roman", serif;
+      --reference-font: "Sans-Serif", "Times New Roman", serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--primary-bg);
+      color: var(--text-color);
+      font-family: var(--verse-font);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-transform: uppercase;
+    }
+
+    #verse-container {
+      position: relative;
+      width: 90vw;
+      max-width: 800px;
+      height: 40vh;
+      padding: 20px;
+      transition: opacity var(--fade-duration) ease-in-out;
+      opacity: 1;
+      overflow: hidden;
+    }
+
+    #verse-text {
+      font-size: 1.5rem;
+      line-height: 1.5;
+      text-align: left;
+      white-space: pre-wrap;
+      margin-bottom: 100px; 
+      transition: transform 0.5s ease;
+    }
+
+    #reference-row {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      text-align: left;
+      font-family: var(--reference-font);
+    }
+
+    #book-name {
+      font-size: 2rem;
+      font-weight: normal;
+      margin-right: 1%;
+    }
+    #time-chapter-verse {
+      font-size: 5rem;
+      font-weight: bold;
+      margin-right: 1%;
+    }
+    #ampm {
+      font-size: 2rem;
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+  <div id="verse-container">
+    <div id="verse-text">Loading verse...</div>
+    <div id="reference-row">
+      <span id="book-name"></span>
+      <span id="time-chapter-verse"></span>
+      <span id="ampm"></span>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    /*****************************************************
+     * Candidate Bible Books for random selection
+     *****************************************************/
+    const candidateBooks = [
+      "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
+      "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings",
+      "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job",
+      "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah",
+      "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah",
+      "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah",
+      "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans",
+      "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians",
+      "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy",
+      "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter",
+      "1 John", "2 John", "3 John", "Jude", "Revelation"
+    ];
+
+    const verseContainerEl    = document.getElementById('verse-container');
+    const verseTextEl         = document.getElementById('verse-text');
+    const bookNameEl          = document.getElementById('book-name');
+    const timeChapterVerseEl  = document.getElementById('time-chapter-verse');
+    const ampmEl              = document.getElementById('ampm');
+
+    const FADE_DURATION = 500;
+
+    // Track the last minute for which we fetched a verse
+    let lastFetchedMinute = null;
+
+    /*****************************************************
+     * Helper: Fade Transition for Updating Verse
+     *****************************************************/
+    function fadeUpdateVerse(book, chapterVerse, ampm, verseText) {
+      verseContainerEl.style.opacity = 0;
+      setTimeout(() => {
+        bookNameEl.textContent         = book;
+        timeChapterVerseEl.textContent = chapterVerse;
+        ampmEl.textContent             = ampm;
+        verseTextEl.textContent        = verseText;
+        verseContainerEl.style.opacity = 1;
+      }, FADE_DURATION);
+    }
+
+    /*****************************************************
+     * Continuously Try to Fetch a Valid Bible Verse
+     * for the given chapter:verse until one is found.
+     *****************************************************/
+    async function fetchBibleVerse(chapter, verse) {
+      while (true) {
+        const randomIndex = Math.floor(Math.random() * candidateBooks.length);
+        const book = candidateBooks[randomIndex];
+        const reference = `${book} ${chapter}:${verse}`;
+        const apiUrl = `https://bible-api.com/${encodeURIComponent(reference)}`;
+
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          // If a valid verse is returned, update the display and exit the loop.
+          if (!data.error) {
+            const trimmedText = data.text ? data.text.trim() : 'No verse text available.';
+            const timeChapterVerse = `${chapter}:${String(verse).padStart(2, '0')}`;
+            fadeUpdateVerse(book, timeChapterVerse, getAMPM(), trimmedText);
+            return;
+          }
+        } catch (error) {
+          console.error('Error fetching verse:', error);
+        }
+        // Wait 1 second before trying again to avoid API spamming.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    function getAMPM() {
+      return new Date().getHours() >= 12 ? 'PM' : 'AM';
+    }
+
+    /*****************************************************
+     * Update Function: Pre-Fetch Verse One Second
+     * Before the minute changes so that the verse matches
+     * the new reference right on the minute.
+     *****************************************************/
+    function updateVerseIfNeeded() {
+      const now = new Date();
+      const future = new Date(now.getTime() + 1000);
+      const futureMinutes = future.getMinutes();
+
+      // Only fetch a new verse if the upcoming minute differs from
+      // the last minute we fetched a verse for.
+      if (futureMinutes !== lastFetchedMinute) {
+        lastFetchedMinute = futureMinutes;
+        // Use the future time to determine the chapter and verse.
+        const chapter = future.getHours() % 12 || 12;
+        const verse   = futureMinutes;
+        fetchBibleVerse(chapter, verse);
+      }
+    }
+
+    updateVerseIfNeeded();
+    setInterval(updateVerseIfNeeded, 1000);
+  </script>
+</body>
+</html>
