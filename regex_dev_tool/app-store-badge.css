@@ -1,0 +1,32 @@
+/* App Store Badge Styles */
+.app-store-badge {
+    height: 60px;
+    width: auto;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.app-store-badge:hover {
+    transform: scale(1.05);
+}
+
+/* Coming Soon Badge */
+.coming-soon-badge {
+    position: relative;
+    display: inline-block;
+}
+
+.coming-soon-badge::after {
+    content: 'Coming Soon';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #00ff00;
+    color: #000000;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    transform: rotate(15deg);
+    box-shadow: 0 2px 8px rgba(0, 255, 0, 0.3);
+}
