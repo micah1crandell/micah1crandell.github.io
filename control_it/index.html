@@ -1,227 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control-It - Support</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #121212;
-            color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-        .container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
+  <title>Control-It</title>
+  <meta name="description"
+        content="I’m Micah, 25. I love Bitfocus Companion, but I needed a handheld backup when the Companion PC or StreamDeck wasn’t around. Control-It was my fix—and it ended up helping every volunteer on campus. It might help you too.">
 
-        .welcome-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet" />
 
-        .welcome-section h1 {
-            font-size: 24px;
-            margin-bottom: -10px;
-        }
+  <link rel="stylesheet" href="styles.css" />
 
-        .welcome-section .gear-icon {
-            font-size: 40px;
-            cursor: default;
-        }
-
-        .section-title {
-            font-size: 20px;
-            margin: 20px 0;
-            margin-top: -10px;
-        }
-
-        .grids {
-            display: flex;
-            overflow-x: auto;
-        }
-
-        .grid-item {
-            background-color: #1e1e1e;
-            margin-right: 10px;
-            text-align: center;
-            border-radius: 10px;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .grid-item .grid-icon {
-            margin-top: 10px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 2px;
-            width: 30px;
-            height: 30px;
-        }
-
-        .grid-icon div {
-            background-color: #f5f5f5;
-            border-radius: 2px;
-        }
-
-        .grid-item p {
-            font-size: 12px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .connections {
-            margin-top: 20px;
-        }
-
-        .connection-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            background-color: #1e1e1e;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .connection-item:hover {
-            background-color: #2b2b2b;
-        }
-
-        .connection-item .status {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .connection-item .status.active {
-            background-color: green;
-        }
-
-        .connection-item .status.inactive {
-            background-color: red;
-        }
-
-        .connection-details {
-            flex-grow: 1;
-            margin-left: 10px;
-        }
-
-        .connection-details p {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        .footer-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #1e1e1e;
-            padding: 15px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .footer-nav a {
-            color: #f5f5f5;
-            text-decoration: none;
-        }
-
-        .footer-nav a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-    <div class="container">
-        <!-- Hey, Welcome Back Section -->
-        <div class="welcome-section">
-            <div>
-                <h1>Hey, <span id="username">User</span></h1>
-                <p>Welcome to Control-It Support</p>
-            </div>
-            <div class="gear-icon">&#9881;</div>
-        </div>
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a href="#top" class="brand" aria-label="Control-It Home">
+        <span class="brand__logo">‹CI›</span><span class="sr-only">Control-It</span>
+      </a>
+      
+      <nav aria-label="Primary">
+        <ul class="nav__links" id="navLinks">
+          <li><a href="index.html#story">What It Does</a></li>
+          <li><a href="index.html#tutorials">How-Tos</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="index.html#support">Support</a></li>
+          <li><a class="active" href="terms.html">Terms</a></li>
+          <li><a href="privacy.html">Privacy</a></li>
+        </ul>
 
-        <!-- Grids Section -->
-        <div class="grids-section">
-            <h2 class="section-title">Grids</h2>
-            <div class="grids">
-                <div class="grid-item">
-                    <div class="grid-icon">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                    <p>Website</p>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-icon">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                    <p>Github</p>
-                </div>
-                <!-- Add more grid items here -->
-            </div>
-        </div>
-
-        <!-- Active Connections Section (Renamed to Support Links) -->
-        <div class="connections">
-            <h2 class="section-title">Support Links</h2>
-            <a href="libraries.html" class="connection-item">
-                <div class="status inactive"></div>
-                <div class="connection-details">
-                    <p>Libraries and Examples</p>
-                    <p>192.168.10.127</p>
-                </div>
-            </a>
-            <a href="faq.html" class="connection-item">
-                <div class="status active"></div>
-                <div class="connection-details">
-                    <p>FAQ</p>
-                    <p>common questions</p>
-                </div>
-            </a>
-            <a href="contact.html" class="connection-item">
-                <div class="status active"></div>
-                <div class="connection-details">
-                    <p>Contact</p>
-                    <p>micahcrandell.dev@gmail.com</p>
-                </div>
-            </a>
-        </div>
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Toggle navigation"
+          aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
     </div>
+  </header>
 
-    <!-- Footer Nav Bar -->
-    <div class="footer-nav">
-        <a href="contact.html">Support</a>
-        <a href="faq.html">FAQ</a>
-        <a href="index.html">Home</a>
-        <a href="contact.html">Contact</a>
+  <section id="top" class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <h1>Network control, simplified.<br><span class="accent-gradient">All your networked devices, one app.</span></h1>
+
+        <p class="lead">
+          HTTP, OSC, TCP, UDP, MIDI. I wanted full network control without being tied to the PC. Control-It lets me fire commands and mix protocols straight from my phone—wherever I happen to be on campus.
+        </p>
+
+        <div class="cta-row">
+          <a href="https://apps.apple.com/app/id000000" class="btn btn--primary">Download on the App Store</a>
+        </div>
+        <p class="note">
+          Free forever • Up to 5 grids • Import/Export included<br>
+          Need more? There’s an optional Pro upgrade inside the app—no pressure.
+        </p>
+      </div>
+
+      <figure class="mockup">
+        <picture>
+          <img src="Subject2.png" width="240" alt="Control-It grid on iPhone" loading="lazy">
+        </picture>
+      </figure>
     </div>
+  </section>
 
-    <script>
-        // Dynamic content example for the username
-        document.getElementById('username').textContent = 'Micah';
-    </script>
+  <section id="story" class="section section--light">
+    <div class="wrap">
+      <h2 class="section__title">Why I made Control-It</h2>
+      <p class="section__subtitle" style="max-width:720px;margin-inline:auto;">
+        Companion still handles most of our in-service devices, but I needed a <em>fast and handheld</em>
+        way to hit the same buttons when the rack PC was offline and to let volunteers access only their specific controls—without a physical StreamDeck or giving them access to every Companion page. Control-It lets
+        each volunteer carry a mini StreamDeck—grids finetuned to their station
+        (lights, lyrics, cameras, whatever).
+      </p>
+
+      <div class="cards cards--features">
+        <article class="card reveal">
+          <h3>Press Bitfocus Companion Buttons</h3>
+          <p>Trigger any Bitfocus Companion key via its HTTP API—or mix it with other protocols in the same tap.</p>
+        </article>
+
+        <article class="card reveal delay-1">
+          <h3>Mix Multiple Protocols</h3>
+          <p>OSC, HTTP, TCP, UDP &amp; MIDI can live together in one action.</p>
+        </article>
+
+        <article class="card reveal delay-2">
+          <h3>Per-Volunteer Grids</h3>
+          <p>
+            Share grids instantly via Nearby Share or the Grid Store—volunteers get only the buttons they need, keeping decks clutter-free.
+          </p>
+        </article>
+
+        <article class="card reveal delay-3">
+          <h3>Live Response Parsing</h3>
+          <p>Polling rules can update titles and colors (great for timers &amp; video countdowns).</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="tutorials" class="section section--light">
+    <div class="wrap">
+      <h2 class="section__title">Step-by-step Guides</h2>
+
+      <details class="tutorial reveal" open>
+        <summary><h3>1. Build your first grid</h3></summary>
+        <ol>
+          <li>Go to the <strong>Connections</strong> view. Tap a discovered device to auto-fill its IP and port, or enter those details manually to create a new connection.</li>
+          <li>Switch to the <strong>Actions</strong> view. Tap <strong>+ New Action</strong>, choose your connection, and enter your payload.</li>
+          <li>Open the <strong>Grids</strong> view. Create or select a grid, tap <strong>Add Action</strong>, and place your new action into an empty slot.</li>
+          <li>Tap the action in your grid to execute it—and see HTTP responses or live feedback directly in the grid.</li>
+        </ol>
+      </details>
+
+      <details class="tutorial reveal delay-1">
+        <summary><h3>2. Pair with Bitfocus Companion</h3></summary>
+        <p>Companion exposes a simple HTTP endpoint that lets you press any button remotely.</p>
+<pre><code class="language-bash">POST http://&lt;companion-host&gt;:8000/press/bank/1/3
+</code></pre>
+        <ol>
+          <li>Create an HTTP connection pointing at your Companion PC.</li>
+          <li>Add an action with method <code>POST</code> and the path above (change bank/page).</li>
+          <li>Drag it to your grid. Pressing it toggles that Companion button.</li>
+        </ol>
+      </details>
+
+      <details class="tutorial reveal delay-2">
+        <summary><h3>3. Hand a volunteer their own grid</h3></summary>
+        <ol>
+          <li>Long-press a grid → <strong>Nearby Share</strong>.</li>
+          <li>Make sure they are nearby and running Control-It. Connect to your volunteer's phone.</li>
+          <li>They get only that grid—no extra clutter.</li>
+        </ol>
+      </details>
+
+      <details class="tutorial reveal delay-3">
+        <summary><h3>4. Add live countdown feedback</h3></summary>
+<pre><code class="language-json">
+{
+  "titleRule": "$.remaining | floor | append(' s')",
+  "colorRules": [
+    { "condition": "$.remaining &lt;= 10", "colorName": "Red" }
+  ]
+}
+</code></pre>
+        <p>This polls an HTTP JSON endpoint every second, updates the button title with seconds remaining, and turns it red for the last 10&nbsp;seconds.</p>
+      </details>
+
+      <details class="tutorial reveal delay-4">
+        <summary><h3>5. Build a multi-step macro</h3></summary>
+        <ol>
+          <li>Create or reuse several actions (e.g., Companion press → OSC message → MIDI cue).</li>
+          <li>Tap <strong>New Multistep</strong>, add those actions in order.</li>
+          <li>Place the multistep in a grid slot—one tap fires the whole chain.</li>
+        </ol>
+      </details>
+    </div>
+  </section>
+
+  <section id="faq" class="section section--dark">
+    <div class="wrap">
+      <h2 class="section__title alt">FAQ</h2>
+
+      <div class="faq">
+        <details class="faq__item reveal" open>
+          <summary>Does this replace Bitfocus Companion?</summary>
+          <p>Nope. Companion is fantastic. We use Companion every single day. Control-It just covers handheld and remote cases—and it can press Companion buttons using the Companion API.</p>
+        </details>
+
+        <details class="faq__item reveal delay-1">
+          <summary>Is Control-It really free?</summary>
+          <p>Yes! Use the app just like a Pro—five grids, every protocol, import/export included. Upgrade only when you need more than five grids, want more actions, or want to share your layouts on the Grid Store. Or if you simply want to support me!</p>
+        </details>
+
+        <details class="faq__item reveal delay-2">
+          <summary>What devices are supported?</summary>
+          <p>iPhone &amp; iPad running iOS&nbsp;17+. A Mac build is on the roadmap.</p>
+        </details>
+
+        <details class="faq__item reveal delay-3">
+          <summary>Can one button fire multiple commands?</summary>
+          <p>Absolutely. Multistep Actions can chain OSC, HTTP, MIDI, TCP &amp; UDP in a single tap.</p>
+        </details>
+
+        <details class="faq__item reveal delay-4">
+          <summary>How do I back up my work?</summary>
+          <p>Manual export is always available. The optional Pro upgrade adds automatic iCloud sync.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="support" class="section section--light">
+    <div class="wrap support__grid">
+      <div>
+        <h2 class="section__title">Need a hand?</h2>
+        <p class="lead">
+          <a>Monday–Friday, 9 AM – 5 PM MST.<br>
+          Email me: </a><a href="mailto:micahcrandell.dev@gmail.com">micahcrandell.dev@gmail.com</a>
+        </p>
+        <a href="mailto:micahcrandell.dev@gmail.com?subject=Control-It Support" class="btn btn--primary">Contact the Developer</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p>© 2025 Micah Crandell</p>
+      <nav aria-label="Legal">
+        <ul class="footer__links">
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a class="active" href="terms.html">Terms</a></li>
+          <li><a href="mailto:micahcrandell.dev@gmail.com">Support</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
 </body>
 </html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Control-It • Privacy Policy</title>
+  <meta name="description"
+        content="Learn how Control-It collects, uses and protects your data.">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+
+<body data-page="privacy">
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a href="index.html" class="brand" aria-label="Control-It Home">
+        <span class="brand__logo">‹CI›</span><span class="sr-only">Control-It</span>
+      </a>
+
+      <nav aria-label="Primary">
+        <ul class="nav__links" id="navLinks">
+          <li><a href="index.html#story">What It Does</a></li>
+          <li><a href="index.html#tutorials">How-Tos</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="index.html#support">Support</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a class="active" href="privacy.html">Privacy</a></li>
+        </ul>
+
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Toggle navigation"
+          aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" style="min-height:40vh">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <h1>Privacy Policy</h1>
+      <p class="lead">Effective Date: <strong>June 27, 2025</strong></p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="wrap">
+      <h2 class="section__title">1. What We Collect</h2>
+      <ul>
+        <li><strong>iCloud Data (CloudKit).</strong><br>
+          Grid layouts, action definitions, multistep macros, optional profile display name and avatar. Stored in <em>your</em> private iCloud database; we never see the plaintext.</li>
+        <li><strong>Device Keychain.</strong><br>
+          Apple-issued tokens used to authenticate with CloudKit. We never see your Apple ID password.</li>
+        <li><strong>Support Emails.</strong><br>
+          The email address and message you send when you contact us.</li>
+      </ul>
+
+      <h2 class="section__title">2. What We <em>Don’t</em> Collect</h2>
+      <p>No in-app analytics, no advertising identifiers, no location tracking, no third-party ad SDKs.</p>
+
+      <h2 class="section__title">3. How We Use Your Data</h2>
+      <ul>
+        <li>To sync your content across devices you own (when iCloud sync is enabled).</li>
+        <li>To display your grids and actions inside the App.</li>
+        <li>To troubleshoot issues when you email support.</li>
+      </ul>
+
+      <h2 class="section__title">4. Legal Bases</h2>
+      <p>If you reside in the EU/EEA or UK, we rely on these legal bases under the GDPR/UK GDPR:</p>
+      <ul>
+        <li><strong>Performance of a contract</strong> — to provide the Service you request;</li>
+        <li><strong>Legitimate interest</strong> — in maintaining and improving the Service;</li>
+        <li><strong>Consent</strong> — when you explicitly opt-in to optional features.</li>
+      </ul>
+
+      <h2 class="section__title">5. CCPA Notices (California)</h2>
+      <p>We do not “sell” personal information as defined by the CCPA. California residents may request disclosure or deletion of personal data by emailing <a href="mailto:micahcrandell.dev@gmail.com">micahcrandell.dev@gmail.com</a>.</p>
+
+      <h2 class="section__title">6. Children</h2>
+      <p>The Service is not directed to children under 13. We do not knowingly collect personal data from children. If you believe a child has provided us data, contact us for deletion.</p>
+
+      <h2 class="section__title">7. Security</h2>
+      <p>Data in transit is encrypted via TLS. iCloud content is additionally protected by Apple’s server-side encryption. No security system is perfect, but we follow industry best practices.</p>
+
+      <h2 class="section__title">8. Data Retention</h2>
+      <p>Your CloudKit data is kept until you delete it in-app or close your iCloud account.</p>
+
+      <h2 class="section__title">9. Your Rights</h2>
+      <ul>
+        <li>Access, correct, or delete your CloudKit data at any time in Settings → Account → “Delete Cloud Content”.</li>
+        <li>EU/EEA/UK residents: the right to data portability and to object to certain processing.</li>
+        <li>California residents: the right to know, delete, and non-discrimination.</li>
+      </ul>
+
+      <h2 class="section__title">10. Changes to This Policy</h2>
+      <p>We may revise this Policy. Material changes will be posted here and in-app 14 days before they take effect.</p>
+
+      <h2 class="section__title">11. Contact</h2>
+      <p>Email privacy questions to <a href="mailto:micahcrandell.dev@gmail.com">micahcrandell.dev@gmail.com</a>.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p>© 2025 Micah Crandell</p>
+      <nav aria-label="Legal">
+        <ul class="footer__links">
+          <li><a class="active" href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="mailto:micahcrandell.dev@gmail.com">Support</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
