@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prayer Overlay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* Simple transparent full-screen white text */
+    html, body {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background: transparent !important;
+      font-family: 'Roboto', sans-serif;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: none;
+    }
+    #prayerDisplay {
+      font-size: clamp(32px, 6vw, 120px);
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.15;
+      padding: 2vw;
+      margin: 0;
+      text-shadow: 0 0 12px rgba(0,0,0,0.6);
+      background: transparent;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div id="prayerDisplay">Loading...</div>
+  <script>
+    (function(){
+      const firebaseConfig = {
+        apiKey: "AIzaSyByzlkpTcaGu1BnRZxF7mjRQiQNYjvPzJM",
+        authDomain: "prayertowerdatabase.firebaseapp.com",
+        databaseURL: "https://prayertowerdatabase-default-rtdb.firebaseio.com",
+        projectId: "prayertowerdatabase",
+        storageBucket: "prayertowerdatabase.firebasestorage.app",
+        messagingSenderId: "1044305771901",
+        appId: "1:1044305771901:web:219fd3dc65e60e313c2014",
+        measurementId: "G-X1M47NRLLS"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+
+      const el = document.getElementById('prayerDisplay');
+      let slides = [];
+      let idx = 0;
+      const DELAY = 10000; // 10s
+      let loop = null;
+      let last = '';
+
+      function process(raw){
+        if(!raw) return [];
+        const lines = raw.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+        if(lines.length === 1 && lines[0].length > 50){
+          // Simple chunking for long single line
+          const words = lines[0].split(/\s+/);
+          const chunks = [];
+          let chunk='';
+          const MAX=100;
+          for(const w of words){
+            if((chunk + w).length > MAX){
+              chunks.push(chunk.trim());
+              chunk = w + ' ';
+            } else {
+              chunk += w + ' ';
+            }
+          }
+          if(chunk.trim()) chunks.push(chunk.trim());
+          if(chunks.length>1) return chunks;
+        }
+        return lines;
+      }
+
+      function show(){
+        if(!slides.length){ el.textContent = 'No prayer available.'; return; }
+        el.textContent = slides[idx].toUpperCase();
+      }
+
+      function start(){
+        if(loop) clearInterval(loop);
+        if(!slides.length) return;
+        idx = 0;
+        show();
+        loop = setInterval(()=>{ idx = (idx+1)%slides.length; show(); }, DELAY);
+      }
+
+      function update(raw){
+        slides = process(raw);
+        start();
+      }
+
+      db.ref('prayerText').on('value', snap => {
+        const val = snap.val();
+        if(val !== null && val !== last){
+          last = val;
+          update(val);
+        }
+      });
+
+      // Fallback poll
+      setInterval(()=>{
+        db.ref('prayerText').once('value').then(s=>{
+          const v = s.val();
+          if(v !== last){ last = v; update(v); }
+        });
+      },30000);
+    })();
+  </script>
+</body>
+</html>
