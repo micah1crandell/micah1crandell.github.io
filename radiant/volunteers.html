@@ -307,46 +307,7 @@
     <div class="circle circle3"></div>
   </div>   
 
-  <header class="nav-header">
-    <div class="nav-content">
-      <a href="#" class="logo">
-        <span class="material-symbols-outlined">graphic_eq</span>
-        RADIANT PRODUCTION
-      </a>
-
-      <!-- Hamburger Menu Button -->
-      <button class="menu-toggle" aria-label="Open menu">
-        <span class="bar bar1"></span>
-        <span class="bar bar2"></span>
-        <span class="bar bar1"></span>
-      </button> 
-
-      <nav class="nav-links">
-        <button class="cta">
-          <a href="home.html" class="hover-underline-animation">Home</a>
-        </button>
-        <button class="cta">
-          <a href="volunteers" class="hover-underline-animation">Volunteers</a>
-        </button>
-        <div class="dropdown">
-          <button class="cta">
-            <a href="gear.html" class="hover-underline-animation">Our Gear &#9660;</a>
-          </button>
-          <div class="dropdown-content">
-            <a href="audio_gear.html">Audio</a>
-            <a href="video_gear.html">Video</a>
-            <a href="lighting_gear.html">Lighting</a>
-          </div>
-        </div>               
-        <button class="cta">
-          <a href="stage.html" class="hover-underline-animation">Stage Design History</a>
-        </button>
-        <button class="cta">
-          <a href="contact.html" class="hover-underline-animation">Connect</a>
-        </button>
-      </nav>   
-    </div>
-  </header> 
+  <div id="site-header"></div>
 
   <!-- Rounded Divider Shape -->
   <div class="section-divider">PSALM 150 | Praise the Lord</div>
@@ -397,7 +358,7 @@
           <span class="circle3"></span>
           <span class="circle4"></span>
           <span class="circle5"></span>
-          <span class="text"><a href="training_resources.html" target="_blank" style="text-decoration: none; color: white;">Training Resources</a></span>
+          <span class="text"><a href="training_resources.html" style="text-decoration: none; color: white;">Training Resources</a></span>
         </button>
         <button class="fancy-button">
           <span class="circle1"></span>
@@ -633,30 +594,30 @@
   </section>
 
   <!-- ========== SCRIPTS ========== -->
+  <script src="partials/header-loader.js"></script>
   <script src="global.js"></script>
   <script>
     // Show/hide nav on scroll
-    const navHeader = document.querySelector('.nav-header');
-    let lastScrollY = window.scrollY;
-    window.addEventListener('scroll', () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 0) {
-        navHeader.classList.add('hidden');
-      } else {
-        navHeader.classList.remove('hidden');
-      }
-      lastScrollY = currentScrollY;
-    });
-
-    // Menu Toggle for Mobile
-    document.addEventListener('DOMContentLoaded', function () {
-      const menuToggle = document.querySelector('.menu-toggle');
-      const navLinks = document.querySelector('.nav-links');
-      menuToggle.addEventListener('click', function () {
-        navLinks.classList.toggle('open');
-        menuToggle.classList.toggle('open');
+    let navHeader = null;
+    function attachHeaderScrollHide() {
+      navHeader = document.querySelector('.nav-header');
+      if (!navHeader) return;
+      let lastScrollY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 0) {
+          navHeader.classList.add('hidden');
+        } else {
+          navHeader.classList.remove('hidden');
+        }
+        lastScrollY = currentScrollY;
       });
-    });
+    }
+    // Try now, and again after header load
+    attachHeaderScrollHide();
+    window.addEventListener('load', attachHeaderScrollHide);
+
+    // Menu toggle handled in partials/header-loader.js after header injection
 
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
