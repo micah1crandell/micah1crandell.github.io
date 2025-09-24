@@ -148,53 +148,6 @@
       overflow: hidden;
       padding: 50px 0px;
     }
-    .info-bg-shapes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .bg-shape {
-      position: absolute;
-      background: linear-gradient(45deg, rgba(14, 165, 233, 0.1), rgba(168, 85, 247, 0.1));
-      border-radius: 50%;
-      opacity: 0.7;
-    }
-    .bg-shape:nth-child(1) {
-      width: 200px;
-      height: 200px;
-      top: 10%;
-      left: 10%;
-      animation: float 6s ease-in-out infinite;
-    }
-    .bg-shape:nth-child(2) {
-      width: 150px;
-      height: 150px;
-      top: 60%;
-      right: 15%;
-      animation: float 8s ease-in-out infinite reverse;
-    }
-    .bg-shape:nth-child(3) {
-      width: 100px;
-      height: 100px;
-      bottom: 20%;
-      left: 20%;
-      animation: float 7s ease-in-out infinite;
-    }
-    .bg-shape:nth-child(4) {
-      width: 180px;
-      height: 180px;
-      top: 30%;
-      right: 40%;
-      animation: float 9s ease-in-out infinite reverse;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
     .info-content {
       position: relative;
       z-index: 1;
@@ -218,6 +171,20 @@
       margin-left: auto;
       margin-right: auto;
     }
+    /* Lists inside info-content */
+    .info-content ul {
+      text-align: left;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      padding-left: 1.2rem;
+      color: #1e1e1eb4;
+    }
+    .info-content li { margin: 0.5rem 0; }
+    .info-content li strong { color: #1e1e1e; }
+    .info-content ul ul { list-style: circle; margin-top: 0.25rem; }
+  /* Lists inside cards: override container list styles */
+  .module-card ul { max-width: none; margin: 0 0 1rem 1.2rem; padding-left: 1rem; }
+  .module-card ul li { margin: 0.4rem 0; }
     /* ========= TRAINING MODULES GRID ========= */
     .training-modules {
       display: grid;
@@ -227,13 +194,34 @@
       padding: 0 20px;
     }
     .module-card {
-      background: #fff;
+      display: block;
+      background: #000;
       border-radius: 20px;
       padding: 30px;
       text-align: left;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+    .module-card > * { position: relative; z-index: 2; }
+    .module-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      transform: scale(1.05);
+      z-index: 0;
+    }
+    .module-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.7));
+      z-index: 1;
     }
     .module-card:hover {
       transform: translateY(-5px);
@@ -243,7 +231,7 @@
     .module-card h3 {
       font-size: 1.5rem;
       margin-bottom: 15px;
-      color: #1e1e1e;
+      color: white;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -260,10 +248,12 @@
       font-size: 1.2rem;
     }
     .module-card p {
-      color: #1e1e1eb4;
+      color: #ffffff;
       margin-bottom: 20px;
       line-height: 1.5;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
     }
+    .module-card h3, .module-card li { text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
     .module-card .module-status {
       display: inline-block;
       padding: 5px 15px;
@@ -304,6 +294,19 @@
       color: white;
       text-decoration: none;
     }
+    /* Backgrounds per camera */
+    .module-card.cam1::before {
+      background-image: url('https://photos.smugmug.com/photos/i-VSrcXgc/0/MWgNGCt2RHRn7tRvFWBWSTRSnkmQXJd4BxFXwLcs3/X3/i-VSrcXgc-X3.jpg');
+    }
+    .module-card.cam2::before {
+      background-image: url('https://photos.smugmug.com/photos/i-F7MhBH9/0/LTg2hQ6SntgfzbCk43mD2SWCZTgDB9tNXTNTKXBLz/X3/i-F7MhBH9-X3.jpg');
+    }
+    .module-card.cam3::before {
+      background-image: url('https://photos.smugmug.com/photos/i-nqxdBJc/0/K6fqK8drrFTP73CBzVVhxs6XBPdjPtLSMpZ98JKk3/X3/i-nqxdBJc-X3.jpg');
+    }
+    .module-card.cam4::before {
+      background-image: url('https://photos.smugmug.com/photos/i-rXhLLGB/0/M3pWmVkpWzq6S2CNZNM49zbXnjPwdnJNLnNqV2wjV/X3/i-rXhLLGB-X3.jpg');
+    }
     /* ========= RESPONSIVE DESIGN ========= */
     @media (max-width: 768px) {
       .hero-main h1 { font-size: 2rem; }
@@ -331,91 +334,95 @@
   <section class="hero" id="hero">
     <div class="parallax-bg"></div>
     <div class="hero-main">
-      <h1>Camera Operator Training</h1>
-      <p>Master the art of live video production for worship services</p>
+    </div>
+  </section>
+
+  <!-- OUR STYLE SECTION -->
+  <section class="info-section" id="our-style">
+    <div class="info-content">
+      <h2>Our Style</h2>
+      <h3>Why we shoot the way we do</h3>
+      <p>
+        We don’t want to just “show what is happening.” We’re inviting and providing a way for people to <strong>experience</strong> it. Every choice (framing, movement, focus, timing) should help someone <strong>feel</strong> part of the service rather than just informed.
+      </p>
+      <ul>
+        <li>
+          <strong>Always be moving.</strong> Whether that’s walking the track or slightly moving the camera.
+          <ul>
+            <li>How often do you stand perfectly still when worshiping? Probably not a lot. You’re usually lifting your hands, or swaying a bit. If someone is watching at home, make it feel like they are watching you worship through your eyes.</li>
+            <li>If you’re swaying in worship it means you’re engaged. If you’re standing static it doesn’t feel like you’re engaged in the moment.</li>
+            <li>That said, be intentional with static shots. Don’t just “be” static—<em>choose</em> to be static. When Pastor Caden is preaching, we choose a static shot so his words are the focus.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Always be usable.</strong> Don’t grab a shot of the front of the drums then point the camera at the ground and walk all the way around the room to get keys on the other side—you just wasted 40 possible shots and 30 seconds.
+          <ul>
+            <li>This is even more important when we’re recording all cameras for original songs. If you only have a shot when the director is on you, we can’t do anything different in post.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Be cinematic.</strong> Being cinematic means we’re telling a story.
+          <ul>
+            <li>Shots are deliberate.</li>
+            <li>Cinematic shooting avoids flat or cluttered shots.</li>
+            <li>Foreground, subject, and background are layered to give a sense of depth.</li>
+            <li>Shadows are used purposefully, not avoided.</li>
+            <li>Movement is intentional and motivated by the story and the emotion we want to convey.</li>
+            <li>We don’t want to just “show” the viewers what is happening in the room. We want them to experience it and feel part of it.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Listen to the room.</strong> Pay attention to the music. Know when a big bridge is coming so you’re ready <em>before</em> it happens. Read the energy of the room. Remember, viewers online only know how powerful worship is if we tell them through our shots.
+        </li>
+        <li>
+          <strong>Keep your eyes up.</strong> Don’t be locked into your monitor. Keep your eyes up and looking around for shots.
+        </li>
+        <li>
+          <strong>Focus.</strong> Make sure you’re in focus or actively pulling focus. Don’t linger out of focus—either go in or go more out to motivate intention. This also hides mistakes.
+          <ul>
+            <li>When running camera, keep your hand on the focus ring most of the time. Even a subtle focus pull while shooting the piano can guide attention from the keys to the hands and instantly elevate the shot.</li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </section>
 
   <!-- CAMERA TRAINING MODULES SECTION -->
   <section class="info-section">
-    <div class="info-bg-shapes">
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-    </div>
     <div class="info-content">
-      <h2>Training Modules</h2>
+      <h2>Resources</h2>
       <p>
-        Comprehensive training program designed to equip you with the skills needed to operate cameras professionally during live worship services. Each module builds upon the previous one to develop your expertise step by step.
+        Curated resources designed to equip you for live camera operation in worship services. Each resource focuses on a specific camera role and expectations.
       </p>
       <div class="training-modules">
-        <div class="module-card">
+  <a class="module-card cam1" href="camera1_resource.html" aria-label="Open Camera 1 Resource">
           <h3>
-            <div class="module-icon">📹</div>
-            Getting Started
+            Camera 1
           </h3>
           <span class="module-status status-available">Available</span>
-          <p>Introduction to camera operations, basic controls, and safety protocols. Perfect for beginners with no prior experience.</p>
-          <button class="fancy-button">
-            <a href="#">Start Module</a>
-          </button>
-        </div>
-        <div class="module-card">
+          <p>Lead vocalist coverage at all times. On tracks in the middle of the room.</p>
+        </a>
+  <a class="module-card cam2" href="camera2_resource.html" aria-label="Open Camera 2 Resource">
           <h3>
-            <div class="module-icon">🎯</div>
-            Shot Composition
+            Camera 2
           </h3>
-          <span class="module-status status-coming-soon">Coming Soon</span>
-          <p>Learn the fundamentals of framing, rule of thirds, and creating visually compelling shots that enhance the worship experience.</p>
-          <button class="fancy-button" disabled>
-            Coming Soon
-          </button>
-        </div>
-        <div class="module-card">
+          <span class="module-status status-available">Available</span>
+          <p>Band and detail coverage during worship. On tracks on side of room for sermon.</p>
+        </a>
+  <a class="module-card cam3" href="camera3_resource.html" aria-label="Open Camera 3 Resource">
           <h3>
-            <div class="module-icon">🔄</div>
-            Camera Movements
+            Camera 3
           </h3>
-          <span class="module-status status-coming-soon">Coming Soon</span>
-          <p>Master smooth panning, tilting, and zooming techniques. Understand when and how to move the camera effectively.</p>
-          <button class="fancy-button" disabled>
-            Coming Soon
-          </button>
-        </div>
-        <div class="module-card">
+          <span class="module-status status-available">Available</span>
+          <p>Stage R room vocal and band camera.</p>
+        </a>
+  <a class="module-card cam4" href="camera4_resource.html" aria-label="Open Camera 4 Resource">
           <h3>
-            <div class="module-icon">🎭</div>
-            Live Production
+            Camera 4
           </h3>
-          <span class="module-status status-coming-soon">Coming Soon</span>
-          <p>Advanced techniques for live streaming, working with directors, and handling unexpected situations during services.</p>
-          <button class="fancy-button" disabled>
-            Coming Soon
-          </button>
-        </div>
-        <div class="module-card">
-          <h3>
-            <div class="module-icon">💡</div>
-            Lighting Awareness
-          </h3>
-          <span class="module-status status-coming-soon">Coming Soon</span>
-          <p>Understanding how lighting affects your shots and how to work with various lighting conditions in the sanctuary.</p>
-          <button class="fancy-button" disabled>
-            Coming Soon
-          </button>
-        </div>
-        <div class="module-card">
-          <h3>
-            <div class="module-icon">🛠️</div>
-            Troubleshooting
-          </h3>
-          <span class="module-status status-coming-soon">Coming Soon</span>
-          <p>Common issues and their solutions, basic maintenance, and when to call for technical support.</p>
-          <button class="fancy-button" disabled>
-            Coming Soon
-          </button>
-        </div>
+          <span class="module-status status-available">Available</span>
+          <p>Stage L room vocal and band camera.</p>
+        </a>
       </div>
     </div>
   </section>
@@ -474,19 +481,6 @@
           menuToggle.classList.toggle('open');
         });
       }
-    });
-
-    // Parallax effect for info section background shapes
-    const infoSections = document.querySelectorAll('.info-section');
-    infoSections.forEach(section => {
-      const infoBgShapes = section.querySelector('.info-bg-shapes');
-      window.addEventListener('scroll', () => {
-        const rect = section.getBoundingClientRect();
-        const offset = rect.top * 0.3;
-        if (infoBgShapes) {
-          infoBgShapes.style.transform = `translateY(${offset}px)`;
-        }
-      });
     });
 
     // Module card hover animations

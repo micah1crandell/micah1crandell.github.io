@@ -297,6 +297,48 @@
       list-style: disc inside;
       margin-bottom: 20px;
     }
+
+    /* ========= VOLUNTEER POSITIONS GRID (Blob cards) ========= */
+    .volunteer-positions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .position-card {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: #000;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    .position-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+    .position-card .image-container { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; }
+    .position-card .rounded-shape { position: absolute; top: -10px; left: -10px; width: 120%; height: 120%; background-color: #0549DF; z-index: 1; border-radius: 50%; transform: rotate(0deg); }
+    .position-card img { position: relative; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; z-index: 2; }
+    .position-card h3 { font-size: 1.25rem; margin-bottom: 10px; }
+    .position-card p { font-size: 0.95rem; line-height: 1.4; color: #555; text-align: left; }
+    /* Optional: shape variants per card */
+    .volunteer-positions .position-card:nth-child(1) .rounded-shape { border-radius: 40% 70% 50% 60% / 60% 40% 70% 50%; transform: rotate(5deg); }
+    .volunteer-positions .position-card:nth-child(2) .rounded-shape { border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; transform: rotate(5deg); }
+    .volunteer-positions .position-card:nth-child(3) .rounded-shape { border-radius: 50% 30% 60% 40% / 60% 50% 70% 40%; transform: rotate(-3deg); }
+    .volunteer-positions .position-card:nth-child(4) .rounded-shape { border-radius: 40% 60% 30% 70% / 70% 40% 60% 50%; transform: rotate(10deg); }
+    .volunteer-positions .position-card:nth-child(5) .rounded-shape { border-radius: 70% 30% 50% 60% / 40% 70% 50% 60%; transform: rotate(-5deg); }
+    .volunteer-positions .position-card:nth-child(6) .rounded-shape { border-radius: 30% 70% 40% 60% / 60% 50% 70% 40%; transform: rotate(5deg); }
+    .volunteer-positions .position-card:nth-child(7) .rounded-shape { border-radius: 50% 60% 40% 70% / 70% 50% 60% 40%; transform: rotate(-20deg); }
+    .volunteer-positions .position-card:nth-child(8) .rounded-shape { border-radius: 60% 50% 70% 40% / 40% 60% 50% 70%; transform: rotate(0deg); }
+    /* Modal */
+    .modal { position: fixed; inset: 0; display: none; z-index: 1000; }
+    .modal.open { display: block; }
+    .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+    .modal-dialog { position: relative; z-index: 1; max-width: 800px; margin: 6vh auto; background: #fff; color: #1e1e1e; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); padding: 24px; }
+    .modal-close { position: absolute; top: 10px; right: 12px; background: transparent; border: none; font-size: 28px; line-height: 1; cursor: pointer; color: #444; }
+    .modal-body h3 { margin-top: 0; }
+    .modal-body h4 { margin-bottom: 8px; }
+    .modal-body ul { margin: 0 0 16px 18px; }
   </style>
 </head>
 <body>
@@ -350,7 +392,7 @@
           <span class="circle3"></span>
           <span class="circle4"></span>
           <span class="circle5"></span>
-          <span class="text"><a href="volunteer_positions.html" style="text-decoration: none; color: white;">Volunteer Positions</a></span>
+          <span class="text"><a href="#volunteer-positions" style="text-decoration: none; color: white;">Volunteer Positions</a></span>
         </button>
         <button class="fancy-button">
           <span class="circle1"></span>
@@ -368,14 +410,6 @@
           <span class="circle5"></span>
           <span class="text"><a href="faq.html" style="text-decoration: none; color: white;">FAQ</a></span>
         </button>
-        <button class="fancy-button">
-          <span class="circle1"></span>
-          <span class="circle2"></span>
-          <span class="circle3"></span>
-          <span class="circle4"></span>
-          <span class="circle5"></span>
-          <span class="text"><a href="#volunteer-positions" style="text-decoration: none; color: white;">Volunteer Positions</a></span>
-        </button>
       </div>
     </div>
     <section class="info-section" style="padding: 50px 20px;">
@@ -384,214 +418,273 @@
         <p>Watch these videos for training tips, behind‐the‐scenes insights, and inspiration.</p>
         <div class="youtube-videos">
           <div class="youtube-item">
-            <iframe width="100%" height="270" src="https://www.youtube.com/embed/jrONaLRl6jA" title="Volunteer Training Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="100%" height="270" src="https://youtube.com/embed/0sfG1DPff5w?si=Gitys0KMpAFCcnHN" title="Volunteer Training Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <div class="youtube-item">
-            <iframe width="100%" height="270" src="https://www.youtube.com/embed/wg3jbSQAsdE?si=vFPRy3FBhmVT0F5L&amp;start=2285" title="Volunteer Training Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="100%" height="270" src="https://youtube.com/embed/Xz4mZwoqcnA?si=4oxkFpjDR2CKWJBq" title="Volunteer Training Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <div class="youtube-item">
-            <iframe width="100%" height="270" src="https://www.youtube.com/embed/Fvga_hVFrG4?si=yK5xsBEnMHfHnkxq&amp;start=2529" title="Volunteer Training Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="100%" height="270" src="https://youtube.com/embed/sZ5Ou4prnGM?si=lW_G8D0RcOHuGtOW" title="Volunteer Training Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
         </div>
-      </div>
-
-      <div class="info-content">
-        <h2>Volunteer Positions</h2>
-        <p>
-          Below you’ll find detailed responsibilities for each volunteer role. Use the dropdown menu below to quickly navigate to a position’s section and review the tasks for PRESERVICE, SERVICE, and POSTSERVICE.
-        </p>
-        <div class="dropdown-nav">
-          <select id="positionSelect">
-            <option value="">Select a Position</option>
-            <option value="audio-engineer">Audio Engineer (Broadcast and FOH)</option>
-            <option value="lighting-engineer">Lighting Engineer (GrandMA3)</option>
-            <option value="video-director">Video Director</option>
-            <option value="camera-operator">Camera Operator</option>
-            <option value="graphics-operator">Computer Graphics Operator</option>
-            <option value="stage-manager">Stage Manager</option>
-            <option value="photographer">Photographer</option>
-            <option value="online-host">Online Host</option>
-          </select>
-        </div>
-  
-        <!-- Stage Manager Section -->
-        <div class="position-section" id="stage-manager">
-          <h3>Stage Manager</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-              <li>Conduct microphone and in-ear battery checks.</li>
-              <li>Verify that communion elements, baby dedication items, and illustrations are in place.</li>
-              <li>Ensure all instruments are properly positioned and spike-taped.</li>
-              <li>Launch and monitor Planning Center Live.</li>
-          </ul>
-          <h4>SERVICE</h4>
-          <ul>
-              <li>Operate and manage Planning Center Live throughout the service.</li>
-              <li>Verbally communicate service transitions, upcoming songs, and cues from PCO.</li>
-              <li>Bring communion elements, baby dedication items, and illustration props on stage as needed.</li>
-              <li>Move instruments after worship to clear the stage for the message.</li>
-              <li>Bring podium to the front of the for message stage.</li>
-              <li>Coordinate with the worship team to prepare for the final song or underscore.</li>
-              <li>Coordinate with the speakers for when to go onstage.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-              <li>Collect and store all microphones and batteries.</li>
-          </ul>
-        </div>
-  
-        <!-- Video Director Section -->
-        <div class="position-section" id="video-director">
-          <h3>Video Director</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-              <li>Ensure all cameras are correctly set up and positioned.</li>
-              <li>Distribute and test headsets for track cameras.</li>
-          </ul>
-          <h4>SERVICE</h4>
-          <ul>
-              <li>Direct all camera operations.</li>
-              <li>Coordinate with the graphics team on slide timing.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-              <li>Take down all cameras.</li>
-              <li>Store all headsets.</li>
-          </ul>
-          </div>
-  
-        <!-- Audio Engineer Section -->
-        <div class="position-section" id="audio-engineer">
-          <h3>Audio Engineer (Broadcast and FOH)</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-            <li>Set up audio equipment and cables before service.</li>
-            <li>Conduct sound checks and adjust levels for optimal performance.</li>
-            <li>Coordinate with the technical team to ensure broadcast readiness.</li>
-          </ul>
-          <h4>SERVICE</h4>
-          <ul>
-            <li>Mix front-of-house audio to create an immersive worship experience.</li>
-            <li>Manage broadcast feeds for clear and uninterrupted transmission.</li>
-            <li>Monitor and adjust audio levels in real time during the service.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Safely break down and store all audio equipment.</li>
-            <li>Review recorded audio for quality and consistency.</li>
-            <li>Log any technical issues for follow-up and improvement.</li>
-          </ul>
-        </div>
-    
-        <!-- Lighting Section -->
-        <div class="position-section" id="lighting-engineer">
-          <h3>Lighting Engineer (GrandMA3)</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-            <li>Adjust lighting colors during practice if needed.</li>
-            <li>Ensure cue stack aligns with PCO.</li>
-            <li>Test all cues to confirm smooth transitions and proper functionality.</li>
-          </ul>
-          <h4>SERVICE</h4>
-          <ul>
-            <li>Anticipate transitions to ensure seamless lighting changes.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Set end service cue.</li>
-          </ul>
-        </div>
-    
-        <!-- Camera Operators Section -->
-        <div class="position-section" id="camera-operators">
-          <h3>Camera Operators</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-            <li>Ensure assigned camera is set up, operational, and service-ready.</li>
-            <li>Have a functioning headset.</li>
-            <li>Familiarize yourself with the service order to anticipate key moments (e.g., communion, dedications).</li>
-          </ul>
-          <h4>SERVICE</h4>
-          <ul>
-            <li>Follow all cues from the service and video directors.</li>
-            <li><strong>Cam 3:</strong> Set up the camera on a tripod after worship.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Properly store camera and headset.</li>
-            <li>Charge all batteries.</li>
-          </ul>
-        </div>
-    
-        <!-- Computer Graphics Section -->
-        <div class="position-section" id="computer-graphics">
-          <h3>Computer Graphics</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-            <li>Attend worship practice.</li>
-            <li>Ensure ProPresenter is complete and follows PCO.</li>
-            <li>Understand service elements to anticipate transitions.</li>
-            <li>Test all videos and graphics.</li>
-          </ul>
-          <h4>SERVICE</h4>
-          <ul>
-            <li>Follow cues from the video and service directors for slide transitions.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Display end service graphic.</li>
-          </ul>
-        </div>
-    
-        <!-- Photographer Section (Unchanged) -->
-        <div class="position-section" id="photographer">
-          <h3>Photographer</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-            <li>Plan a shot list and set camera parameters according to the venue and lighting.</li>
-            <li>Scout the venue for optimal photo opportunities.</li>
-            <li>Coordinate with the creative team to capture the intended mood.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Capture key moments during the service, balancing candid and posed shots.</li>
-            <li>Adjust camera settings in response to changing lighting conditions.</li>
-            <li>Continuously monitor composition and framing.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Backup and edit photos to enhance quality.</li>
-            <li>Prepare digital galleries for sharing with the team and congregation.</li>
-            <li>Report any equipment issues for prompt repair or replacement.</li>
-          </ul>
-        </div>
-    
-        <!-- Online Host Section (Unchanged) -->
-        <div class="position-section" id="online-host">
-          <h3>Online Host</h3>
-          <h4>PRE-SERVICE</h4>
-          <ul>
-            <li>Prepare virtual engagement tools and ensure all online platforms are tested.</li>
-            <li>Coordinate with the technical team to guarantee a stable connection.</li>
-            <li>Test audio and video settings for online streaming.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Engage with the online audience during the live service.</li>
-            <li>Monitor social media and live chat for real-time interaction.</li>
-            <li>Coordinate with on-site teams to ensure a seamless broadcast experience.</li>
-          </ul>
-          <h4>POST-SERVICE</h4>
-          <ul>
-            <li>Review online feedback and interaction logs.</li>
-            <li>Compile audience engagement reports for the team.</li>
-            <li>Prepare for subsequent online sessions based on received feedback.</li>
-          </ul>
-        </div>
-  
       </div>
     </section>
   </section>
+
+  <!-- VOLUNTEER POSITIONS & DETAILS (moved from volunteer_positions.html) -->
+  <section class="info-section" id="volunteer-positions">
+    <div class="info-content">
+      <h2>Volunteer Positions & Responsibilities</h2>
+      <p>
+        At Radiant Church, we believe in nurturing talent and empowering everyone through our structured volunteer program. Explore the different positions below to find the best fit for your skills and passion.
+      </p>
+      <div class="volunteer-positions">
+        <div class="position-card" data-role="audio-engineer" aria-label="Audio Engineer details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true" alt="Audio Engineer">
+          </div>
+          <h3>Audio Engineer (Broadcast and FOH)</h3>
+          <p>Mix front-of-house audio and broadcast feeds to create an immersive worship experience. Responsibilities include being present for practices and services, leading sound check, troubleshooting issues, and ensuring a balanced audio mix during services.</p>
+        </div>
+        <div class="position-card" data-role="lighting-engineer" aria-label="Lighting Engineer details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" alt="Lighting Engineer">
+          </div>
+          <h3>Lighting Engineer (GrandMA3)</h3>
+          <p>Design and execute lighting cues to enhance the worship atmosphere. Tasks include programming lighting scenes when needed, operating the GrandMA3 console, and coordinating with the team on transitions and other special service elements.</p>
+        </div>
+        <div class="position-card" data-role="video-director" aria-label="Video Director details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/25.jpg?raw=true" alt="Video Director">
+          </div>
+          <h3>Video Director</h3>
+          <p>Lead the video team by operating the video switcher and directing camera operators. Responsibilities include planning camera shots, managing live streaming, and ensuring professional-quality production.</p>
+        </div>
+        <div class="position-card" data-role="camera-operators" aria-label="Camera Operator details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/12.jpg?raw=true" alt="Camera Operator">
+          </div>
+          <h3>Camera Operator</h3>
+          <p>Operate high-quality cameras to capture stunning visuals. Responsibilities include setting up equipment, understanding the cameras and lenses, following directions from the video director, and ensuring high-quality footage.</p>
+        </div>
+        <div class="position-card" data-role="computer-graphics" aria-label="Computer Graphics details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" alt="Computer Graphics Operator">
+          </div>
+          <h3>Computer Graphics Operator</h3>
+          <p>Manage all on-screen visuals such as graphics, videos, lower thirds, and LED wall content. Tasks include being present at practices and services, knowing ProPresenter7, coordinating with the creative team on graphics and videos, and operating graphic software during services.</p>
+        </div>
+        <div class="position-card" data-role="stage-manager" aria-label="Stage Manager details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Stage Manager">
+          </div>
+          <h3>Stage Manager</h3>
+          <p>Oversee all stage activities and ensure the service runs smoothly. Responsibilities include managing the order of service, communicating with the worship team, handling props, and coordinating transitions throughout the service.</p>
+        </div>
+        <div class="position-card" data-role="photographer" aria-label="Photographer details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/photography/5.jpg?raw=true" alt="Photographer">
+          </div>
+          <h3>Photographer</h3>
+          <p>Capture the essence of Radiant’s services and events through high-quality photography. Responsibilities include taking candid shots, editing images, and building a visual story that reflects our mission.</p>
+        </div>
+        <div class="position-card" data-role="online-host" aria-label="Online Host details">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/20.jpg?raw=true" alt="Online Host">
+          </div>
+          <h3>Online Host</h3>
+          <p>Engage with the online audience during livestreams by moderating chats and interacting with viewers. Responsibilities include coordinating with technical teams, troubleshooting streaming-related issues, and ensuring an engaging virtual experience.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal Structure -->
+  <div id="role-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-dialog" role="document">
+      <button class="modal-close" aria-label="Close" data-close>×</button>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Hidden templates with detailed responsibilities -->
+  <div id="role-templates" style="display:none;">
+    <template id="tmpl-stage-manager">
+      <h3>Stage Manager</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Conduct microphone and in-ear battery checks.</li>
+        <li>Verify that communion elements, baby dedication items, and illustrations are in place.</li>
+        <li>Ensure all instruments are properly positioned and spike-taped.</li>
+        <li>Launch and monitor Planning Center Live.</li>
+      </ul>
+      <h4>SERVICE</h4>
+      <ul>
+        <li>Operate and manage Planning Center Live throughout the service.</li>
+        <li>Verbally communicate service transitions, upcoming songs, and cues from PCO.</li>
+        <li>Bring communion elements, baby dedication items, and illustration props on stage as needed.</li>
+        <li>Move instruments after worship to clear the stage for the message.</li>
+        <li>Bring podium to the front of the for message stage.</li>
+        <li>Coordinate with the worship team to prepare for the final song or underscore.</li>
+        <li>Coordinate with the speakers for when to go onstage.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Collect and store all microphones and batteries.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-video-director">
+      <h3>Video Director</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Ensure all cameras are correctly set up and positioned.</li>
+        <li>Distribute and test headsets for track cameras.</li>
+      </ul>
+      <h4>SERVICE</h4>
+      <ul>
+        <li>Direct all camera operations.</li>
+        <li>Coordinate with the graphics team on slide timing.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Take down all cameras.</li>
+        <li>Store all headsets.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-audio-engineer">
+      <h3>Audio Engineer (Broadcast and FOH)</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Set up audio equipment and cables before service.</li>
+        <li>Conduct sound checks and adjust levels for optimal performance.</li>
+        <li>Coordinate with the technical team to ensure broadcast readiness.</li>
+      </ul>
+      <h4>SERVICE</h4>
+      <ul>
+        <li>Mix front-of-house audio to create an immersive worship experience.</li>
+        <li>Manage broadcast feeds for clear and uninterrupted transmission.</li>
+        <li>Monitor and adjust audio levels in real time during the service.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Safely break down and store all audio equipment.</li>
+        <li>Review recorded audio for quality and consistency.</li>
+        <li>Log any technical issues for follow-up and improvement.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-lighting-engineer">
+      <h3>Lighting Engineer (GrandMA3)</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Adjust lighting colors during practice if needed.</li>
+        <li>Ensure cue stack aligns with PCO.</li>
+        <li>Test all cues to confirm smooth transitions and proper functionality.</li>
+      </ul>
+      <h4>SERVICE</h4>
+      <ul>
+        <li>Anticipate transitions to ensure seamless lighting changes.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Set end service cue.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-camera-operators">
+      <h3>Camera Operators</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Ensure assigned camera is set up, operational, and service-ready.</li>
+        <li>Have a functioning headset.</li>
+        <li>Familiarize yourself with the service order to anticipate key moments (e.g., communion, dedications).</li>
+      </ul>
+      <h4>SERVICE</h4>
+      <ul>
+        <li>Follow all cues from the service and video directors.</li>
+        <li><strong>Cam 3:</strong> Set up the camera on a tripod after worship.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Properly store camera and headset.</li>
+        <li>Charge all batteries.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-computer-graphics">
+      <h3>Computer Graphics</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Attend worship practice.</li>
+        <li>Ensure ProPresenter is complete and follows PCO.</li>
+        <li>Understand service elements to anticipate transitions.</li>
+        <li>Test all videos and graphics.</li>
+      </ul>
+      <h4>SERVICE</h4>
+      <ul>
+        <li>Follow cues from the video and service directors for slide transitions.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Display end service graphic.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-photographer">
+      <h3>Photographer</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Plan a shot list and set camera parameters according to the venue and lighting.</li>
+        <li>Scout the venue for optimal photo opportunities.</li>
+        <li>Coordinate with the creative team to capture the intended mood.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Capture key moments during the service, balancing candid and posed shots.</li>
+        <li>Adjust camera settings in response to changing lighting conditions.</li>
+        <li>Continuously monitor composition and framing.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Backup and edit photos to enhance quality.</li>
+        <li>Prepare digital galleries for sharing with the team and congregation.</li>
+        <li>Report any equipment issues for prompt repair or replacement.</li>
+      </ul>
+    </template>
+
+    <template id="tmpl-online-host">
+      <h3>Online Host</h3>
+      <h4>PRE-SERVICE</h4>
+      <ul>
+        <li>Prepare virtual engagement tools and ensure all online platforms are tested.</li>
+        <li>Coordinate with the technical team to guarantee a stable connection.</li>
+        <li>Test audio and video settings for online streaming.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Engage with the online audience during the live service.</li>
+        <li>Monitor social media and live chat for real-time interaction.</li>
+        <li>Coordinate with on-site teams to ensure a seamless broadcast experience.</li>
+      </ul>
+      <h4>POST-SERVICE</h4>
+      <ul>
+        <li>Review online feedback and interaction logs.</li>
+        <li>Compile audience engagement reports for the team.</li>
+        <li>Prepare for subsequent online sessions based on received feedback.</li>
+      </ul>
+    </template>
+  </div>
 
   <!-- ========== SCRIPTS ========== -->
   <script src="partials/header-loader.js"></script>
@@ -661,16 +754,32 @@
       });
     });
 
-    // Dropdown navigation for volunteer positions
-    const positionSelect = document.getElementById('positionSelect');
-    positionSelect.addEventListener('change', function() {
-      const targetId = this.value;
-      if(targetId) {
-        const targetElem = document.getElementById(targetId);
-        if(targetElem) {
-          targetElem.scrollIntoView({behavior: 'smooth'});
-        }
-      }
+    // Modal logic for role details
+    const modal = document.getElementById('role-modal');
+    const modalBody = modal ? modal.querySelector('.modal-body') : null;
+    const closeEls = modal ? modal.querySelectorAll('[data-close]') : [];
+    function openModal(contentHtml) {
+      if (!modal || !modalBody) return;
+      modalBody.innerHTML = contentHtml;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      if (!modal || !modalBody) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      modalBody.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+    closeEls.forEach(el => el.addEventListener('click', closeModal));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    document.querySelectorAll('.position-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const role = card.getAttribute('data-role');
+        const tmpl = document.getElementById(`tmpl-${role}`);
+        if (tmpl) openModal(tmpl.innerHTML);
+      });
     });
   </script>
 </body>

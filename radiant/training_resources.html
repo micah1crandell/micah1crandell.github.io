@@ -148,53 +148,6 @@
       overflow: hidden;
       padding: 50px 0px;
     }
-    .info-bg-shapes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .bg-shape {
-      position: absolute;
-      background: linear-gradient(45deg, rgba(14, 165, 233, 0.1), rgba(168, 85, 247, 0.1));
-      border-radius: 50%;
-      opacity: 0.7;
-    }
-    .bg-shape:nth-child(1) {
-      width: 200px;
-      height: 200px;
-      top: 10%;
-      left: 10%;
-      animation: float 6s ease-in-out infinite;
-    }
-    .bg-shape:nth-child(2) {
-      width: 150px;
-      height: 150px;
-      top: 60%;
-      right: 15%;
-      animation: float 8s ease-in-out infinite reverse;
-    }
-    .bg-shape:nth-child(3) {
-      width: 100px;
-      height: 100px;
-      bottom: 20%;
-      left: 20%;
-      animation: float 7s ease-in-out infinite;
-    }
-    .bg-shape:nth-child(4) {
-      width: 180px;
-      height: 180px;
-      top: 30%;
-      right: 40%;
-      animation: float 9s ease-in-out infinite reverse;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
     .info-content {
       position: relative;
       z-index: 1;
@@ -218,6 +171,17 @@
       margin-left: auto;
       margin-right: auto;
     }
+    /* Lists inside info-content */
+    .info-content ul {
+      text-align: left;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      padding-left: 1.2rem;
+      color: #1e1e1eb4;
+    }
+    .info-content li { margin: 0.5rem 0; }
+    .info-content li strong { color: #1e1e1e; }
+    .info-content ul ul { list-style: circle; margin-top: 0.25rem; }
     /* ========= TRAINING POSITIONS GRID ========= */
     .training-positions {
       display: grid;
@@ -297,21 +261,45 @@
   <section class="hero" id="hero">
     <div class="parallax-bg"></div>
     <div class="hero-main">
-      <h1>Training Resources</h1>
-      <p>Comprehensive training materials for all volunteer positions</p>
+    </div>
+  </section>
+
+  <!-- OUR CORE VALUES SECTION -->
+  <section class="info-section" id="core-values">
+    <div class="info-content">
+      <h2>Our Core Values</h2>
+      <ul>
+        <li>
+          <strong>Excellence is our Offering</strong>
+          <ul>
+            <li>It isn’t perfectionism or a fear of mistakes. Excellence is bringing our best to honor God and to serve His people.</li>
+            <li>We believe that excellence honors God and inspires people.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>We Bridge the Gap</strong>
+          <ul>
+            <li>We are the bridge between the stage and the eyes and ears of the people in the room and online.</li>
+            <li>Worship is more than song and singing. Worship is pointing and turning attention to God.</li>
+            <li>It’s easy to get caught up in the tasks of production, and even though those tasks are important, the only real goal we have is to help lead worship.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>We Serve as a Team</strong>
+          <ul>
+            <li>We have a “We over Me” mentality.</li>
+            <li>We are one body with many roles, and each part matters. We communicate and support each other for the church. What we do is bigger than ourselves—we are here for the church.</li>
+            <li>Part of serving as one team means we pursue the same style and vision together.</li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </section>
 
   <!-- TRAINING RESOURCES SECTION -->
   <section class="info-section">
-    <div class="info-bg-shapes">
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-      <div class="bg-shape"></div>
-    </div>
     <div class="info-content">
-      <h2>Position Training</h2>
+      <h2>Position Resources</h2>
       <p>
         Access specialized training materials for each volunteer position. Whether you're just starting out or looking to enhance your skills, these resources will help you serve with excellence and confidence.
       </p>
@@ -320,7 +308,7 @@
           <h3>Camera Operators</h3>
           <p>Learn camera operation, shot composition, and live production techniques for worship services.</p>
           <button class="fancy-button">
-            <a href="camera_operator_training.html">Start Training</a>
+            <a href="camera_operator_training.html">Open Resources</a>
           </button>
         </div>
         <div class="position-card">
@@ -416,19 +404,6 @@
           menuToggle.classList.toggle('open');
         });
       }
-    });
-
-    // Parallax effect for info section background shapes
-    const infoSections = document.querySelectorAll('.info-section');
-    infoSections.forEach(section => {
-      const infoBgShapes = section.querySelector('.info-bg-shapes');
-      window.addEventListener('scroll', () => {
-        const rect = section.getBoundingClientRect();
-        const offset = rect.top * 0.3;
-        if (infoBgShapes) {
-          infoBgShapes.style.transform = `translateY(${offset}px)`;
-        }
-      });
     });
 
     // Card hover animations
