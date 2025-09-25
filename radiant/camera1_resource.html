@@ -38,7 +38,7 @@
     /* Resource card grid (optional highlights) */
   .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px; margin-top: 20px; }
     .highlight-card { background: #fff; border-radius: 16px; padding: 20px; text-align: left; box-shadow: 0 8px 24px rgba(0,0,0,0.08); border: 2px solid transparent; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-    .highlight-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,0.14); border-color: #0a84ff; }
+    .highlight-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,0.14); border-color: #000000; }
     .highlight-card h3 { margin: 0 0 8px; color:#1e1e1e; }
   @media (min-width: 900px) { .highlights { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 
@@ -136,91 +136,54 @@
       <h2>Shot Library</h2>
       <div class="highlights">
         <div class="highlight-card">
-          <h3>Home Frame</h3>
-          <img alt="Home" src="https://placehold.co/800x450?text=Home" style="width:100%; border-radius:12px; margin-top:8px;"/>
-          <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
-          </ul>
-        </div>
-        <div class="highlight-card">
           <h3>Tight</h3>
           <img alt="Tight" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
           <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
+            <li><strong>Tips:</strong> Keep the lead vocal framed tightly, but allow for some headroom.</li>
+            <li><strong>Avoid:</strong> Cutting off the top of the head.</li>
           </ul>
         </div>
         <div class="highlight-card">
           <h3>Medium</h3>
           <img alt="Medium" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad3.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
           <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
+            <li><strong>Tips:</strong> Keep the lead vocal framed tightly, but allow for some headroom.</li>
+            <li><strong>Avoid:</strong> Trying to get two singers in the shot at once. This typically leaves a lot of empty space in the middle of the image.</li>
           </ul>
         </div>
         <div class="highlight-card">
           <h3>Wide</h3>
           <img alt="Wide" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad2.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
           <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
+            <li><strong>Tips:</strong> Keep the lead vocal in the shot the whole time, but can walk the track.</li>
+            <li><strong>Avoid:</strong> Allowing the lead vocal to leave the frame.</li>
           </ul>
         </div>
         <div class="highlight-card">
           <h3>Walk</h3>
           <img alt="Walk" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/hero2.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
           <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
+            <li><strong>Tips:</strong> Change the speed you walk based on the tempo of the music. Pan from left to right and vice versa while you move for more energy.</li>
+            <li><strong>Avoid:</strong> Jerky movements that cause the shot to become unusable.</li>
           </ul>
         </div>
         <div class="highlight-card">
           <h3>Rack Focus</h3>
-          <img alt="Rack Focus" src="https://placehold.co/800x450?text=Rack+Focus" style="width:100%; border-radius:12px; margin-top:8px;"/>
+          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
+            <source src="videos/mov1.mov">
+            Your browser does not support the video tag.
+          </video>
           <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
-          </ul>
-        </div>
-        <div class="highlight-card">
-          <h3>Audience</h3>
-          <img alt="Audience" src="https://placehold.co/800x450?text=Audience" style="width:100%; border-radius:12px; margin-top:8px;"/>
-          <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
+            <li><strong>Tips:</strong> Rack focus on tight shots and wide shots.</li>
+            <li><strong>Avoid:</strong> Doing shots like this during fast-paced sections. These shots tend to slow down the pacing.</li>
           </ul>
         </div>
         <div class="highlight-card">
           <h3>Static</h3>
           <img alt="Static" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad4.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
           <ul>
-            <li><strong>Context:</strong> ...</li>
-            <li><strong>Why it works:</strong> ...</li>
-            <li><strong>How to execute:</strong> ...</li>
-            <li><strong>When to use:</strong> ...</li>
-            <li><strong>Avoid:</strong> ...</li>
+            <li><strong>Tips:</strong> Use these for the sermon and other speaking moments.</li>
+            <li><strong>Avoid:</strong> Unnecessary camera movements that can distract from the speaker.</li>
           </ul>
         </div>
       </div>
@@ -266,7 +229,55 @@
       parallaxBg.style.transform = `translateY(${scrolled * speed}px)`;
     });
 
-    
+    // Ensure rack focus video plays; if autoplay is blocked, show controls
+    window.addEventListener('load', function(){
+      const vid = document.querySelector('.rack-focus-video');
+      if (!vid) return;
+      const posterFallback = vid.getAttribute('poster') || 'https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true';
+
+      function replaceWithImage() {
+        const img = document.createElement('img');
+        img.src = posterFallback;
+        img.alt = 'Rack Focus preview';
+        img.style.cssText = vid.getAttribute('style') || 'width:100%; border-radius:12px; margin-top:8px;';
+        vid.parentNode.replaceChild(img, vid);
+      }
+
+      function tryPlay() {
+        const p = vid.play();
+        if (p && p.catch) {
+          p.catch((err) => {
+            // Autoplay blocked or unsupported; show controls, attempt on user interaction
+            vid.controls = true;
+            console.debug('Video autoplay issue:', err);
+          });
+        }
+      }
+
+      // If browser reports no support for mov/quicktime, fallback immediately
+      try {
+        const canMov = typeof vid.canPlayType === 'function' && vid.canPlayType('video/quicktime');
+        if (!canMov) {
+          // Some browsers return '' for unknown; still attempt play once, then fallback on error/timeout
+        }
+      } catch (_) {}
+
+      // Fallback on error and stalled events
+      vid.addEventListener('error', () => { replaceWithImage(); });
+      vid.addEventListener('stalled', () => { replaceWithImage(); });
+      vid.addEventListener('abort', () => { replaceWithImage(); });
+
+      // If no metadata within a short time, assume unsupported and fallback
+      const metaTimeout = setTimeout(() => {
+        if (!vid.videoWidth || !vid.videoHeight) {
+          replaceWithImage();
+        }
+      }, 2500);
+      vid.addEventListener('loadedmetadata', () => { clearTimeout(metaTimeout); });
+
+      tryPlay();
+      setTimeout(tryPlay, 500);
+    });
   </script>
 </body>
 </html>
