@@ -17,6 +17,35 @@
             menuToggle.classList.toggle('open');
           });
         }
+
+        // If we're on the training resources page, intercept dropdown links to smooth scroll
+        try {
+          var onTrainingPage = /training_resources\.html$/.test(window.location.pathname);
+          if (onTrainingPage) {
+            var trLinks = host.querySelectorAll('a[href^="training_resources.html#"]');
+            if (trLinks && trLinks.length) {
+              trLinks.forEach(function(a){
+                a.addEventListener('click', function(e){
+                  e.preventDefault();
+                  var href = a.getAttribute('href');
+                  var hashIndex = href.indexOf('#');
+                  if (hashIndex > -1) {
+                    var id = href.substring(hashIndex + 1);
+                    var target = document.getElementById(id);
+                    if (target && target.scrollIntoView) {
+                      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    // Close mobile menu if open
+                    if (navLinks && navLinks.classList) navLinks.classList.remove('open');
+                    if (menuToggle && menuToggle.classList) menuToggle.classList.remove('open');
+                  }
+                });
+              });
+            }
+          }
+        } catch (err) {
+          // no-op: smooth scroll enhancement failed
+        }
       })
       .catch(function(err) {
         console.error('Failed to load header partial:', err);
