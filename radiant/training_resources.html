@@ -146,7 +146,7 @@
     .info-section {
       position: relative;
       overflow: hidden;
-      padding: 50px 0px;
+      padding: 28px 0;
     }
     .info-content {
       position: relative;
@@ -166,7 +166,7 @@
       font-size: 1.1rem;
       line-height: 1.6;
       color: #1e1e1eb4;
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
       max-width: 800px;
       margin-left: auto;
       margin-right: auto;
@@ -175,7 +175,7 @@
     .info-content ul {
       text-align: left;
       max-width: 900px;
-      margin: 0 auto 2rem;
+      margin: 0 auto 1.25rem;
       padding-left: 1.2rem;
       color: #1e1e1eb4;
     }
@@ -198,11 +198,28 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border: 2px solid transparent;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .position-card:focus-visible {
+      outline: 3px solid #000;
+      outline-offset: 3px;
+    }
+    .position-card[aria-disabled="true"] {
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+    .position-card[aria-disabled="true"]:hover {
+      transform: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-color: rgba(0,0,0,0.1);
     }
     .position-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      border-color: #0a84ff;
+      border-color: #000000;
     }
     .position-card h3 {
       font-size: 1.5rem;
@@ -214,31 +231,12 @@
       margin-bottom: 20px;
       line-height: 1.5;
     }
-    .position-card .fancy-button {
-      background: linear-gradient(45deg, #0a84ff, #5856d6);
-      border: none;
-      border-radius: 50px;
-      padding: 12px 25px;
-      color: white;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .position-card .fancy-button:hover {
-      transform: scale(1.05);
-    }
-    .position-card .fancy-button a {
-      color: white;
-      text-decoration: none;
-    }
     /* ========= RESPONSIVE DESIGN ========= */
     @media (max-width: 768px) {
       .hero-main h1 { font-size: 2rem; }
       .hero-main p { font-size: 1rem; }
       .section-divider { font-size: 1.2rem; width: 60%; }
+      .info-section { padding: 22px 0; }
       .info-content h2 { font-size: 2rem; }
       .training-positions { grid-template-columns: 1fr; }
     }
@@ -261,6 +259,24 @@
   <section class="hero" id="hero">
     <div class="parallax-bg"></div>
     <div class="hero-main">
+    </div>
+  </section>
+
+  <!-- VISION SECTION -->
+  <section class="info-section" id="vision">
+    <div class="info-content">
+      <h2>Vision for Radiant Production</h2>
+      <p>
+        Vision isn’t a slogan. It’s a clear picture of our preferred future, why it matters, and the path to get there. Without direction, our effort feels meaningless and momentum appears to move us nowhere. We are to Worship God, Build Family, and Reach People. Naming this keeps every decision pointed at the same destination.
+      </p>
+      <h3 style="margin-top: 0.75rem;">Why Vision Matters</h3>
+      <ul>
+        <li><strong>Alignment</strong> — When the destination is clear, every role pursues the same outcome.</li>
+        <li><strong>Meaning</strong> — Purpose fuels perseverance. We show up early, carry heavy podiums, and rush after work because our work changes lives, not just because we accepted a planning center request.</li>
+        <li><strong>Clarity</strong> — Shared style. Cameras, Lighting, and ProPresenter make consistent choices because we agree on what “good” looks like.</li>
+        <li><strong>Ownership</strong> — Initiative multiplies. Clear targets empower people to act like leaders in their position.</li>
+        <li><strong>Culture</strong> — We are a team. We support and build each other up. Welcoming new volunteers as family, teaching patiently, sharing successes, and leading beside each other.</li>
+      </ul>
     </div>
   </section>
 
@@ -304,48 +320,34 @@
         Access specialized training materials for each volunteer position. Whether you're just starting out or looking to enhance your skills, these resources will help you serve with excellence and confidence.
       </p>
       <div class="training-positions">
-        <div class="position-card" id="position-camera-operators">
+        <a class="position-card" id="position-camera-operators" href="camera_operator_training.html" aria-label="Open Camera Operator resources">
           <h3>Camera Operators</h3>
           <p>Learn camera operation, shot composition, and live production techniques for worship services.</p>
-          <button class="fancy-button">
-            <a href="camera_operator_training.html">Open Resources</a>
-          </button>
-        </div>
-        <div class="position-card" id="position-audio-engineers">
+        </a>
+        <a class="position-card" id="position-video-directors" href="#" aria-disabled="true" aria-label="Video Directors resources coming soon">
+          <h3>Video Directors</h3>
+          <p>Oversee camera shots, live switching, and visual storytelling during worship services.</p>
+        </a>
+        <a class="position-card" id="position-lighting-engineers" href="#" aria-disabled="true" aria-label="Lighting Engineers resources coming soon">
+          <h3>Lighting Engineers</h3>
+          <p>Understand lighting design, color theory, and creating atmosphere for worship experiences.</p>
+        </a>
+        <a class="position-card" id="position-stage-manager" href="#" aria-disabled="true" aria-label="Stage Manager resources coming soon">
+          <h3>Stage Manager</h3>
+          <p>Monitor stage activities, coordinate cues, and ensure smooth transitions during services.</p>
+        </a>
+        <a class="position-card" id="position-computer-graphics-operator" href="#" aria-disabled="true" aria-label="Computer Graphics Operator resources coming soon">
+          <h3>Computer Graphics Operator</h3>
+          <p>Develop skills in motion graphics, worship visuals, and real-time content display.</p>
+        </a>
+        <a class="position-card" id="position-audio-engineers" href="#" aria-disabled="true" aria-label="Audio Engineers resources coming soon">
           <h3>Audio Engineers</h3>
           <p>Master sound mixing, microphone placement, and audio troubleshooting for live services.</p>
-          <button class="fancy-button">
-            <a href="#">Coming Soon</a>
-          </button>
-        </div>
-        <div class="position-card" id="position-lighting-technicians">
-          <h3>Lighting Technicians</h3>
-          <p>Understand lighting design, color theory, and creating atmosphere for worship experiences.</p>
-          <button class="fancy-button">
-            <a href="#">Coming Soon</a>
-          </button>
-        </div>
-        <div class="position-card" id="position-live-stream-directors">
+        </a>
+        <a class="position-card" id="position-live-stream-directors" href="#" aria-disabled="true" aria-label="Live Stream Directors resources coming soon">
           <h3>Live Stream Directors</h3>
           <p>Learn production switching, graphics operation, and online engagement strategies.</p>
-          <button class="fancy-button">
-            <a href="#">Coming Soon</a>
-          </button>
-        </div>
-        <div class="position-card" id="position-stage-design">
-          <h3>Stage Design</h3>
-          <p>Explore creative design principles, set construction, and seasonal staging concepts.</p>
-          <button class="fancy-button">
-            <a href="#">Coming Soon</a>
-          </button>
-        </div>
-        <div class="position-card" id="position-media-graphics">
-          <h3>Media Graphics</h3>
-          <p>Develop skills in motion graphics, worship visuals, and real-time content creation.</p>
-          <button class="fancy-button">
-            <a href="#">Coming Soon</a>
-          </button>
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -406,15 +408,20 @@
       }
     });
 
-    // Card hover animations
+    // Card hover animations (skip for disabled) and disable clicks for coming soon
     const positionCards = document.querySelectorAll('.position-card');
     positionCards.forEach(card => {
+      const disabled = card.getAttribute('aria-disabled') === 'true';
       card.addEventListener('mouseenter', () => {
+        if (disabled) return;
         card.style.transform = 'translateY(-10px) scale(1.02)';
       });
       card.addEventListener('mouseleave', () => {
         card.style.transform = 'translateY(0) scale(1)';
       });
+      if (disabled) {
+        card.addEventListener('click', (e) => e.preventDefault());
+      }
     });
   </script>
 </body>
