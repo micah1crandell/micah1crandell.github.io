@@ -27,7 +27,7 @@
     .section-divider { position: absolute; left: 0; top: calc(60vh - 60px); width: 50%; height: 100px; background-color: #1e1e1e; border-radius: 0 100px 100px 0; z-index: 3; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: flex-end; padding-right: 40px; color: #f0f0f0; font-size: 1.5rem; font-weight: bold; text-transform: uppercase; }
 
     /* Info sections */
-    .info-section { position: relative; overflow: hidden; padding: 50px 0; }
+    .info-section { position: relative; overflow: hidden; padding: 20px 0; }
     .info-content { position: relative; z-index: 1; text-align: center; padding: 0 20px; max-width: 1200px; margin: 0 auto; }
     .info-content h2 { font-size: 2.5rem; margin-bottom: 1rem; color: #1e1e1e; font-weight: bold; }
     .info-content p { font-size: 1.1rem; line-height: 1.6; color: #1e1e1eb4; margin-bottom: 1.5rem; max-width: 900px; margin-left: auto; margin-right: auto; }
@@ -60,6 +60,19 @@
       .section-divider { font-size: 1.2rem; width: 70%; }
       .info-content h2 { font-size: 2rem; }
     }
+
+    /* ========= CIRCULAR CAMERA TILES (blob style) ========= */
+    .camera-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; padding: 0 8px; align-items: start; }
+    .camera-tile { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: #1e1e1e; }
+    .camera-tile .image-container { position: relative; width: 120px; height: 120px; margin-bottom: 8px; }
+    .camera-tile .rounded-shape { position: absolute; top: -8px; left: -8px; width: 120%; height: 120%; background: linear-gradient(135deg, #FF7E5F, #FEB47B); z-index: 1; border-radius: 50%; transform: rotate(5deg); }
+    .camera-tile:nth-child(2) .rounded-shape { border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; transform: rotate(5deg); }
+    .camera-tile:nth-child(3) .rounded-shape { border-radius: 50% 30% 60% 40% / 60% 50% 70% 40%; transform: rotate(-3deg); }
+    .camera-tile:nth-child(4) .rounded-shape { border-radius: 40% 60% 30% 70% / 70% 40% 60% 50%; transform: rotate(10deg); }
+    .camera-tile img { position: relative; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; z-index: 2; box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+    .camera-tile .label { font-weight: 600; font-size: 0.95rem; margin-top: 10px; }
+    #camera-access { margin-top: 52px; padding-bottom: 12px; }
+    .camera-tile:hover img { transform: translateY(-2px); transition: transform .2s ease; }
   </style>
 </head>
 <body>
@@ -85,6 +98,42 @@
     </div>
   </section>
 
+  <!-- QUICK CAMERA ACCESS -->
+  <section class="info-section" id="camera-access">
+    <div class="info-content">
+      <div class="camera-tiles">
+        <a class="camera-tile cam1" href="camera1_resource.html" aria-label="Open Camera 1 Resource">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://photos.smugmug.com/photos/i-VSrcXgc/0/MWgNGCt2RHRn7tRvFWBWSTRSnkmQXJd4BxFXwLcs3/X3/i-VSrcXgc-X3.jpg" alt="Camera 1">
+          </div>
+          <div class="label">Camera 1</div>
+        </a>
+        <a class="camera-tile cam2" href="camera2_resource.html" aria-label="Open Camera 2 Resource">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://photos.smugmug.com/photos/i-F7MhBH9/0/LTg2hQ6SntgfzbCk43mD2SWCZTgDB9tNXTNTKXBLz/X3/i-F7MhBH9-X3.jpg" alt="Camera 2">
+          </div>
+          <div class="label">Camera 2</div>
+        </a>
+        <a class="camera-tile cam3" href="camera3_resource.html" aria-label="Open Camera 3 Resource">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://photos.smugmug.com/photos/i-nqxdBJc/0/K6fqK8drrFTP73CBzVVhxs6XBPdjPtLSMpZ98JKk3/X3/i-nqxdBJc-X3.jpg" alt="Camera 3">
+          </div>
+          <div class="label">Camera 3</div>
+        </a>
+        <a class="camera-tile cam4" href="camera4_resource.html" aria-label="Open Camera 4 Resource">
+          <div class="image-container">
+            <div class="rounded-shape"></div>
+            <img src="https://photos.smugmug.com/photos/i-rXhLLGB/0/M3pWmVkpWzq6S2CNZNM49zbXnjPwdnJNLnNqV2wjV/X3/i-rXhLLGB-X3.jpg" alt="Camera 4">
+          </div>
+          <div class="label">Camera 4</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
     <!-- Camera Info -->
   <section class="info-section">
     <div class="info-content">
@@ -103,33 +152,6 @@
     </div>
   </section>
 
-  <!-- At-a-Glance Frame Guide -->
-  <section class="info-section">
-    <div class="info-content">
-      <h2>At-a-Glance Frame Guide</h2>
-      <div style="overflow-x:auto;">
-  <table class="frame-table" style="min-width:720px;">
-          <thead>
-            <tr style="text-align:left;">
-              <th>Home</th>
-              <th>Tight</th>
-              <th>Medium</th>
-              <th>Big Moment Wide</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><img class="frame-img" alt="Home" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad4.png?raw=true"/></td>
-              <td><img class="frame-img" alt="Tight" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true"/></td>
-              <td><img class="frame-img" alt="Medium" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad3.png?raw=true"/></td>
-              <td><img class="frame-img" alt="Big Moment Wide" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad2.png?raw=true"/></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
   <!-- Shot Library -->
   <section class="info-section">
     <div class="info-content">
@@ -137,7 +159,7 @@
       <div class="highlights">
         <div class="highlight-card">
           <h3>Keys - Slow Paced</h3>
-          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
+          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera3/new10.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
             <source src="videos/cam2-2.mov">
             Your browser does not support the video tag.
           </video>
@@ -147,16 +169,19 @@
           </ul>
         </div>
         <div class="highlight-card">
-          <h3>Drums - Slow Paced</h3>
-          <img alt="Walk" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/hero2.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
+          <h3>Vocal - Slow Paced</h3>
+          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera3/new10.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
+            <source src="videos/cam2-5.mov">
+            Your browser does not support the video tag.
+          </video>
           <ul>
-            <li><strong>Tips:</strong> Change the speed you walk based on the tempo of the music. Pan from left to right and vice versa while you move for more energy.</li>
-            <li><strong>Avoid:</strong> Jerky movements that cause the shot to become unusable.</li>
+            <li><strong>Tips:</strong> Rack focus on tight shots and wide shots.</li>
+            <li><strong>Avoid:</strong> Doing shots like this during fast-paced sections. These shots tend to slow down the pacing.</li>
           </ul>
         </div>
         <div class="highlight-card">
           <h3>Keys - Medium Paced</h3>
-          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
+          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera3/new10.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
             <source src="videos/cam2-4.mov">
             Your browser does not support the video tag.
           </video>
@@ -167,7 +192,7 @@
         </div>
         <div class="highlight-card">
           <h3>Drums - Medium Paced</h3>
-          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
+          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera3/new10.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
             <source src="videos/cam2-3.mov">
             Your browser does not support the video tag.
           </video>
@@ -178,21 +203,13 @@
         </div>
         <div class="highlight-card">
           <h3>Rack Focus</h3>
-          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad5.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
+          <video class="rack-focus-video" playsinline muted autoplay loop controls preload="auto" poster="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera3/new10.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;">
             <source src="videos/cam2-1.mov">
             Your browser does not support the video tag.
           </video>
           <ul>
             <li><strong>Tips:</strong> Rack focus on tight shots and wide shots.</li>
             <li><strong>Avoid:</strong> Doing shots like this during fast-paced sections. These shots tend to slow down the pacing.</li>
-          </ul>
-        </div>
-        <div class="highlight-card">
-          <h3>Static</h3>
-          <img alt="Static" src="https://github.com/micah1crandell/websiteImages/blob/main/resources/camera1/rad4.png?raw=true" style="width:100%; border-radius:12px; margin-top:8px;"/>
-          <ul>
-            <li><strong>Tips:</strong> Use these for the sermon and other speaking moments.</li>
-            <li><strong>Avoid:</strong> Unnecessary camera movements that can distract from the speaker.</li>
           </ul>
         </div>
       </div>
