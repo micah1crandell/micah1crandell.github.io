@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other Projects – Radiant Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="global.css" />
+  <style>
+    body { margin: 0; font-family: 'Roboto', sans-serif; background: #fff; }
+    .hero { position: relative; height: 55vh; display: grid; place-items: center; text-align: center; color: #f0f0f0; overflow: hidden; }
+    .parallax-bg { position: absolute; inset: 0; background: center/cover no-repeat; transform: translateY(0); will-change: transform; z-index: -1; }
+    .hero h1 { font-size: 3rem; margin: 0; text-shadow: 0 2px 16px rgba(0,0,0,0.35); }
+  </style>
+</head>
+<body>
+  <div class="transition-overlay animate-in">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>
+  <div id="site-header"></div>
+  <section class="hero">
+    <div class="parallax-bg" style="background-image:url('https://github.com/micah1crandell/websiteImages/blob/main/video/37.jpg?raw=true'); background-position:center bottom"></div>
+    <h1>Other Projects</h1>
+  </section>
+  <script src="partials/header-loader.js"></script>
+  <script src="global.js"></script>
+  <script>
+    const bg = document.querySelector('.parallax-bg');
+    window.addEventListener('scroll', ()=>{ bg.style.transform = `translateY(${window.scrollY * 0.3}px)`; });
+  </script>
+</body>
+</html>

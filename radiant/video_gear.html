@@ -51,7 +51,7 @@
       width: 100%;
       height: 120%;
       background-size: cover;
-      background-position: center;
+      background-position: center bottom;
       z-index: -1;
       transform: translateY(0);
       will-change: transform;
@@ -64,7 +64,7 @@
       font-size: 1.2rem;
     }
     
-    /* Video Gear Full Grid Layout */
+    /* Video Gear Full Grid Layout (text-only cards to match Lighting/Audio) */
     .gear-section {
       padding: 40px 20px 60px;
       color: #1e1e1e;
@@ -83,8 +83,8 @@
     }
     .gear-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
     }
     .gear-item {
       background: #f0f0f0;
@@ -92,16 +92,9 @@
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       transition: transform 0.3s ease;
-      cursor: pointer;
     }
     .gear-item:hover {
       transform: translateY(-5px);
-    }
-    .gear-image {
-      width: 100%;
-      height: 200px;
-      background-size: cover;
-      background-position: center;
     }
     .gear-info {
       padding: 15px;
@@ -128,92 +121,9 @@
     }
     
     @media (max-width: 768px) {
-      /* Responsive adjustments if needed */
-    }
-    
-    /* Modal Styles */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-      overflow-y: auto;
-      transition: opacity 0.3s ease;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: #fff;
-      color: #1e1e1e;
-      border-radius: 8px;
-      max-width: 800px;
-      width: 100%;
-      max-height: 90%;
-      overflow-y: auto;
-      position: relative;
-      animation: modalFadeIn 0.5s ease;
-    }
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .modal-title {
-      padding: 20px;
-      margin: 0;
-      border-bottom: 1px solid #ddd;
-      font-size: 1.8rem;
-    }
-    .modal-media {
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-    .modal-images {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .modal-images img {
-      max-height: 200px;
-      border-radius: 4px;
-    }
-    .modal-video {
-      width: 100%;
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      margin-bottom: 20px;
-    }
-    .modal-video iframe, .modal-video video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    .modal-description {
-      padding: 20px;
-      font-size: 1rem;
-      line-height: 1.5;
-      border-top: 1px solid #ddd;
+      .gear-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -230,10 +140,8 @@
   
   <!-- Hero Section -->
   <section class="hero" id="hero">
-    <div class="parallax-bg" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true');"></div>
+    <div class="parallax-bg" style="background-image: url('https://photos.smugmug.com/photos/i-nqxdBJc/0/K6fqK8drrFTP73CBzVVhxs6XBPdjPtLSMpZ98JKk3/X3/i-nqxdBJc-X3.jpg');"></div>
     <div class="hero-main">
-      <h1></h1>
-      <p></p>
     </div>
   </section>
   
@@ -244,11 +152,7 @@
       <h2>Cameras</h2>
       <div class="gear-grid">
         <!-- RED Komodo 6K -->
-        <div class="gear-item"
-             data-modal-title="RED Komodo 6K"
-             data-modal-description="Compact 6K cinema camera with global shutter and exceptional dynamic range. 4 units available."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/35.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/35.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">RED Komodo 6K</h3>
             <ul class="gear-specs">
@@ -260,11 +164,7 @@
           </div>
         </div>
         <!-- Canon R5 -->
-        <div class="gear-item"
-             data-modal-title="Canon R5"
-             data-modal-description="High resolution mirrorless camera offering stunning 8K video and impressive stills. 1 unit available."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">Canon R5</h3>
             <ul class="gear-specs">
@@ -283,11 +183,7 @@
       <h2>Lenses</h2>
       <div class="gear-grid">
         <!-- Canon 20-200mm Lens -->
-        <div class="gear-item"
-             data-modal-title="Canon 20-200mm Lens"
-             data-modal-description="Versatile zoom lens covering a broad focal range. 2 units available."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/22.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/22.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">Canon 20-200mm Lens</h3>
             <ul class="gear-specs">
@@ -299,11 +195,7 @@
           </div>
         </div>
         <!-- Other Common Lenses -->
-        <div class="gear-item"
-             data-modal-title="Other Common Lenses"
-             data-modal-description="A collection of prime and zoom lenses for various shooting needs."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/10.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/10.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">Other Common Lenses</h3>
             <ul class="gear-specs">
@@ -322,11 +214,7 @@
       <h2>Accessories</h2>
       <div class="gear-grid">
         <!-- DJI Ronin R3 -->
-        <div class="gear-item"
-             data-modal-title="DJI Ronin R3"
-             data-modal-description="Professional 3-axis gimbal offering superior stabilization. 2 units available."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/35.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/35.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">DJI Ronin R3</h3>
             <ul class="gear-specs">
@@ -338,11 +226,7 @@
           </div>
         </div>
         <!-- House Built Camera Tracks on Manfrotto Tripods -->
-        <div class="gear-item"
-             data-modal-title="House Built Camera Tracks on Manfrotto Tripods"
-             data-modal-description="Custom‑built camera tracks paired with Manfrotto tripods for versatile and dynamic shots."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/22.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/22.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">House Built Camera Tracks</h3>
             <ul class="gear-specs">
@@ -353,11 +237,7 @@
           </div>
         </div>
         <!-- Tilta Cages -->
-        <div class="gear-item"
-             data-modal-title="Tilta Cages"
-             data-modal-description="Durable cages offering versatile mounting options and enhanced protection for your camera setup."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/10.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/10.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">Tilta Cages</h3>
             <ul class="gear-specs">
@@ -368,11 +248,7 @@
           </div>
         </div>
         <!-- Teradek Bolt 6 -->
-        <div class="gear-item"
-             data-modal-title="Teradek Bolt 6"
-             data-modal-description="Wireless video transmission system ensuring reliable connectivity on set."
-             data-modal-images="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true">
-          <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true');"></div>
+        <div class="gear-item">
           <div class="gear-info">
             <h3 class="gear-model">Teradek Bolt 6</h3>
             <ul class="gear-specs">
@@ -385,19 +261,6 @@
       </div>
     </section>
   </main>
-  
-  <!-- Modal Structure -->
-  <div class="modal" id="gearModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Close modal">&times;</button>
-      <h2 class="modal-title"></h2>
-      <div class="modal-media">
-        <div class="modal-images"></div>
-        <div class="modal-video"></div>
-      </div>
-      <div class="modal-description"></div>
-    </div>
-  </div>
   
   <script src="partials/header-loader.js"></script>
   <script src="global.js"></script>
@@ -450,99 +313,7 @@
       parallaxBg.style.transform = `translateY(${offset}px)`;
     });
     
-    // Modal Functionality for Gear Items
-    document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('gearModal');
-      const modalTitle = modal.querySelector('.modal-title');
-      const modalImagesContainer = modal.querySelector('.modal-images');
-      const modalVideoContainer = modal.querySelector('.modal-video');
-      const modalDescription = modal.querySelector('.modal-description');
-      const modalClose = modal.querySelector('.modal-close');
-      
-      // Function to open modal with content
-      function openModal(item) {
-        // Get data from data attributes
-        const title = item.getAttribute('data-modal-title') || item.querySelector('.gear-model').innerText;
-        const description = item.getAttribute('data-modal-description') || item.querySelector('.gear-description').innerText;
-        const imagesData = item.getAttribute('data-modal-images');
-        const videoSrc = item.getAttribute('data-modal-video');
-        
-        modalTitle.innerText = title;
-        modalDescription.innerText = description;
-        
-        // Clear previous images and video
-        modalImagesContainer.innerHTML = '';
-        modalVideoContainer.innerHTML = '';
-        modalVideoContainer.style.display = 'block'; // reset display
-        
-        // Populate images
-        if (imagesData) {
-          const images = imagesData.split(',');
-          images.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url.trim();
-            img.alt = title;
-            modalImagesContainer.appendChild(img);
-          });
-        } else {
-          // fallback: use the gear item's main image
-          const gearImageStyle = item.querySelector('.gear-image').style.backgroundImage;
-          const urlMatch = gearImageStyle.match(/url\(["']?([^"']*)["']?\)/);
-          if (urlMatch) {
-            const img = document.createElement('img');
-            img.src = urlMatch[1];
-            img.alt = title;
-            modalImagesContainer.appendChild(img);
-          }
-        }
-        
-        // Populate video if available
-        if (videoSrc) {
-          const iframe = document.createElement('iframe');
-          iframe.src = videoSrc;
-          iframe.frameBorder = "0";
-          iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-          iframe.allowFullscreen = true;
-          modalVideoContainer.appendChild(iframe);
-        } else {
-          // If no video provided, hide video container
-          modalVideoContainer.style.display = 'none';
-        }
-        
-        // Show modal
-        modal.classList.add('active');
-        modal.setAttribute('aria-hidden', 'false');
-      }
-      
-      // Add click event to each gear item
-      document.querySelectorAll('.gear-item').forEach(item => {
-        item.addEventListener('click', () => {
-          openModal(item);
-        });
-      });
-      
-      // Close modal when close button is clicked
-      modalClose.addEventListener('click', () => {
-        modal.classList.remove('active');
-        modal.setAttribute('aria-hidden', 'true');
-      });
-      
-      // Close modal when clicking outside modal content
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('active');
-          modal.setAttribute('aria-hidden', 'true');
-        }
-      });
-      
-      // Close modal on pressing Escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-          modal.classList.remove('active');
-          modal.setAttribute('aria-hidden', 'true');
-        }
-      });
-    });
+    // (Modal removed for simplified, text-only cards to match Lighting/Audio pages)
   </script>
 </body>
 </html>

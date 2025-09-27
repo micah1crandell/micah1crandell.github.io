@@ -80,20 +80,9 @@
       padding-left: 15px;
       border-left: 4px solid #0549DF;
     }
-    .gear-category-content {
-      display: flex;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-    .gear-featured {
-      flex: 1 1 45%;
-    }
-    .gear-supplementary {
-      flex: 1 1 45%;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    /* Grid layout (match lighting page) */
+    .gear-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+    .gear-item.featured { grid-column: span 2; }
     .gear-item {
       background: #f0f0f0;
       border-radius: 12px;
@@ -104,11 +93,8 @@
     .gear-item:hover {
       transform: translateY(-5px);
     }
-    .gear-image {
-      height: 200px;
-      background-size: cover;
-      background-position: center;
-    }
+    /* No image variant - keep spacing compact */
+    .gear-image { display: none; }
     .gear-info {
       padding: 15px;
       color: #1e1e1e;
@@ -134,19 +120,6 @@
     }
     
     /* Supplementary Lists */
-    .subcategory {
-      background: #fff;
-      border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-    .subcategory-header {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      padding-bottom: 5px;
-      border-bottom: 2px solid #0549DF;
-      color: #0549DF;
-    }
     .gear-list {
       list-style: none;
       padding: 0;
@@ -162,9 +135,6 @@
       break-inside: avoid;
     }
     @media (max-width: 768px) {
-      .gear-category-content {
-        flex-direction: column;
-      }
       .gear-list {
         columns: 1;
       }
@@ -184,10 +154,8 @@
   
   <!-- Hero Section -->
   <section class="hero" id="hero">
-    <div class="parallax-bg" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true');"></div>
+    <div class="parallax-bg" style="background-image: url('https://photos.smugmug.com/photos/i-qTcx8Cj/0/LP5sNmXj2g7gJqKWdjpWQh4CwGkCDHMTMqT8hrKQL/X3/i-qTcx8Cj-X3.jpg');"></div>
     <div class="hero-main">
-      <h1></h1>
-      <p></p>
     </div>
   </section>
   
@@ -196,40 +164,38 @@
     <!-- Microphones Category -->
     <section class="gear-category" id="mics">
       <h2>Microphones</h2>
-      <div class="gear-category-content">
-        <div class="gear-featured">
-          <div class="gear-item">
-            <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/audio/36.jpg?raw=true');"></div>
-            <div class="gear-info">
-              <h3 class="gear-model">Shure DPA 2028</h3>
-              <ul class="gear-specs">
-                <li>Type: Condenser</li>
-                <li>Pattern: Cardioid</li>
-                <li>Frequency: 20Hz-20kHz</li>
-              </ul>
-              <p class="gear-description">Our primary choice for worship vocals</p>
-            </div>
+      <div class="gear-grid">
+        <div class="gear-item featured">
+          <div class="gear-info">
+            <h3 class="gear-model">Shure DPA 2028</h3>
+            <ul class="gear-specs">
+              <li>Type: Condenser</li>
+              <li>Pattern: Cardioid</li>
+              <li>Frequency: 20Hz–20kHz</li>
+            </ul>
+            <p class="gear-description">Our primary choice for worship vocals.</p>
           </div>
         </div>
-        <div class="gear-supplementary">
-          <div class="subcategory">
-            <h3 class="subcategory-header">Dynamic Microphones</h3>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Dynamic Microphones</h3>
             <ul class="gear-list">
-              <li>Shure SM58 (x4) - Vocal mics</li>
-              <li>Shure Beta 91A (x1) - Kick drum</li>
-              <li>Sennheiser e604 (x2) - Tom mics</li>
-              <li>Audix D6 (x1) - Alternative kick option</li>
-              <li>Shure SM57 (x2) - Snare</li>
+              <li>Shure SM58 (x4) — Vocal mics</li>
+              <li>Shure Beta 91A (x1) — Kick drum</li>
+              <li>Sennheiser e604 (x2) — Toms</li>
+              <li>Audix D6 (x1) — Kick alt</li>
+              <li>Shure SM57 (x2) — Snare</li>
             </ul>
           </div>
-          <div class="subcategory">
-            <h3 class="subcategory-header">Wireless Systems</h3>
+        </div>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Wireless Systems</h3>
             <ul class="gear-list">
-              <li>Shure ULX-D (8 channels) - Digital handhelds</li>
-              <li>Sennheiser EW 300 (4 channels) - Instrument packs</li>
-              <li>Audio-Technica System 10 (2 channels) - Backup units</li>
-              <li>Shure SLX-D (4 channels) - Monitoring systems</li>
-              <li>I'm literally making all this up rn - lol</li>
+              <li>Shure ULX‑D (8 ch) — Digital handhelds</li>
+              <li>Sennheiser EW 300 (4 ch) — Instrument packs</li>
+              <li>Audio‑Technica System 10 (2 ch) — Backups</li>
+              <li>Shure SLX‑D (4 ch) — Monitoring</li>
             </ul>
           </div>
         </div>
@@ -239,36 +205,35 @@
     <!-- PA Systems Category -->
     <section class="gear-category" id="pa">
       <h2>PA Systems</h2>
-      <div class="gear-category-content">
-        <div class="gear-featured">
-          <div class="gear-item">
-            <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/24.jpg?raw=true');"></div>
-            <div class="gear-info">
-              <h3 class="gear-model">L-Acoustics Arc Wifo</h3>
-              <ul class="gear-specs">
-                <li>Power: 105dB SPL</li>
-                <li>Coverage: 120°</li>
-                <li>Amp Powered</li>
-              </ul>
-              <p class="gear-description">Main front-of-house array system</p>
-            </div>
+      <div class="gear-grid">
+        <div class="gear-item featured">
+          <div class="gear-info">
+            <h3 class="gear-model">L‑Acoustics Arc Wifo</h3>
+            <ul class="gear-specs">
+              <li>Power: 105 dB SPL</li>
+              <li>Coverage: 120°</li>
+              <li>Amp Powered</li>
+            </ul>
+            <p class="gear-description">Main front‑of‑house array system.</p>
           </div>
         </div>
-        <div class="gear-supplementary">
-          <div class="subcategory">
-            <h3 class="subcategory-header">Speaker Components</h3>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Speaker Components</h3>
             <ul class="gear-list">
-              <li>L-Acoustics KARA (8 boxes/side) - Main hangs</li>
-              <li>JBL - Outdoor speakers</li>
-              <li>L-Acoustics SB28 (x4) - Front-facing subs</li>
+              <li>L‑Acoustics KARA (8 boxes/side) — Main hangs</li>
+              <li>JBL — Outdoor speakers</li>
+              <li>L‑Acoustics SB28 (x4) — Front subs</li>
             </ul>
           </div>
-          <div class="subcategory">
-            <h3 class="subcategory-header">Amplification</h3>
+        </div>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Amplification</h3>
             <ul class="gear-list">
-              <li>L-Acoustics LA4X (x4) - Main system amps</li>
-              <li>Crown XTi 4002 (x2) - Backup amplifiers</li>
-              <li>QSC PLD 4.5 (x2) - Monitor amps</li>
+              <li>L‑Acoustics LA4X (x4) — Main system amps</li>
+              <li>Crown XTi 4002 (x2) — Backup amps</li>
+              <li>QSC PLD 4.5 (x2) — Monitor amps</li>
             </ul>
           </div>
         </div>
@@ -278,32 +243,31 @@
     <!-- Mixing Consoles Category -->
     <section class="gear-category" id="console">
       <h2>Mixing Consoles</h2>
-      <div class="gear-category-content">
-        <div class="gear-featured">
-          <div class="gear-item">
-            <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/audio/11.jpg?raw=true');"></div>
-            <div class="gear-info">
-              <h3 class="gear-model">Allen &amp; Heath dLive S5000</h3>
-              <ul class="gear-specs">
-                <li>128 Input Channels</li>
-                <li>64 Mix Buses</li>
-                <li>Dual 64-bit DSP</li>
-              </ul>
-              <p class="gear-description">Primary FOH mixing console</p>
-            </div>
+      <div class="gear-grid">
+        <div class="gear-item featured">
+          <div class="gear-info">
+            <h3 class="gear-model">Allen &amp; Heath dLive S5000</h3>
+            <ul class="gear-specs">
+              <li>128 Input Channels</li>
+              <li>64 Mix Buses</li>
+              <li>Dual 64‑bit DSP</li>
+            </ul>
+            <p class="gear-description">Primary FOH mixing console.</p>
           </div>
         </div>
-        <div class="gear-supplementary">
-          <div class="subcategory">
-            <h3 class="subcategory-header">Control Surfaces</h3>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Control Surfaces</h3>
             <ul class="gear-list">
-              <li>Allen &amp; Heath dLive S5000 - FOH desk</li>
+              <li>Allen &amp; Heath dLive S5000 — FOH desk</li>
             </ul>
           </div>
-          <div class="subcategory">
-            <h3 class="subcategory-header">Stageboxes</h3>
+        </div>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Stageboxes</h3>
             <ul class="gear-list">
-              <li>dLive DM32 (x2) - Primary stage racks</li>
+              <li>dLive DM32 (x2) — Primary stage racks</li>
             </ul>
           </div>
         </div>
@@ -313,34 +277,33 @@
     <!-- Signal Processing Category -->
     <section class="gear-category" id="processing">
       <h2>Signal Processing</h2>
-      <div class="gear-category-content">
-        <div class="gear-featured">
-          <div class="gear-item">
-            <div class="gear-image" style="background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/worship/20.jpg?raw=true');"></div>
-            <div class="gear-info">
-              <h3 class="gear-model">XTA DP548</h3>
-              <ul class="gear-specs">
-                <li>4-in/8-out Processor</li>
-                <li>96kHz Processing</li>
-                <li>Advanced FIR Filters</li>
-              </ul>
-              <p class="gear-description">Main system alignment processor</p>
-            </div>
+      <div class="gear-grid">
+        <div class="gear-item featured">
+          <div class="gear-info">
+            <h3 class="gear-model">XTA DP548</h3>
+            <ul class="gear-specs">
+              <li>4‑in/8‑out Processor</li>
+              <li>96 kHz Processing</li>
+              <li>Advanced FIR Filters</li>
+            </ul>
+            <p class="gear-description">Main system alignment processor.</p>
           </div>
         </div>
-        <div class="gear-supplementary">
-          <div class="subcategory">
-            <h3 class="subcategory-header">Outboard Gear</h3>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Outboard Gear</h3>
             <ul class="gear-list">
-              <li>DBX 160A (x4) - Compressors</li>
-              <li>Lexicon PCM96 - Reverb unit</li>
-              <li>TC Electronic M3000 - Effects processor</li>
+              <li>DBX 160A (x4) — Compressors</li>
+              <li>Lexicon PCM96 — Reverb</li>
+              <li>TC Electronic M3000 — FX processor</li>
             </ul>
           </div>
-          <div class="subcategory">
-            <h3 class="subcategory-header">Network Components</h3>
+        </div>
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">Network Components</h3>
             <ul class="gear-list">
-              <li>Netgear AV M4250 - Network switch</li>
+              <li>Netgear AV M4250 — Switch</li>
             </ul>
           </div>
         </div>
