@@ -120,6 +120,45 @@
       opacity: 0.9;
     }
     
+    /* Quick Nav (under hero) */
+    .quick-nav {
+      background: transparent;
+    }
+    .quick-nav-container {
+      max-width: 1200px;
+      margin: 20px auto 8px; /* sits clearly under the hero */
+      padding: 0 20px;
+    }
+    .quick-nav-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .quick-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      background: #0549DF;
+      color: #fff;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.2px;
+      border: 1px solid #0549DF;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .quick-nav-btn:hover {
+      background: #003ebc;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      transform: translateY(-1px);
+    }
+    .quick-nav-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(5,73,223,0.25);
+    }
+    
     @media (max-width: 768px) {
       .gear-grid {
         grid-template-columns: 1fr;
@@ -142,6 +181,18 @@
   <section class="hero" id="hero">
     <div class="parallax-bg" style="background-image: url('https://photos.smugmug.com/photos/i-nqxdBJc/0/K6fqK8drrFTP73CBzVVhxs6XBPdjPtLSMpZ98JKk3/X3/i-nqxdBJc-X3.jpg');"></div>
     <div class="hero-main">
+    </div>
+  </section>
+  
+  <!-- Quick Navigation Buttons -->
+  <section class="quick-nav" aria-label="Gear section shortcuts">
+    <div class="quick-nav-container">
+      <div class="quick-nav-buttons">
+        <a class="quick-nav-btn" href="#cameras">Cameras</a>
+        <a class="quick-nav-btn" href="#lenses">Lenses</a>
+        <a class="quick-nav-btn" href="#accessories">Accessories</a>
+        <a class="quick-nav-btn" href="#switching-playback">Switching &amp; Playback</a>
+      </div>
     </div>
   </section>
   
@@ -270,12 +321,26 @@
           <div class="gear-info">
             <h3 class="gear-model">ProPresenter 7 + Blackmagic DeckLink Quad 2 (8‑Channel)</h3>
             <ul class="gear-specs">
-              <li>ProPresenter 7 playback and graphics</li>
+              <li>Primary ProPresenter for playback and graphics</li>
               <li>DeckLink Quad 2: eight 3G‑SDI configurable I/O channels</li>
-              <li>Multi‑channel SDI outputs for lyrics, IMAG, and confidence</li>
+              <li>Mapped outputs: LED wall, IMAG, confidence monitor</li>
+              <li>SDI inputs for live video (e.g., baptisms) to show on LED wall</li>
               <li>Quantity: 1</li>
             </ul>
-            <p class="gear-description">Multi‑channel SDI playback for lower‑thirds, full‑screen content, and program/aux feeds directly from ProPresenter.</p>
+            <p class="gear-description">Primary ProPresenter system driving LED wall, IMAG, and confidence outputs; also ingests camera/aux video for baptisms to display on the LED wall.</p>
+          </div>
+        </div>
+        
+        <!-- ProPresenter 7 (Countdowns & Clocks) -->
+        <div class="gear-item">
+          <div class="gear-info">
+            <h3 class="gear-model">ProPresenter 7 (Countdowns &amp; Clocks)</h3>
+            <ul class="gear-specs">
+              <li>Dedicated system for all countdowns and stage clocks</li>
+              <li>Feeds stage displays/confidence monitor as needed</li>
+              <li>Quantity: 1</li>
+            </ul>
+            <p class="gear-description">Second ProPresenter dedicated to timers and clocks so the primary system stays focused on program content.</p>
           </div>
         </div>
         
