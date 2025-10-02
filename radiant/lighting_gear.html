@@ -130,6 +130,36 @@
       opacity: 0.9;
     }
     
+    /* Quick Nav (under hero) */
+    .quick-nav { background: transparent; }
+    .quick-nav-container {
+      max-width: 1200px;
+      margin: 20px auto 8px; /* sits clearly under the hero */
+      padding: 0 20px;
+    }
+    .quick-nav-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .quick-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      background: #0549DF;
+      color: #fff;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.2px;
+      border: 1px solid #0549DF;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .quick-nav-btn:hover { background: #003ebc; box-shadow: 0 6px 18px rgba(0,0,0,0.12); transform: translateY(-1px); }
+    .quick-nav-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(5,73,223,0.25); }
+    
     @media (max-width: 768px) {
       /* On mobile, use a single column grid */
       .gear-grid {
@@ -153,6 +183,20 @@
   <section class="hero" id="hero">
     <div class="parallax-bg" style="background-image: url('https://photos.smugmug.com/photos/i-hVjXMwn/0/KkHctLjV3Qq6Qzvxwhtpss4Mpzhg9r82HWLQ6Rd4q/X3/i-hVjXMwn-X3.jpg');"></div>
     <div class="hero-main">
+    </div>
+  </section>
+  
+  <!-- Quick Navigation Buttons -->
+  <section class="quick-nav" aria-label="Lighting gear section shortcuts">
+    <div class="quick-nav-container">
+      <div class="quick-nav-buttons">
+        <a class="quick-nav-btn" href="#networking-dmx">Networking &amp; DMX</a>
+        <a class="quick-nav-btn" href="#control">Control &amp; Consoles</a>
+        <a class="quick-nav-btn" href="#front-light">Front Light</a>
+        <a class="quick-nav-btn" href="#led-pars">LED PARs</a>
+        <a class="quick-nav-btn" href="#conventional-pars">Conventional PAR</a>
+        <a class="quick-nav-btn" href="#moving-lights">Moving Lights</a>
+      </div>
     </div>
   </section>
   
