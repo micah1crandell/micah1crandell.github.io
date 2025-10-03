@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VSK4JT56BT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+    gtag('config', 'G-VSK4JT56BT');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fearless Conference 2024 - Stage Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../global.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+  <style>
+    .hero { position: relative; height: 45vh; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom-right-radius: 100px; }
+  .parallax-bg { position: absolute; top: 0; left: 0; right: 0; height: 120%; background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true'); background-size: cover; background-position: center 20%; z-index: -1; transform: translateY(0); will-change: transform; }
+    .hero-title { background: rgba(240,240,240,0.7); color: #000; padding: 0.8rem 1.2rem; border-radius: 12px; font-weight: 700; letter-spacing: 1px; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 20px; color: #000; }
+    .breadcrumb { margin-top: 120px; font-size: 0.95rem; }
+    .breadcrumb a { color: #000; text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    @media (max-width: 992px) { .breadcrumb { margin-top: 80px; } }
+
+    .stage-content { max-width: 1100px; margin: 0 auto; padding: 10px 20px 40px; }
+    .feature-section { display: flex; align-items: center; gap: 24px; margin: 40px 0; }
+    .feature-section.reverse { flex-direction: row-reverse; }
+    .media-col, .text-col { flex: 1; }
+  .media-frame { width: 100%; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 8px 24px rgba(0,0,0,0.15); aspect-ratio: 16 / 9; position: relative; }
+  .media-frame.portrait { aspect-ratio: 3 / 4; width: 82%; margin-left: auto; margin-right: auto; }
+  .media-frame img, .media-frame video, .media-frame iframe { width: 100%; height: 100%; display: block; object-fit: cover; background: #000; }
+  .media-frame img { cursor: zoom-in; }
+    .text-col h2 { margin: 0 0 8px; color: #000; }
+    .text-col p { margin: 0; color: #222; line-height: 1.6; }
+
+    .gallery-section { margin: 60px auto 40px; max-width: 1200px; padding: 0 20px; }
+    .gallery-section h3 { color: #000; margin: 0 0 16px; }
+    .thumb-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .thumb { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.12); transition: transform .2s ease; }
+    .thumb:hover { transform: translateY(-2px); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 3000; }
+    .lightbox.open { display: flex; }
+    .lightbox-content { position: relative; max-width: 92vw; max-height: 92vh; }
+    .lightbox-content img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; display: block; }
+    .lightbox-close, .lightbox-prev, .lightbox-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 12px; border-radius: 10px; cursor: pointer; backdrop-filter: blur(2px); transition: background .2s ease, transform .2s ease; user-select: none; }
+    .lightbox-prev { left: -56px; }
+    .lightbox-next { right: -56px; }
+    .lightbox-close { top: -48px; right: 0; transform: none; }
+    .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover { background: rgba(255,255,255,0.22); }
+
+    /* Simple overlay control for replay/play (no audio UI) */
+    .video-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .replay-btn {
+      display: none; /* toggled via .show */
+      align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 600; line-height: 1;
+      color: #fff;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 999px; padding: 10px 14px;
+      cursor: pointer; backdrop-filter: blur(2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      pointer-events: auto;
+    }
+    .replay-btn.show { display: inline-flex; }
+
+    @media (max-width: 1100px) { .thumb-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 860px) { .feature-section, .feature-section.reverse { flex-direction: column; } .thumb-grid { grid-template-columns: repeat(3, 1fr); } .lightbox-prev { left: 8px; } .lightbox-next { right: 8px; } .lightbox-close { right: 8px; } .media-frame.portrait { width: 100%; } }
+    @media (max-width: 560px) { .thumb-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="transition-overlay animate-in"><div class="circle circle1"></div><div class="circle circle2"></div><div class="circle circle3"></div></div>
+  <div id="site-header"></div>
+
+  <section class="hero" id="hero">
+    <div class="parallax-bg"></div>
+  </section>
+
+  <main id="site-content" role="main">
+    <div class="container">
+      <div class="breadcrumb"><a href="../stage.html">Stage Design History</a> / <span>Fearless Conference 2024</span></div>
+      <div class="stage-content">
+
+        <section class="feature-section">
+          <div class="media-col">
+            <div class="media-frame"><img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/FC24/01.png?raw=true" alt="Placeholder image 1"></div>
+          </div>
+          <div class="text-col">
+            <h2>Creating the idea</h2>
+            <p>After drawing up a couple ideas, we made a quick blueprint to visualize the layout and ensure our planning was on the right track.</p>
+          </div>
+        </section>
+
+        <section class="feature-section reverse">
+          <div class="media-col">
+            <div class="media-frame"><img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/FC24/03.png?raw=true" alt="Placeholder portrait image 2"></div>
+          </div>
+          <div class="text-col">
+            <h2>Data runs</h2>
+            <p>We printed a couple more of the sheets to plan out how we wanted to approach the data flow and power distribution.</p>
+          </div>
+        </section>
+
+        <section class="feature-section">
+          <div class="media-col">
+            <div class="media-frame"><img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/FC24/02.png?raw=true" alt="Placeholder image 3"></div>
+          </div>
+          <div class="text-col">
+            <h2>Moving panels</h2>
+            <p>Then we got to work on moving the panels from the previous layout to the new one, making sure our data and power was wired correctly.</p>
+          </div>
+        </section>
+
+        <section class="feature-section reverse">
+          <div class="media-col">
+            <div class="media-frame portrait">
+              <video preload="metadata" playsinline autoplay muted poster="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true">
+                <source src="../videos/FC24/01.mov" />
+                Your browser does not support the video tag.
+              </video>
+              <div class="video-overlay"><button class="replay-btn" aria-label="Replay video">Replay</button></div>
+            </div>
+          </div>
+          <div class="text-col">
+            <h2>Current progress...</h2>
+            <p>Service was this evening, and worship rehearsal was in just a few hours so we were racing the clock getting everything set up, programmed, and cleaned.</p>
+          </div>
+        </section>
+
+        <section class="feature-section">
+          <div class="media-col">
+            <div class="media-frame"><img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/FC24/04.png?raw=true" alt="Placeholder portrait image 4"></div>
+          </div>
+          <div class="text-col">
+            <h2>Done just before service!</h2>
+            <p>We had setup all the panels and made sure the video processor was configured correctly.</p>
+          </div>
+        </section>
+
+        <section class="feature-section reverse">
+          <div class="media-col">
+            <div class="media-frame portrait">
+              <video preload="metadata" playsinline autoplay muted poster="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true">
+                <source src="../videos/FC24/02.mov" />
+                Your browser does not support the video tag.
+              </video>
+              <div class="video-overlay"><button class="replay-btn" aria-label="Replay video">Replay</button></div>
+            </div>
+          </div>
+          <div class="text-col">
+            <h2>The end!</h2>
+            <p>A lot of time passed between this video and the previous picture. We had moved the final panels, and completely redone our lighting setup.</p>
+          </div>
+        </section>
+
+        <!-- Thumbnail gallery placeholders -->
+        <section class="gallery-section">
+          <h3>Photo Gallery</h3>
+          <div class="thumb-grid" id="thumbGrid">
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-kHhbxVZ/0/KSJz9gtrmmk228qRkwvwVBKrg8HTHQ4fTH2MQ42DB/X3/i-kHhbxVZ-X3.jpg"><img src="https://photos.smugmug.com/photos/i-kHhbxVZ/0/KSJz9gtrmmk228qRkwvwVBKrg8HTHQ4fTH2MQ42DB/X3/i-kHhbxVZ-X3.jpg" alt="Gallery image 1"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-pX8JBkq/0/Lv6fJDzL84p2jGtnrbPfD4LJbXkzzPR9WC459BQfr/X3/i-pX8JBkq-X3.jpg"><img src="https://photos.smugmug.com/photos/i-pX8JBkq/0/Lv6fJDzL84p2jGtnrbPfD4LJbXkzzPR9WC459BQfr/X3/i-pX8JBkq-X3.jpg" alt="Gallery image 2"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-5NxNP7R/0/MxQ4bCVgsHbN4J9GxZ8Ssfhccg5h8GqdJFc7Nc85v/X3/i-5NxNP7R-X3.jpg"><img src="https://photos.smugmug.com/photos/i-5NxNP7R/0/MxQ4bCVgsHbN4J9GxZ8Ssfhccg5h8GqdJFc7Nc85v/X3/i-5NxNP7R-X3.jpg" alt="Gallery image 3"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-998NqCs/0/KsvwVqFTRhWf4BZhznkhFMfVTtJcGRDpH6X5GzhXq/X3/i-998NqCs-X3.jpg"><img src="https://photos.smugmug.com/photos/i-998NqCs/0/KsvwVqFTRhWf4BZhznkhFMfVTtJcGRDpH6X5GzhXq/X3/i-998NqCs-X3.jpg" alt="Gallery image 4"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-454M3sj/0/LTmFxJWdf2mzdMMkKHCkc36qM4FhpBjB7cTWs4PCM/X3/i-454M3sj-X3.jpg"><img src="https://photos.smugmug.com/photos/i-454M3sj/0/LTmFxJWdf2mzdMMkKHCkc36qM4FhpBjB7cTWs4PCM/X3/i-454M3sj-X3.jpg" alt="Gallery image 5"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-zqVRMqW/0/NTcTDP4XQ3fxCh4QnH3zhSx54tTbfQvBWPJSbHmmn/X3/i-zqVRMqW-X3.jpg"><img src="https://photos.smugmug.com/photos/i-zqVRMqW/0/NTcTDP4XQ3fxCh4QnH3zhSx54tTbfQvBWPJSbHmmn/X3/i-zqVRMqW-X3.jpg" alt="Gallery image 6"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-hzsVk2Z/0/NJ7JzMwGfPjzh5TzHH3rpT2P6PTJWqGZ5Bc7LLfDB/X3/i-hzsVk2Z-X3.jpg"><img src="https://photos.smugmug.com/photos/i-hzsVk2Z/0/NJ7JzMwGfPjzh5TzHH3rpT2P6PTJWqGZ5Bc7LLfDB/X3/i-hzsVk2Z-X3.jpg" alt="Gallery image 7"></div>
+            <div class="thumb" data-full="https://photos.smugmug.com/photos/i-4HvN7gm/0/LpNk4VR2QD4bJGSNbMfVZ3rC3kWFVjgMKfrGgXzd8/X3/i-4HvN7gm-X3.jpg"><img src="https://photos.smugmug.com/photos/i-4HvN7gm/0/LpNk4VR2QD4bJGSNbMfVZ3rC3kWFVjgMKfrGgXzd8/X3/i-4HvN7gm-X3.jpg" alt="Gallery image 8"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Image viewer">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+      <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">‹</button>
+      <img id="lightboxImage" alt="Expanded gallery image" />
+      <button class="lightbox-next" id="lightboxNext" aria-label="Next">›</button>
+    </div>
+  </div>
+
+  <script src="../partials/header-loader.js"></script>
+  <script src="../global.js"></script>
+  <script>
+    // Header hide on scroll
+    let navHeader = null; function attachHeaderScrollHide() { navHeader = document.querySelector('.nav-header'); if (!navHeader) return; let lastScrollY = window.scrollY; window.addEventListener('scroll', () => { const currentScrollY = window.scrollY; if (currentScrollY > lastScrollY && currentScrollY > 0) { navHeader.classList.add('hidden'); } else { navHeader.classList.remove('hidden'); } lastScrollY = currentScrollY; }); } attachHeaderScrollHide(); window.addEventListener('load', attachHeaderScrollHide);
+    // Parallax
+    const parallaxBg = document.querySelector('.parallax-bg'); window.addEventListener('scroll', () => { const offset = window.scrollY * 0.4; if (parallaxBg) parallaxBg.style.transform = `translateY(${offset}px)`; });
+    // Lightbox
+    (function(){ const thumbs = Array.from(document.querySelectorAll('#thumbGrid .thumb')); const overlay = document.getElementById('lightbox'); const img = document.getElementById('lightboxImage'); const btnPrev = document.getElementById('lightboxPrev'); const btnNext = document.getElementById('lightboxNext'); const btnClose = document.getElementById('lightboxClose'); let currentIndex = -1; function openAt(index){ if (index < 0 || index >= thumbs.length) return; currentIndex = index; const fullSrc = thumbs[index].getAttribute('data-full'); if (fullSrc) img.src = fullSrc; overlay.classList.add('open'); document.body.style.overflow = 'hidden'; } function close(){ overlay.classList.remove('open'); document.body.style.overflow = ''; img.removeAttribute('src'); } function next(){ openAt((currentIndex + 1) % thumbs.length); } function prev(){ openAt((currentIndex - 1 + thumbs.length) % thumbs.length); } thumbs.forEach((t, i) => { t.addEventListener('click', () => openAt(i)); }); btnClose.addEventListener('click', close); btnNext.addEventListener('click', next); btnPrev.addEventListener('click', prev); overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); }); document.addEventListener('keydown', (e) => { if (!overlay.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') next(); if (e.key === 'ArrowLeft') prev(); }); })();
+
+    // Video compatibility helper: if an MP4 source exists and is supported, keep it first; add a fallback link on error
+    (function(){
+      const videos = Array.from(document.querySelectorAll('video'));
+      videos.forEach(v => {
+        try {
+          const canMp4 = !!v.canPlayType && v.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"').replace('no','');
+          const sources = Array.from(v.querySelectorAll('source'));
+          const mp4Source = sources.find(s => (s.getAttribute('type')||'').includes('video/mp4') || (s.getAttribute('src')||'').toLowerCase().endsWith('.mp4'));
+          const movSource = sources.find(s => (s.getAttribute('type')||'').includes('quicktime') || (s.getAttribute('src')||'').toLowerCase().endsWith('.mov'));
+          if (canMp4 && mp4Source && sources[0] !== mp4Source) {
+            // Reorder so MP4 is first for better compatibility
+            v.preload = 'metadata';
+            v.innerHTML = '';
+            v.appendChild(mp4Source.cloneNode());
+            if (movSource) v.appendChild(movSource.cloneNode());
+          }
+
+          const showFallback = () => {
+            if (v.__fallbackAdded) return;
+            v.__fallbackAdded = true;
+            const linkSrc = (mp4Source && mp4Source.getAttribute('src')) || (movSource && movSource.getAttribute('src')) || '';
+            const wrap = v.parentElement;
+            const fallback = document.createElement('div');
+            fallback.style.marginTop = '8px';
+            fallback.innerHTML = `<a href="${linkSrc}" target="_blank" rel="noopener noreferrer">Open video in a new tab</a>`;
+            wrap && wrap.appendChild(fallback);
+          };
+          v.addEventListener('error', showFallback, { once: true });
+          v.addEventListener('stalled', showFallback, { once: true });
+          v.addEventListener('abort', showFallback, { once: true });
+        } catch (e) { /* ignore */ }
+      });
+    })();
+
+    // Autoplay muted when visible, pause when not visible
+    (function(){
+      const vids = Array.from(document.querySelectorAll('video'));
+      vids.forEach(v => { 
+        try { v.muted = true; v.volume = 0; v.removeAttribute('controls'); } catch(e){}
+        // Lock volume and muted state hard
+        try {
+          const setMuted = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'muted')?.set;
+          const setVolume = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'volume')?.set;
+          if (setMuted || setVolume) {
+            // Periodically enforce
+            setInterval(() => { try { v.muted = true; v.volume = 0; } catch(_){} }, 1000);
+          }
+          v.addEventListener('volumechange', () => { try { v.muted = true; v.volume = 0; } catch(_){} });
+        } catch(_){}
+        // Disable right-click menu on video
+        v.addEventListener('contextmenu', (e) => e.preventDefault());
+        // Prevent keyboard from toggling mute on focused video
+        v.addEventListener('keydown', (e) => {
+          if (['m','M'].includes(e.key)) { e.preventDefault(); }
+        });
+      });
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(async (entry) => {
+          const v = entry.target;
+          if (entry.isIntersecting) {
+            try { v.muted = true; } catch(e){}
+            try { await v.play(); } catch (e) { /* Autoplay may be blocked; user can tap play */ }
+          } else {
+            try { v.pause(); } catch(e){}
+          }
+        });
+      }, { threshold: 0.35 });
+
+      vids.forEach(v => io.observe(v));
+    })();
+
+    // Overlay replay/play button wiring (no audio controls)
+    (function(){
+      const frames = Array.from(document.querySelectorAll('.media-frame'));
+      frames.forEach(frame => {
+        const v = frame.querySelector('video');
+        const btn = frame.querySelector('.replay-btn');
+        if (!v || !btn) return;
+
+        const hide = () => btn.classList.remove('show');
+        const show = () => btn.classList.add('show');
+
+        // Show button when video ends
+        v.addEventListener('ended', show);
+        // Optional: show when paused by user interaction
+        v.addEventListener('pause', () => {
+          // Only show if not because of out-of-view pause (we can check visibility)
+          const rect = frame.getBoundingClientRect();
+          const visible = rect.top < window.innerHeight && rect.bottom > 0;
+          if (visible) show();
+        });
+        // Hide when playing
+        v.addEventListener('play', hide);
+
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          try { v.muted = true; v.volume = 0; } catch(_){}
+          try { v.currentTime = 0; } catch(_){}
+          hide();
+          try { await v.play(); } catch(_){}
+        });
+      });
+    })();
+
+    // Open feature images in lightbox when clicked
+    (function(){
+      const overlay = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImage');
+      const featureImages = Array.from(document.querySelectorAll('.feature-section .media-frame img'));
+      featureImages.forEach(el => {
+        el.addEventListener('click', () => {
+          const src = el.getAttribute('src');
+          if (!src) return;
+          img.src = src;
+          overlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

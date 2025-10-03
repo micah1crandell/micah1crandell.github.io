@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VSK4JT56BT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+    gtag('config', 'G-VSK4JT56BT');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stage Details - Radiant Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../global.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=graphic_eq" />
+  <style>
+    /* Basic hero for stage detail pages (will be customized per stage later) */
+    .hero {
+      position: relative;
+      height: 45vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-bottom-right-radius: 100px;
+    }
+    .parallax-bg {
+      position: absolute;
+      inset: 0;
+      height: 120%;
+      background-image: url('https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true');
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+      transform: translateY(0);
+      will-change: transform;
+    }
+    .hero-title {
+      background: rgba(240,240,240,0.7);
+      color: #000;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #000;
+    }
+
+    .breadcrumb {
+      margin-top: 120px; /* account for fixed header on desktop */
+      font-size: 0.95rem;
+    }
+    .breadcrumb a { color: #000; text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    @media (max-width: 992px) {
+      .breadcrumb { margin-top: 80px; }
+    }
+
+    /* Feature sections: alternating media and text */
+    .stage-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 10px 20px 40px;
+    }
+    .feature-section {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 40px 0;
+    }
+    .feature-section.reverse {
+      flex-direction: row-reverse;
+    }
+    .media-col, .text-col {
+      flex: 1;
+    }
+    .media-frame {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      aspect-ratio: 16 / 9; /* default ratio */
+    }
+    /* Portrait-friendly option; add class 'portrait' to use */
+    .media-frame.portrait { aspect-ratio: 3 / 4; }
+    .media-frame img, .media-frame video, .media-frame iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: #000;
+    }
+    .text-col h2 {
+      margin: 0 0 8px;
+      color: #000;
+    }
+    .text-col p {
+      margin: 0;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    /* Bottom gallery grid */
+    .gallery-section {
+      margin: 60px auto 40px;
+      max-width: 1200px;
+      padding: 0 20px;
+    }
+    .gallery-section h3 {
+      color: #000;
+      margin: 0 0 16px;
+    }
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      transition: transform .2s ease;
+    }
+    .thumb:hover { transform: translateY(-2px); }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Lightbox viewer */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      display: none; /* toggled with .open */
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-content {
+      position: relative;
+      max-width: 92vw;
+      max-height: 92vh;
+    }
+    .lightbox-content img {
+      max-width: 92vw;
+      max-height: 92vh;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+    }
+    .lightbox-close, .lightbox-prev, .lightbox-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      backdrop-filter: blur(2px);
+      transition: background .2s ease, transform .2s ease;
+      user-select: none;
+    }
+    .lightbox-prev { left: -56px; }
+    .lightbox-next { right: -56px; }
+    .lightbox-close {
+      top: -48px;
+      right: 0;
+      transform: none;
+    }
+    .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
+      background: rgba(255,255,255,0.22);
+    }
+
+    @media (max-width: 1100px) {
+      .thumb-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 860px) {
+      .feature-section, .feature-section.reverse { flex-direction: column; }
+      .thumb-grid { grid-template-columns: repeat(3, 1fr); }
+      .lightbox-prev { left: 8px; }
+      .lightbox-next { right: 8px; }
+      .lightbox-close { right: 8px; }
+    }
+    @media (max-width: 560px) {
+      .thumb-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Transition Overlay -->
+  <div class="transition-overlay animate-in">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>
+
+  <!-- Shared header placeholder -->
+  <div id="site-header"></div>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="parallax-bg"></div>
+    <h1 class="hero-title">Stage Title</h1>
+  </section>
+
+  <!-- Page content scaffold -->
+  <main id="site-content" role="main">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../stage.html">Stage Design History</a> / <span>Stage Title</span>
+      </div>
+      <div class="stage-content">
+        <!-- Alternating feature media blocks -->
+        <section class="feature-section">
+          <div class="media-col">
+            <div class="media-frame">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/22lq.jpg?raw=true" alt="Stage build overview">
+            </div>
+          </div>
+          <div class="text-col">
+            <h2>Fearless Conference Build</h2>
+            <p>
+              An overview of our stage design featuring layered LED walls, dynamic lighting, and flexible truss segments. 
+              The layout provided quick reconfigurations for sessions and worship sets.
+            </p>
+          </div>
+        </section>
+
+        <section class="feature-section reverse">
+          <div class="media-col">
+            <div class="media-frame">
+              <video controls preload="metadata" poster="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true">
+                <source src="../videos/cam1-1.mov" type="video/quicktime" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+          <div class="text-col">
+            <h2>Camera One Angle</h2>
+            <p>
+              A wide broadcast angle highlighting the lighting scenes and crowd engagement. We balanced haze density
+              to keep beams visible without washing out faces on camera.
+            </p>
+          </div>
+        </section>
+
+        <section class="feature-section">
+          <div class="media-col">
+            <div class="media-frame portrait">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/2.jpg?raw=true" alt="Portrait lighting look">
+            </div>
+          </div>
+          <div class="text-col">
+            <h2>Portrait Look</h2>
+            <p>
+              A portrait composition that shows how front wash and backlight ratios were tuned. The side LEDs were
+              programmed for slow gradients to maintain a clean aesthetic on tighter shots.
+            </p>
+          </div>
+        </section>
+
+        <section class="feature-section reverse">
+          <div class="media-col">
+            <div class="media-frame">
+              <video controls preload="metadata" poster="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true">
+                <source src="../videos/cam2-3.mov" type="video/quicktime" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+          <div class="text-col">
+            <h2>Dynamic Moments</h2>
+            <p>
+              Fast cuts and accent hits were rehearsed with the band. Cue stacks aligned with song structure kept
+              transitions smooth while giving space for spontaneous moments.
+            </p>
+          </div>
+        </section>
+
+        <!-- Thumbnail gallery -->
+        <section class="gallery-section">
+          <h3>Photo Gallery</h3>
+          <div class="thumb-grid" id="thumbGrid">
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/28.jpg?raw=true" alt="Gallery image 1">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/7.jpg?raw=true" alt="Gallery image 2">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/stage/24.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/24.jpg?raw=true" alt="Gallery image 3">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/21.jpg?raw=true" alt="Gallery image 4">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/9.jpg?raw=true" alt="Gallery image 5">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/4.jpg?raw=true" alt="Gallery image 6">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/6.jpg?raw=true" alt="Gallery image 7">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/stage/42.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/stage/42.jpg?raw=true" alt="Gallery image 8">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/worship/8.jpg?raw=true" alt="Gallery image 9">
+            </div>
+            <div class="thumb" data-full="https://github.com/micah1crandell/websiteImages/blob/main/video/25.jpg?raw=true">
+              <img src="https://github.com/micah1crandell/websiteImages/blob/main/video/25.jpg?raw=true" alt="Gallery image 10">
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Image viewer">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+      <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">‹</button>
+      <img id="lightboxImage" alt="Expanded gallery image" />
+      <button class="lightbox-next" id="lightboxNext" aria-label="Next">›</button>
+    </div>
+  </div>
+
+  <!-- Shared scripts -->
+  <script src="../partials/header-loader.js"></script>
+  <script src="../global.js"></script>
+  <script>
+    // After header injection, attach scroll-hide behavior on this page
+    let navHeader = null;
+    function attachHeaderScrollHide() {
+      navHeader = document.querySelector('.nav-header');
+      if (!navHeader) return;
+      let lastScrollY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 0) {
+          navHeader.classList.add('hidden');
+        } else {
+          navHeader.classList.remove('hidden');
+        }
+        lastScrollY = currentScrollY;
+      });
+    }
+    attachHeaderScrollHide();
+    window.addEventListener('load', attachHeaderScrollHide);
+
+    // Simple parallax for hero
+    const parallaxBg = document.querySelector('.parallax-bg');
+    window.addEventListener('scroll', () => {
+      const offset = window.scrollY * 0.4;
+      if (parallaxBg) parallaxBg.style.transform = `translateY(${offset}px)`;
+    });
+
+    // Lightbox for gallery thumbnails
+    (function(){
+      const thumbs = Array.from(document.querySelectorAll('#thumbGrid .thumb'));
+      const overlay = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImage');
+      const btnPrev = document.getElementById('lightboxPrev');
+      const btnNext = document.getElementById('lightboxNext');
+      const btnClose = document.getElementById('lightboxClose');
+      let currentIndex = -1;
+
+      function openAt(index){
+        if (index < 0 || index >= thumbs.length) return;
+        currentIndex = index;
+        const fullSrc = thumbs[index].getAttribute('data-full');
+        if (fullSrc) img.src = fullSrc;
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function close(){
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+        img.removeAttribute('src');
+      }
+      function next(){ openAt((currentIndex + 1) % thumbs.length); }
+      function prev(){ openAt((currentIndex - 1 + thumbs.length) % thumbs.length); }
+
+      thumbs.forEach((t, i) => {
+        t.addEventListener('click', () => openAt(i));
+      });
+      btnClose.addEventListener('click', close);
+      btnNext.addEventListener('click', next);
+      btnPrev.addEventListener('click', prev);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (!overlay.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft') prev();
+      });
+    })();
+  </script>
+</body>
+</html>
