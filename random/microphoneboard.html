@@ -1,0 +1,2758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Stage Manager Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#04060d;
+      --surface:#0b1220;
+      --surface-alt:#111a2d;
+      --surface-elevated:#17253a;
+      --surface-overlay:rgba(12,18,32,0.86);
+      --border:rgba(255,255,255,0.08);
+      --border-strong:rgba(79,138,250,0.55);
+      --shadow:0 24px 60px rgba(4,8,18,0.45);
+      --accent:#4f8afa;
+      --accent-soft:rgba(79,138,250,0.18);
+      --accent-strong:#2f6fe0;
+      --accent-secondary:#f471d1;
+      --success:#2ecc71;
+      --warning:#f0c419;
+      --danger:#ff5c5c;
+      --text-primary:#ffffff;
+      --text-secondary:rgba(255,255,255,0.74);
+      --text-muted:rgba(255,255,255,0.55);
+      --tab-bg:rgba(18,26,44,0.8);
+      --tab-border:rgba(255,255,255,0.06);
+      --radius-lg:18px;
+      --radius-md:14px;
+      --radius-sm:10px;
+      --transition:0.24s cubic-bezier(.4,0,.2,1);
+    }
+
+    * {
+      box-sizing:border-box;
+    }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      background:radial-gradient(circle at top right,#152449 0%,#081025 45%,#05070d 100%);
+      color:var(--text-primary);
+      font-family:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      display:flex;
+      justify-content:center;
+      padding:32px 18px 48px;
+    }
+
+    .mobile-admin {
+      width:100%;
+      max-width:1120px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      position:relative;
+      opacity:0;
+      transform:translateY(18px);
+      transition:opacity 0.35s ease,transform 0.35s ease;
+    }
+
+    .mobile-admin.ready {
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .mobile-header {
+      background:linear-gradient(135deg,rgba(23,37,58,0.96) 0%,rgba(12,18,32,0.92) 100%);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:22px 26px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .header-title {
+      font-size:1.55rem;
+      font-weight:700;
+      letter-spacing:0.02em;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .header-title span {
+      font-size:0.85rem;
+      font-weight:500;
+      padding:4px 9px;
+      border-radius:12px;
+      background:rgba(79,138,250,0.18);
+      border:1px solid rgba(79,138,250,0.45);
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+    }
+
+    .header-actions {
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+
+    .icon-button {
+      border:none;
+      border-radius:14px;
+      padding:11px 16px;
+      background:var(--accent);
+      color:#fff;
+      font-size:1.05rem;
+      cursor:pointer;
+      transition:var(--transition);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:600;
+      box-shadow:0 12px 28px rgba(79,138,250,0.32);
+    }
+
+    .icon-button:hover {
+      background:var(--accent-strong);
+      transform:translateY(-2px);
+    }
+
+    .connection-status {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(32,46,72,0.52);
+      border-radius:14px;
+      padding:9px 16px;
+      border:1px solid rgba(255,255,255,0.05);
+      min-width:168px;
+      justify-content:center;
+      transition:var(--transition);
+    }
+
+    .status-dot {
+      width:11px;
+      height:11px;
+      border-radius:50%;
+      background:var(--warning);
+      box-shadow:0 0 16px rgba(240,196,25,0.45);
+      transition:var(--transition);
+    }
+
+    .status-dot.connected {
+      background:var(--success);
+      box-shadow:0 0 18px rgba(46,204,113,0.55);
+    }
+
+    .status-dot.disconnected {
+      background:var(--danger);
+      box-shadow:0 0 18px rgba(255,92,92,0.55);
+    }
+
+    .connection-status span {
+      font-size:0.92rem;
+      font-weight:500;
+      color:var(--text-secondary);
+    }
+
+    .mobile-tabs {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      background:var(--tab-bg);
+      border:1px solid var(--tab-border);
+      border-radius:var(--radius-lg);
+      padding:6px;
+      gap:6px;
+      position:sticky;
+      top:16px;
+      z-index:20;
+      backdrop-filter:blur(28px);
+    }
+
+    .tab-button {
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:14px 8px;
+      font-size:0.93rem;
+      font-weight:600;
+      color:var(--text-secondary);
+      background:transparent;
+      cursor:pointer;
+      transition:var(--transition);
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+    }
+
+    .tab-button.active {
+      background:linear-gradient(135deg,rgba(79,138,250,0.95) 0%,rgba(103,72,250,0.85) 100%);
+      color:#fff;
+      box-shadow:0 12px 28px rgba(79,138,250,0.35);
+    }
+
+    .tab-content {
+      display:none;
+      background:linear-gradient(135deg,rgba(17,26,45,0.92) 0%,rgba(12,18,32,0.96) 100%);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:28px;
+      box-shadow:var(--shadow);
+    }
+
+    .tab-content.active {
+      display:block;
+    }
+
+    .database-header,
+    .mobile-sections-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .search-bar {
+      flex:1 1 260px;
+      position:relative;
+    }
+
+    .search-bar::before {
+      content:'\1F50D';
+      position:absolute;
+      left:16px;
+      top:50%;
+      transform:translateY(-48%);
+      font-size:1rem;
+      color:var(--text-muted);
+    }
+
+    .search-input {
+      width:100%;
+      padding:12px 16px 12px 44px;
+      border-radius:var(--radius-md);
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(9,14,25,0.75);
+      color:var(--text-primary);
+      font-size:0.95rem;
+      transition:border-color var(--transition),box-shadow var(--transition);
+    }
+
+    .search-input:focus {
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(79,138,250,0.25);
+    }
+
+    .people-container,
+    .sections-list {
+      background:rgba(8,12,20,0.55);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(255,255,255,0.04);
+      padding:20px;
+    }
+
+    .people-cards {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:18px;
+      position:relative;
+    }
+
+    .people-cards.loading::after {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:rgba(5,8,16,0.88);
+      border-radius:var(--radius-md);
+      backdrop-filter:blur(12px);
+    }
+
+    .person-card {
+      position:relative;
+      background:linear-gradient(160deg,rgba(26,38,62,0.92) 0%,rgba(16,24,40,0.88) 100%);
+      border-radius:var(--radius-md);
+      border:1px solid rgba(255,255,255,0.05);
+      padding:18px 18px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      transition:transform var(--transition),border-color var(--transition),box-shadow var(--transition);
+    }
+
+    .person-card:hover {
+      transform:translateY(-4px);
+      border-color:var(--border-strong);
+      box-shadow:0 18px 32px rgba(79,138,250,0.18);
+    }
+
+    .person-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .person-name {
+      font-size:1.05rem;
+      font-weight:600;
+    }
+
+    .person-tag {
+      font-size:0.72rem;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      padding:4px 8px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.08);
+      color:var(--text-secondary);
+    }
+
+    .person-info {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      color:var(--text-secondary);
+      font-size:0.9rem;
+    }
+
+    .person-actions {
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
+    .chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.08);
+      font-size:0.78rem;
+      color:var(--text-secondary);
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+    }
+
+    .sections-mobile-container {
+      display:grid;
+      gap:16px;
+    }
+
+    .section-card {
+      background:linear-gradient(160deg,rgba(24,35,56,0.95) 0%,rgba(13,20,35,0.9) 100%);
+      border-radius:var(--radius-md);
+      border:1px solid rgba(255,255,255,0.06);
+      padding:18px 20px 22px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      position:relative;
+      transition:var(--transition);
+    }
+
+    .section-card.highlight {
+      border-color:var(--accent);
+      box-shadow:0 16px 32px rgba(79,138,250,0.18);
+    }
+
+    .section-header-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .section-title {
+      font-size:1.05rem;
+      font-weight:600;
+      letter-spacing:0.01em;
+    }
+
+    .section-badges {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .badge {
+      padding:5px 10px;
+      border-radius:16px;
+      font-size:0.75rem;
+      background:rgba(255,255,255,0.08);
+      color:var(--text-secondary);
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+
+    .section-body {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      color:var(--text-secondary);
+      font-size:0.92rem;
+    }
+
+    .section-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
+    .btn {
+      border:none;
+      border-radius:12px;
+      padding:10px 16px;
+      font-size:0.9rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:var(--transition);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:rgba(255,255,255,0.07);
+      color:var(--text-primary);
+    }
+
+    .btn-primary {
+      background:linear-gradient(135deg,rgba(79,138,250,0.95) 0%,rgba(103,72,250,0.85) 100%);
+      color:white;
+      box-shadow:0 12px 28px rgba(79,138,250,0.32);
+    }
+
+    .btn-primary:hover {
+      transform:translateY(-1px);
+      filter:brightness(1.05);
+    }
+
+    .btn-secondary {
+      background:rgba(79,138,250,0.15);
+      color:var(--accent);
+      border:1px solid rgba(79,138,250,0.35);
+    }
+
+    .btn-secondary:hover {
+      background:rgba(79,138,250,0.25);
+    }
+
+    .btn-danger {
+      background:rgba(255,92,92,0.15);
+      color:var(--danger);
+      border:1px solid rgba(255,92,92,0.35);
+    }
+
+    .btn-danger:hover {
+      background:rgba(255,92,92,0.25);
+    }
+
+    .btn-sm {
+      padding:8px 14px;
+      font-size:0.82rem;
+      border-radius:10px;
+    }
+
+    .mobile-sections-footer {
+      margin-top:18px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .section-card.unassigned {
+      border-style:dashed;
+      border-color:rgba(255,255,255,0.18);
+    }
+
+    .section-card.unassigned .section-title::before {
+      content:'\26A0';
+      margin-right:8px;
+      color:var(--warning);
+    }
+
+    .loading-state {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:40px 0;
+      color:var(--text-secondary);
+    }
+
+    .spinner {
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      border:3px solid rgba(255,255,255,0.12);
+      border-top-color:var(--accent);
+      animation:spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform:rotate(360deg); }
+    }
+
+    .settings-grid {
+      display:grid;
+      gap:18px;
+    }
+
+    .section-card.settings {
+      padding:22px 24px;
+    }
+
+    .form-group {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:18px;
+    }
+
+    .form-label {
+      font-weight:600;
+      font-size:0.92rem;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width:100%;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(8,12,20,0.75);
+      padding:11px 14px;
+      color:var(--text-primary);
+      font-size:0.95rem;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(79,138,250,0.22);
+    }
+
+    .form-description {
+      font-size:0.82rem;
+      color:var(--text-muted);
+      line-height:1.5;
+    }
+
+    .form-inline {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .toggle-lg {
+      width:52px;
+      height:28px;
+      appearance:none;
+      background:rgba(255,255,255,0.2);
+      border-radius:999px;
+      position:relative;
+      cursor:pointer;
+      transition:var(--transition);
+    }
+
+    .toggle-lg::after {
+      content:'';
+      position:absolute;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:#fff;
+      top:3px;
+      left:4px;
+      transition:var(--transition);
+    }
+
+    .toggle-lg:checked {
+      background:rgba(79,138,250,0.7);
+    }
+
+    .toggle-lg:checked::after {
+      transform:translateX(24px);
+    }
+
+    .slider-wrapper {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .form-slider {
+      width:100%;
+    }
+
+    .slider-value {
+      min-width:48px;
+      text-align:right;
+      font-weight:600;
+      color:var(--text-secondary);
+    }
+
+    .modal-overlay {
+      position:fixed;
+      inset:0;
+      background:rgba(3,6,12,0.82);
+      backdrop-filter:blur(20px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:200;
+      padding:24px;
+    }
+
+    .modal-overlay.active {
+      display:flex;
+    }
+
+    .modal {
+      background:linear-gradient(145deg,rgba(19,29,49,0.98) 0%,rgba(11,18,33,0.96) 100%);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0.08);
+      width:min(480px,100%);
+      max-height:86vh;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .modal-header {
+      padding:20px 22px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .modal-title {
+      font-size:1.1rem;
+      font-weight:600;
+    }
+
+    .modal-close {
+      border:none;
+      background:rgba(255,255,255,0.08);
+      color:var(--text-secondary);
+      width:32px;
+      height:32px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:var(--transition);
+    }
+
+    .modal-close:hover {
+      background:rgba(255,255,255,0.16);
+      color:var(--text-primary);
+    }
+
+    .modal-body {
+      padding:22px;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .modal-actions {
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      padding:18px 22px 20px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      background:rgba(10,16,28,0.85);
+    }
+
+    .assignment-options {
+      display:grid;
+      gap:10px;
+    }
+
+    .assignment-option {
+      border:1px solid rgba(255,255,255,0.08);
+      padding:12px 16px;
+      border-radius:12px;
+      background:rgba(15,22,38,0.75);
+      color:var(--text-secondary);
+      font-weight:500;
+      cursor:pointer;
+      transition:var(--transition);
+      text-align:left;
+    }
+
+    .assignment-option:hover {
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+
+    .current-member {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      background:rgba(255,255,255,0.06);
+      padding:12px 14px;
+      border-radius:14px;
+    }
+
+    .current-member .avatar {
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      background:rgba(0,0,0,0.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.4rem;
+    }
+
+    .current-member .info {
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:var(--text-secondary);
+    }
+
+    .current-member .info strong {
+      color:var(--text-primary);
+    }
+
+    .empty-state {
+      text-align:center;
+      padding:48px 0;
+      color:var(--text-secondary);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .empty-state h3 {
+      margin:0;
+      font-size:1.1rem;
+      color:var(--text-primary);
+    }
+
+    .toast {
+      position:fixed;
+      bottom:32px;
+      right:32px;
+      min-width:240px;
+      max-width:320px;
+      padding:16px 18px;
+      border-radius:14px;
+      background:linear-gradient(135deg,rgba(13,20,35,0.95),rgba(19,30,52,0.95));
+      color:var(--text-primary);
+      box-shadow:0 18px 32px rgba(3,6,12,0.45);
+      border:1px solid rgba(255,255,255,0.08);
+      transform:translateY(120%);
+      opacity:0;
+      transition:transform 0.28s ease,opacity 0.28s ease;
+      z-index:400;
+    }
+
+    .toast.show {
+      transform:translateY(0);
+      opacity:1;
+    }
+
+    .toast.success {
+      border-color:rgba(46,204,113,0.45);
+    }
+
+    .toast.error {
+      border-color:rgba(255,92,92,0.45);
+    }
+
+    .setup-overlay {
+      position:fixed;
+      inset:0;
+      background:linear-gradient(135deg,rgba(4,6,12,0.92),rgba(5,8,16,0.94));
+      backdrop-filter:blur(22px);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      padding:32px 18px;
+      z-index:500;
+    }
+
+    .setup-overlay.visible {
+      display:flex;
+    }
+
+    .setup-panel {
+      width:100%;
+      max-width:980px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:22px;
+    }
+
+    .setup-card {
+      background:linear-gradient(160deg,rgba(21,32,54,0.95) 0%,rgba(12,19,34,0.92) 100%);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0.08);
+      padding:26px 28px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .setup-card h2 {
+      margin:0;
+      font-size:1.3rem;
+      letter-spacing:0.01em;
+    }
+
+    .setup-card p {
+      margin:0;
+      color:var(--text-secondary);
+      line-height:1.6;
+      font-size:0.92rem;
+    }
+
+    .setup-actions {
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .setup-note {
+      font-size:0.78rem;
+      color:var(--text-muted);
+      line-height:1.6;
+    }
+
+    .auth-mode {
+      display:inline-flex;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:0.78rem;
+      background:rgba(79,138,250,0.18);
+      color:var(--accent);
+      font-weight:600;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      align-self:flex-start;
+    }
+
+    .app-meta {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      color:var(--text-muted);
+      font-size:0.82rem;
+    }
+
+    .app-meta strong {
+      color:var(--text-secondary);
+    }
+
+    .sections-grid-meta {
+      display:flex;
+      gap:14px;
+      align-items:center;
+      font-size:0.85rem;
+      color:var(--text-muted);
+    }
+
+    @media (max-width:768px) {
+      body {
+        padding:22px 14px 48px;
+      }
+      
+      .mobile-header {
+        flex-direction:column;
+        align-items:flex-start;
+        gap:18px;
+      }
+      .header-actions {
+        width:100%;
+        justify-content:space-between;
+      }
+      .mobile-tabs {
+        position:static;
+      }
+      .tab-content {
+        padding:22px 18px;
+      }
+      .people-cards {
+        grid-template-columns:1fr;
+      }
+      .setup-panel {
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="setupOverlay" class="setup-overlay visible">
+    <div class="setup-panel">
+      <div class="setup-card" id="setupConfigCard">
+        <h2>Connect to Firebase</h2>
+        <p>Use your Microphoneboard Firebase Web App credentials. These are stored locally for faster reconnects.</p>
+        <div class="form-group">
+          <label class="form-label" for="setupApiKey">API Key</label>
+          <input id="setupApiKey" class="form-input" type="text" placeholder="AIza..." autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupAuthDomain">Auth Domain</label>
+          <input id="setupAuthDomain" class="form-input" type="text" placeholder="project.firebaseapp.com" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupProjectId">Project ID</label>
+          <input id="setupProjectId" class="form-input" type="text" placeholder="project-id" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupStorageBucket">Storage Bucket</label>
+          <input id="setupStorageBucket" class="form-input" type="text" placeholder="project.appspot.com" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupSenderId">Messaging Sender ID</label>
+          <input id="setupSenderId" class="form-input" type="text" placeholder="123456789" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupAppId">App ID</label>
+          <input id="setupAppId" class="form-input" type="text" placeholder="1:...:web:..." autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupMeasurementId">Measurement ID (optional)</label>
+          <input id="setupMeasurementId" class="form-input" type="text" placeholder="G-..." autocomplete="off">
+        </div>
+        <div class="setup-actions">
+          <button id="setupSaveConfigBtn" class="btn btn-primary">Save &amp; Connect</button>
+          <button id="setupClearConfigBtn" class="btn btn-secondary">Clear Saved Config</button>
+        </div>
+        <div class="setup-note">Need help? Visit Firebase Console → Project Settings → General to copy the web app config values.</div>
+      </div>
+      <div class="setup-card" id="setupAuthCard">
+        <div class="auth-mode" id="authModeLabel">Sign In</div>
+        <h2>Authenticate</h2>
+        <p>Sign in with an existing admin account or create one. Passwords must be at least 6 characters.</p>
+        <div class="form-group">
+          <label class="form-label" for="setupEmail">Email</label>
+          <input id="setupEmail" class="form-input" type="email" placeholder="you@example.com" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupPassword">Password</label>
+          <input id="setupPassword" class="form-input" type="password" placeholder="••••••" autocomplete="current-password">
+        </div>
+        <div class="setup-actions">
+          <button id="setupAuthSubmitBtn" class="btn btn-primary">Sign In</button>
+          <button id="setupToggleModeBtn" class="btn btn-secondary">Create New Account</button>
+          <button id="setupSkipAuthBtn" class="btn btn-danger">Skip Authentication</button>
+        </div>
+        <div class="setup-note">Skipping authentication only works if your Firestore rules permit public access. Use for local testing only.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminApp" class="mobile-admin">
+    <div class="mobile-header">
+      <div class="header-title">Stage Manager <span>Remote Admin</span></div>
+      <div class="header-actions">
+        <button id="saveRefreshBtn" class="icon-button" title="Save &amp; refresh all viewers">
+          <span>🔄</span>
+          <span>Save &amp; Refresh</span>
+        </button>
+        <div class="connection-status" id="connectionStatus">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Not connected</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-tabs">
+      <button class="tab-button active" data-tab="people">People</button>
+      <button class="tab-button" data-tab="sections">Sections</button>
+      <button class="tab-button" data-tab="settings">Settings</button>
+    </div>
+
+    <div id="peopleTab" class="tab-content active">
+      <div class="database-header">
+        <div class="search-bar">
+          <input id="peopleSearch" class="search-input" type="text" placeholder="Search people by name, role, or instrument...">
+        </div>
+        <button id="addPersonBtn" class="btn btn-primary">+ Add Person</button>
+      </div>
+      <div class="people-container">
+        <div id="peopleCardsList" class="people-cards">
+          <div class="loading-state" id="peopleLoadingState">
+            <div class="spinner"></div>
+            <div>Loading people...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sectionsTab" class="tab-content">
+      <div class="mobile-sections-header">
+        <div>
+          <h3 class="sections-title">Sections</h3>
+          <div class="sections-grid-meta">
+            <span id="sectionsCountLabel">0 sections</span>
+            <span id="sectionsWidthMeta"></span>
+          </div>
+        </div>
+        <div class="section-actions">
+          <button id="addSectionBtn" class="btn btn-primary btn-sm">+ Add</button>
+          <button id="removeLastSectionBtn" class="btn btn-secondary btn-sm">Remove Last</button>
+        </div>
+      </div>
+      <div class="sections-list">
+        <div id="sectionsGrid" class="sections-mobile-container">
+          <div class="loading-state" id="sectionsLoadingState">
+            <div class="spinner"></div>
+            <div>Loading sections...</div>
+          </div>
+        </div>
+      </div>
+      <div class="mobile-sections-footer">
+        <button id="addSectionBtnFooter" class="btn btn-primary">Add New Section</button>
+      </div>
+    </div>
+
+    <div id="settingsTab" class="tab-content">
+      <div class="settings-grid">
+        <div class="section-card settings">
+          <div class="section-header-row">
+            <div class="section-title">Connection Settings</div>
+            <div class="app-meta" id="userMeta" style="display:none;">
+              Signed in as <strong id="userEmailDisplay"></strong>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="serverUrl">Server URL</label>
+            <input id="serverUrl" class="form-input" type="text" placeholder="ws://hostname:8058/ws">
+          </div>
+          <div class="form-actions">
+            <button id="saveSettings" class="btn btn-primary">Save Settings</button>
+          </div>
+        </div>
+
+        <div class="section-card settings">
+          <div class="section-title">Refresh Control</div>
+          <div class="form-group">
+            <label class="form-label">Manual Refresh</label>
+            <div class="form-description">Force a data refresh event for connected viewers.</div>
+          </div>
+          <div class="form-actions" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button id="forceRefreshBtn" class="btn btn-secondary">🔄 Force Refresh Now</button>
+          </div>
+        </div>
+
+        <div class="section-card settings">
+          <div class="section-title">Layout Settings</div>
+          <div class="form-group">
+            <label class="form-label" for="sectionWidthInput">Section Width (vw)</label>
+            <div class="form-description">Width per section expressed in viewport units (0.5 – 20). Current: <span id="sectionWidthSummary">–</span></div>
+            <input id="sectionWidthInput" class="form-input" type="number" min="0.5" max="20" step="0.1" placeholder="4.0">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="alignmentSelect">Band View Alignment</label>
+            <select id="alignmentSelect" class="form-select">
+              <option value="left">Left Aligned</option>
+              <option value="center">Center</option>
+              <option value="right">Right Aligned</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="infoBoxPosition">Info Box Position</label>
+            <select id="infoBoxPosition" class="form-select">
+              <option value="bottom">Bottom</option>
+              <option value="top">Top</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="infoBoxHeight">Info Box Height (%)</label>
+            <input id="infoBoxHeight" class="form-input" type="number" min="10" max="50" step="1" placeholder="20">
+          </div>
+          <div class="form-actions" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button id="saveSectionWidth" class="btn btn-primary">Apply Section Width</button>
+            <button id="saveAlignment" class="btn btn-secondary">Apply Alignment</button>
+          </div>
+        </div>
+
+        <div class="section-card settings">
+          <div class="section-title">Display Theme</div>
+          <div class="form-group">
+            <label class="form-label" for="displayTheme">Display Theme</label>
+            <select id="displayTheme" class="form-select">
+              <option value="overlay">Overlay Theme</option>
+              <option value="bottom-bar">Bottom Bar Theme</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="infoBoxThemePosition">Info Box Position</label>
+            <select id="infoBoxThemePosition" class="form-select">
+              <option value="bottom">Bottom</option>
+              <option value="top">Top</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="infoBoxThemeHeight">Info Box Height (%)</label>
+            <input id="infoBoxThemeHeight" class="form-input" type="number" min="10" max="50" step="1" placeholder="20">
+          </div>
+          <div class="form-actions">
+            <button id="saveDisplayTheme" class="btn btn-primary">Apply Theme</button>
+          </div>
+        </div>
+
+        <div class="section-card settings">
+          <div class="section-title">Typography</div>
+          <div class="form-group">
+            <label class="form-label" for="fontFamily">Font Family</label>
+            <select id="fontFamily" class="form-select">
+              <option value="'Roboto', sans-serif">Google Roboto</option>
+              <option value="'Roboto Slab', serif">Roboto Slab</option>
+              <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">Helvetica / Arial</option>
+              <option value="'Courier New', Courier, monospace">Courier New</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fontSize">Font Size (px)</label>
+            <input id="fontSize" class="form-input" type="number" min="8" max="72" step="1" placeholder="16">
+          </div>
+          <div class="form-actions">
+            <button id="saveTypography" class="btn btn-primary">Apply Typography</button>
+          </div>
+        </div>
+
+        <div class="section-card settings">
+          <div class="section-title">Text Formatting</div>
+          <div class="form-group form-inline">
+            <label class="form-label" for="capsLockName">Name Uppercase</label>
+            <input id="capsLockName" class="toggle-lg" type="checkbox">
+          </div>
+          <div class="form-group form-inline">
+            <label class="form-label" for="capsLockRole">Role Uppercase</label>
+            <input id="capsLockRole" class="toggle-lg" type="checkbox">
+          </div>
+          <div class="form-group form-inline">
+            <label class="form-label" for="capsLockInstrument">Instrument Uppercase</label>
+            <input id="capsLockInstrument" class="toggle-lg" type="checkbox">
+          </div>
+          <div class="form-group form-inline">
+            <label class="form-label" for="capsLockSectionTitle">Section Title Uppercase</label>
+            <input id="capsLockSectionTitle" class="toggle-lg" type="checkbox">
+          </div>
+          <div class="form-actions">
+            <button id="saveTextFormatting" class="btn btn-primary">Apply Text Formatting</button>
+          </div>
+        </div>
+
+        <div class="section-card settings">
+          <div class="section-title">Background</div>
+          <div class="form-group">
+            <label class="form-label" for="backgroundImageUrl">Background Image URL</label>
+            <input id="backgroundImageUrl" class="form-input" type="url" placeholder="https://example.com/image.jpg">
+            <div class="form-description">Used when a section has no dedicated background image.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Blur Amount</label>
+            <div class="slider-wrapper">
+              <input id="backgroundBlur" class="form-slider" type="range" min="0" max="20" step="0.5" value="0">
+              <div class="slider-value"><span id="backgroundBlurValue">0</span> px</div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="saveBackgroundSettings" class="btn btn-primary">Apply Background</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="personModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="personModalTitle">Add Person</div>
+        <button class="modal-close" id="personModalClose" aria-label="Close">×</button>
+      </div>
+      <form id="personForm" novalidate>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="personName">Name *</label>
+            <input id="personName" class="form-input" type="text" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="personDisplayName">Display Name</label>
+            <input id="personDisplayName" class="form-input" type="text" placeholder="Shown publicly">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="personRole">Role</label>
+            <input id="personRole" class="form-input" type="text" placeholder="e.g., Vocalist">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="personInstrument">Instrument</label>
+            <input id="personInstrument" class="form-input" type="text">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="personImageUrl">Image URL</label>
+            <input id="personImageUrl" class="form-input" type="url" placeholder="https://example.com/photo.jpg">
+            <div class="form-description">Optional: Person specific background or portrait image.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="personSectionSelect">Assigned Section</label>
+            <select id="personSectionSelect" class="form-select"></select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="personCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="assignmentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="assignmentModalTitle">Assign to Section</div>
+        <button class="modal-close" id="assignmentModalClose" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="assignment-options" id="assignmentOptions"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="assignmentCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="sectionEditModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="sectionEditModalTitle">Edit Section</div>
+        <button class="modal-close" id="sectionEditModalClose" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="sectionEditName">Section Name</label>
+          <input id="sectionEditName" class="form-input" type="text" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="memberDropdown">Assign Member</label>
+          <select id="memberDropdown" class="form-select">
+            <option value="">-- Unassigned --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Visibility</label>
+          <div class="form-inline" style="justify-content:space-between;">
+            <span>Name</span>
+            <input id="showSectionName" class="toggle-lg" type="checkbox" checked>
+          </div>
+          <div class="form-inline" style="justify-content:space-between;">
+            <span>Role / Instrument</span>
+            <input id="showSectionRole" class="toggle-lg" type="checkbox" checked>
+          </div>
+          <div class="form-inline" style="justify-content:space-between;">
+            <span>Section Title</span>
+            <input id="showSectionTitle" class="toggle-lg" type="checkbox" checked>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="sectionEditCancel">Cancel</button>
+        <button class="btn btn-danger" id="unassignMember">Clear Section</button>
+        <button class="btn btn-primary" id="saveSectionEdit">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <!-- App Scripts -->
+  <script>
+    (() => {
+      'use strict';
+
+      const firebaseDefaults = {
+        apiKey: 'AIzaSyAT-28J2MWLVNek3EmJee8x16RLX8mJOA4',
+        authDomain: 'microphoneboard.firebaseapp.com',
+        projectId: 'microphoneboard',
+        storageBucket: 'microphoneboard.firebasestorage.app',
+        messagingSenderId: '190162038789',
+        appId: '1:190162038789:web:0eb8c6f0dc9dffcc9c6c6c',
+        measurementId: 'G-HT1LS1CG4B'
+      };
+
+      const STORAGE_KEYS = {
+        config: 'microphoneboardFirebaseConfig',
+        settings: 'microphoneboardAdminSettings',
+        email: 'microphoneboardLastEmail'
+      };
+
+      let firebaseApp = null;
+      let auth = null;
+      let db = null;
+      let currentPersonId = null;
+      let currentSectionId = null;
+      let assignmentPersonId = null;
+      let isSignUpMode = false;
+
+      const appState = {
+        user: null,
+        people: [],
+        layout: null,
+        sections: [],
+        search: '',
+        loading: {
+          people: true,
+          sections: true,
+          layout: true
+        }
+      };
+
+      const elements = {};
+
+      const qs = (selector, scope = document) => scope.querySelector(selector);
+      const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+      document.addEventListener('DOMContentLoaded', () => {
+        cacheElements();
+        bindUI();
+        prefillSetupForm();
+        restoreSavedSettings();
+        maybeAutoConnect();
+        updateStatus('disconnected');
+      });
+
+      function cacheElements() {
+        elements.appShell = qs('#adminApp');
+        elements.setupOverlay = qs('#setupOverlay');
+        elements.setupInputs = {
+          apiKey: qs('#setupApiKey'),
+          authDomain: qs('#setupAuthDomain'),
+          projectId: qs('#setupProjectId'),
+          storageBucket: qs('#setupStorageBucket'),
+          senderId: qs('#setupSenderId'),
+          appId: qs('#setupAppId'),
+          measurementId: qs('#setupMeasurementId')
+        };
+        elements.setupButtons = {
+          saveConfig: qs('#setupSaveConfigBtn'),
+          clearConfig: qs('#setupClearConfigBtn'),
+          authSubmit: qs('#setupAuthSubmitBtn'),
+          toggleMode: qs('#setupToggleModeBtn'),
+          skipAuth: qs('#setupSkipAuthBtn')
+        };
+        elements.setupEmail = qs('#setupEmail');
+        elements.setupPassword = qs('#setupPassword');
+        elements.authModeLabel = qs('#authModeLabel');
+        elements.saveRefreshBtn = qs('#saveRefreshBtn');
+        elements.peopleSearch = qs('#peopleSearch');
+        elements.peopleCards = qs('#peopleCardsList');
+        elements.peopleLoadingState = qs('#peopleLoadingState');
+        elements.addPersonBtn = qs('#addPersonBtn');
+        elements.sectionsGrid = qs('#sectionsGrid');
+        elements.sectionsLoadingState = qs('#sectionsLoadingState');
+        elements.sectionsCountLabel = qs('#sectionsCountLabel');
+        elements.sectionsWidthMeta = qs('#sectionsWidthMeta');
+        elements.addSectionButtons = [qs('#addSectionBtn'), qs('#addSectionBtnFooter')];
+        elements.removeLastSectionBtn = qs('#removeLastSectionBtn');
+        elements.settings = {
+          serverUrl: qs('#serverUrl'),
+          sectionWidthInput: qs('#sectionWidthInput'),
+          sectionWidthSummary: qs('#sectionWidthSummary'),
+          alignmentSelect: qs('#alignmentSelect'),
+          infoBoxPosition: qs('#infoBoxPosition'),
+          infoBoxHeight: qs('#infoBoxHeight'),
+          displayTheme: qs('#displayTheme'),
+          infoBoxThemePosition: qs('#infoBoxThemePosition'),
+          infoBoxThemeHeight: qs('#infoBoxThemeHeight'),
+          fontFamily: qs('#fontFamily'),
+          fontSize: qs('#fontSize'),
+          capsLockName: qs('#capsLockName'),
+          capsLockRole: qs('#capsLockRole'),
+          capsLockInstrument: qs('#capsLockInstrument'),
+          capsLockSectionTitle: qs('#capsLockSectionTitle'),
+          backgroundImageUrl: qs('#backgroundImageUrl'),
+          backgroundBlur: qs('#backgroundBlur'),
+          backgroundBlurValue: qs('#backgroundBlurValue')
+        };
+        elements.settingsButtons = {
+          saveSettings: qs('#saveSettings'),
+          saveSectionWidth: qs('#saveSectionWidth'),
+          saveAlignment: qs('#saveAlignment'),
+          saveDisplayTheme: qs('#saveDisplayTheme'),
+          saveTypography: qs('#saveTypography'),
+          saveTextFormatting: qs('#saveTextFormatting'),
+          saveBackground: qs('#saveBackgroundSettings'),
+          forceRefresh: qs('#forceRefreshBtn')
+        };
+        elements.userMeta = qs('#userMeta');
+        elements.userEmailDisplay = qs('#userEmailDisplay');
+        elements.connectionStatus = qs('#connectionStatus');
+        elements.statusDot = qs('#statusDot');
+        elements.statusText = qs('#statusText');
+        elements.personModal = qs('#personModal');
+        elements.personModalTitle = qs('#personModalTitle');
+        elements.personModalClose = qs('#personModalClose');
+        elements.personForm = qs('#personForm');
+        elements.personCancel = qs('#personCancel');
+        elements.personInputs = {
+          name: qs('#personName'),
+          displayName: qs('#personDisplayName'),
+          role: qs('#personRole'),
+          instrument: qs('#personInstrument'),
+          imageUrl: qs('#personImageUrl'),
+          sectionSelect: qs('#personSectionSelect')
+        };
+        elements.assignmentModal = qs('#assignmentModal');
+        elements.assignmentModalTitle = qs('#assignmentModalTitle');
+        elements.assignmentOptions = qs('#assignmentOptions');
+        elements.assignmentModalClose = qs('#assignmentModalClose');
+        elements.assignmentCancel = qs('#assignmentCancel');
+        elements.sectionEditModal = qs('#sectionEditModal');
+        elements.sectionEditModalClose = qs('#sectionEditModalClose');
+        elements.sectionEditModalTitle = qs('#sectionEditModalTitle');
+        elements.sectionEditInputs = {
+          name: qs('#sectionEditName'),
+          memberDropdown: qs('#memberDropdown'),
+          currentMemberDisplay: qs('#currentMemberDisplay'),
+          showName: qs('#showSectionName'),
+          showRole: qs('#showSectionRole'),
+          showTitle: qs('#showSectionTitle')
+        };
+        elements.sectionEditButtons = {
+          cancel: qs('#sectionEditCancel'),
+          unassign: qs('#unassignMember'),
+          save: qs('#saveSectionEdit')
+        };
+        elements.toast = qs('#toast');
+      }
+
+      function bindUI() {
+        qsa('.tab-button').forEach(button => {
+          button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+        });
+
+        if (elements.peopleSearch) {
+          elements.peopleSearch.addEventListener('input', event => {
+            appState.search = event.target.value.trim().toLowerCase();
+            renderPeople();
+          });
+        }
+
+        if (elements.addPersonBtn) {
+          elements.addPersonBtn.addEventListener('click', () => openPersonModal());
+        }
+
+        if (elements.personModalClose) {
+          elements.personModalClose.addEventListener('click', closePersonModal);
+        }
+
+        if (elements.personCancel) {
+          elements.personCancel.addEventListener('click', closePersonModal);
+        }
+
+        if (elements.personForm) {
+          elements.personForm.addEventListener('submit', handlePersonSubmit);
+        }
+
+        if (elements.personModal) {
+          elements.personModal.addEventListener('click', event => {
+            if (event.target === elements.personModal) {
+              closePersonModal();
+            }
+          });
+        }
+
+        if (elements.assignmentModalClose) {
+          elements.assignmentModalClose.addEventListener('click', closeAssignmentModal);
+        }
+
+        if (elements.assignmentCancel) {
+          elements.assignmentCancel.addEventListener('click', closeAssignmentModal);
+        }
+
+        if (elements.assignmentModal) {
+          elements.assignmentModal.addEventListener('click', event => {
+            if (event.target === elements.assignmentModal) {
+              closeAssignmentModal();
+            }
+          });
+        }
+
+        if (elements.sectionEditModalClose) {
+          elements.sectionEditModalClose.addEventListener('click', closeSectionEditModal);
+        }
+
+        if (elements.sectionEditButtons.cancel) {
+          elements.sectionEditButtons.cancel.addEventListener('click', closeSectionEditModal);
+        }
+
+        if (elements.sectionEditButtons.unassign) {
+          elements.sectionEditButtons.unassign.addEventListener('click', handleUnassignSectionMember);
+        }
+
+        if (elements.sectionEditButtons.save) {
+          elements.sectionEditButtons.save.addEventListener('click', saveSectionEdit);
+        }
+
+        if (elements.sectionEditModal) {
+          elements.sectionEditModal.addEventListener('click', event => {
+            if (event.target === elements.sectionEditModal) {
+              closeSectionEditModal();
+            }
+          });
+        }
+
+        elements.addSectionButtons.forEach(button => {
+          if (button) {
+            button.addEventListener('click', addSection);
+          }
+        });
+
+        if (elements.removeLastSectionBtn) {
+          elements.removeLastSectionBtn.addEventListener('click', removeLastSection);
+        }
+
+        if (elements.settingsButtons.saveSettings) {
+          elements.settingsButtons.saveSettings.addEventListener('click', saveSettings);
+        }
+
+        if (elements.saveRefreshBtn) {
+          elements.saveRefreshBtn.addEventListener('click', saveAndRefreshViewers);
+        }
+
+        if (elements.settingsButtons.forceRefresh) {
+          elements.settingsButtons.forceRefresh.addEventListener('click', forceDataRefresh);
+        }
+
+        if (elements.settingsButtons.saveSectionWidth) {
+          elements.settingsButtons.saveSectionWidth.addEventListener('click', saveSectionWidth);
+        }
+
+        if (elements.settingsButtons.saveAlignment) {
+          elements.settingsButtons.saveAlignment.addEventListener('click', saveAlignment);
+        }
+
+        if (elements.settingsButtons.saveDisplayTheme) {
+          elements.settingsButtons.saveDisplayTheme.addEventListener('click', saveDisplayTheme);
+        }
+
+        if (elements.settingsButtons.saveTypography) {
+          elements.settingsButtons.saveTypography.addEventListener('click', saveTypography);
+        }
+
+        if (elements.settingsButtons.saveTextFormatting) {
+          elements.settingsButtons.saveTextFormatting.addEventListener('click', saveTextFormatting);
+        }
+
+        if (elements.settingsButtons.saveBackground) {
+          elements.settingsButtons.saveBackground.addEventListener('click', saveBackgroundSettings);
+        }
+
+        if (elements.settings.backgroundBlur) {
+          elements.settings.backgroundBlur.addEventListener('input', event => {
+            if (elements.settings.backgroundBlurValue) {
+              elements.settings.backgroundBlurValue.textContent = event.target.value;
+            }
+          });
+        }
+
+        if (elements.setupButtons.saveConfig) {
+          elements.setupButtons.saveConfig.addEventListener('click', saveConfig);
+        }
+
+        if (elements.setupButtons.clearConfig) {
+          elements.setupButtons.clearConfig.addEventListener('click', clearConfig);
+        }
+
+        if (elements.setupButtons.authSubmit) {
+          elements.setupButtons.authSubmit.addEventListener('click', submitAuth);
+        }
+
+        if (elements.setupButtons.toggleMode) {
+          elements.setupButtons.toggleMode.addEventListener('click', toggleAuthMode);
+        }
+
+        if (elements.setupButtons.skipAuth) {
+          elements.setupButtons.skipAuth.addEventListener('click', skipAuth);
+        }
+
+        if (elements.setupEmail) {
+          elements.setupEmail.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              submitAuth();
+            }
+          });
+        }
+
+        if (elements.setupPassword) {
+          elements.setupPassword.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              submitAuth();
+            }
+          });
+        }
+      }
+
+      function prefillSetupForm() {
+        const config = { ...firebaseDefaults };
+        elements.setupInputs.apiKey.value = config.apiKey || '';
+        elements.setupInputs.authDomain.value = config.authDomain || '';
+        elements.setupInputs.projectId.value = config.projectId || '';
+        elements.setupInputs.storageBucket.value = config.storageBucket || '';
+        elements.setupInputs.senderId.value = config.messagingSenderId || '';
+        elements.setupInputs.appId.value = config.appId || '';
+        elements.setupInputs.measurementId.value = config.measurementId || '';
+      }
+
+      function restoreSavedSettings() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEYS.settings);
+          if (!raw) {
+            elements.settings.serverUrl.value = `ws://${window.location.hostname}:8058/ws`;
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if (parsed.serverUrl) {
+            elements.settings.serverUrl.value = parsed.serverUrl;
+          } else {
+            elements.settings.serverUrl.value = `ws://${window.location.hostname}:8058/ws`;
+          }
+        } catch (error) {
+          console.warn('Failed to restore saved settings', error);
+          elements.settings.serverUrl.value = `ws://${window.location.hostname}:8058/ws`;
+        }
+      }
+
+      function maybeAutoConnect() {
+        const raw = localStorage.getItem(STORAGE_KEYS.config);
+        if (!raw) {
+          // No saved config found — automatically use bundled defaults
+          try {
+            const defaults = { ...firebaseDefaults };
+            localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(defaults));
+            populateConfigInputs(defaults);
+            initializeFirebase(defaults);
+            return;
+          } catch (e) {
+            console.warn('Failed to auto-apply default Firebase config; falling back to manual setup', e);
+            showSetupOverlay();
+            return;
+          }
+        }
+        try {
+          const config = JSON.parse(raw);
+          populateConfigInputs(config);
+          initializeFirebase(config);
+        } catch (error) {
+          console.error('Stored config invalid', error);
+          showSetupOverlay();
+        }
+      }
+
+      function populateConfigInputs(config) {
+        elements.setupInputs.apiKey.value = config.apiKey || '';
+        elements.setupInputs.authDomain.value = config.authDomain || '';
+        elements.setupInputs.projectId.value = config.projectId || '';
+        elements.setupInputs.storageBucket.value = config.storageBucket || '';
+        elements.setupInputs.senderId.value = config.messagingSenderId || '';
+        elements.setupInputs.appId.value = config.appId || '';
+        elements.setupInputs.measurementId.value = config.measurementId || '';
+      }
+
+      function showSetupOverlay() {
+        if (elements.setupOverlay) {
+          elements.setupOverlay.classList.add('visible');
+        }
+      }
+
+      function hideSetupOverlay() {
+        if (elements.setupOverlay) {
+          elements.setupOverlay.classList.remove('visible');
+        }
+      }
+
+      function saveConfig() {
+        const config = {
+          apiKey: elements.setupInputs.apiKey.value.trim(),
+          authDomain: elements.setupInputs.authDomain.value.trim(),
+          projectId: elements.setupInputs.projectId.value.trim(),
+          storageBucket: elements.setupInputs.storageBucket.value.trim(),
+          messagingSenderId: elements.setupInputs.senderId.value.trim(),
+          appId: elements.setupInputs.appId.value.trim(),
+          measurementId: elements.setupInputs.measurementId.value.trim()
+        };
+
+        if (!config.apiKey || !config.projectId || !config.appId) {
+          showToast('API key, Project ID, and App ID are required.', 'error');
+          return;
+        }
+
+        localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(config));
+        initializeFirebase(config);
+      }
+
+      function clearConfig() {
+        localStorage.removeItem(STORAGE_KEYS.config);
+        showToast('Saved Firebase config cleared.', 'success');
+        showSetupOverlay();
+      }
+
+      async function initializeFirebase(config) {
+        try {
+          updateStatus('connecting');
+
+          if (firebase.apps.length) {
+            try {
+              await firebase.app().delete();
+            } catch (error) {
+              console.warn('Unable to delete existing Firebase app', error);
+            }
+          }
+
+          firebaseApp = firebase.initializeApp(config);
+          auth = firebase.auth();
+          db = firebase.firestore();
+
+          auth.onAuthStateChanged(user => {
+            appState.user = user;
+            if (user) {
+              afterSignIn(user);
+            } else {
+              showSetupOverlay();
+            }
+          });
+
+          const savedEmail = localStorage.getItem(STORAGE_KEYS.email);
+          if (savedEmail) {
+            elements.setupEmail.value = savedEmail;
+          }
+
+          showToast('Firebase initialized. Please sign in.', 'success');
+          showSetupOverlay();
+        } catch (error) {
+          console.error('Firebase initialization error', error);
+          updateStatus('disconnected');
+          showToast(`Initialization failed: ${error.message}`, 'error');
+          showSetupOverlay();
+        }
+      }
+
+      function toggleAuthMode() {
+        isSignUpMode = !isSignUpMode;
+        if (isSignUpMode) {
+          elements.setupButtons.authSubmit.textContent = 'Create Account';
+          elements.setupButtons.toggleMode.textContent = 'Back to Sign In';
+          elements.authModeLabel.textContent = 'Create Account';
+        } else {
+          elements.setupButtons.authSubmit.textContent = 'Sign In';
+          elements.setupButtons.toggleMode.textContent = 'Create New Account';
+          elements.authModeLabel.textContent = 'Sign In';
+        }
+      }
+
+      async function submitAuth() {
+        if (!auth) {
+          showToast('Firebase is not ready yet.', 'error');
+          return;
+        }
+
+        const email = elements.setupEmail.value.trim();
+        const password = elements.setupPassword.value;
+
+        if (!email || !password) {
+          showToast('Email and password are required.', 'error');
+          return;
+        }
+
+        if (password.length < 6) {
+          showToast('Password must be at least 6 characters.', 'error');
+          return;
+        }
+
+        try {
+          if (isSignUpMode) {
+            await auth.createUserWithEmailAndPassword(email, password);
+            showToast('Account created successfully.', 'success');
+          } else {
+            await auth.signInWithEmailAndPassword(email, password);
+            showToast('Signed in successfully.', 'success');
+          }
+          localStorage.setItem(STORAGE_KEYS.email, email);
+        } catch (error) {
+          console.error('Authentication error', error);
+          showToast(`Authentication failed: ${error.message}`, 'error');
+          updateStatus('disconnected');
+        }
+      }
+
+      function skipAuth() {
+        hideSetupOverlay();
+        enterApp();
+        showToast('Authentication skipped (testing mode).', 'warning');
+      }
+
+      function afterSignIn(user) {
+        hideSetupOverlay();
+        if (elements.userMeta && elements.userEmailDisplay) {
+          elements.userEmailDisplay.textContent = user.email;
+          elements.userMeta.style.display = 'flex';
+        }
+        enterApp();
+      }
+
+      function enterApp() {
+        updateStatus('connected');
+        if (elements.appShell) {
+          elements.appShell.classList.add('ready');
+        }
+        loadAllData();
+      }
+
+      function updateStatus(status) {
+        if (!elements.statusDot || !elements.statusText) {
+          return;
+        }
+        elements.statusDot.classList.remove('connected', 'disconnected');
+        switch (status) {
+          case 'connected':
+            elements.statusDot.classList.add('connected');
+            elements.statusText.textContent = 'Connected';
+            break;
+          case 'connecting':
+            elements.statusText.textContent = 'Connecting...';
+            break;
+          default:
+            elements.statusDot.classList.add('disconnected');
+            elements.statusText.textContent = 'Not connected';
+        }
+      }
+
+      async function loadAllData() {
+        if (!db) {
+          return;
+        }
+
+        appState.loading.people = true;
+        appState.loading.layout = true;
+        renderPeople();
+        renderSections();
+
+        await Promise.all([loadPeople(), loadLayout()]);
+        renderPeople();
+        renderSections();
+      }
+
+      async function loadPeople() {
+        if (!db) {
+          return;
+        }
+        try {
+          const snapshot = await db.collection('band_members').orderBy('name').get();
+          const people = [];
+          snapshot.forEach(doc => {
+            people.push({ id: doc.id, ...doc.data() });
+          });
+          appState.people = people;
+          appState.loading.people = false;
+          buildSectionsFromState();
+        } catch (error) {
+          console.error('Error loading people', error);
+          showToast(`Failed to load people: ${error.message}`, 'error');
+          appState.loading.people = false;
+        }
+      }
+
+      async function loadLayout() {
+        if (!db) {
+          return;
+        }
+        try {
+          let rawLayout = null;
+          let layoutSource = 'layout_config';
+
+          const configDoc = await db.collection('layout_config').doc('main').get();
+          if (configDoc.exists) {
+            rawLayout = configDoc.data();
+          }
+
+          if (!rawLayout) {
+            layoutSource = 'layout';
+            const layoutDoc = await db.collection('layout').doc('default').get();
+            if (layoutDoc.exists) {
+              rawLayout = layoutDoc.data();
+            }
+          }
+
+          if (!rawLayout) {
+            rawLayout = {
+              section_count: 4,
+              section_titles: ['Section 1', 'Section 2', 'Section 3', 'Section 4'],
+              section_widths: [25, 25, 25, 25],
+              alignment: 'left',
+              info_box_position: 'bottom',
+              info_box_height: 20
+            };
+            await db.collection('layout').doc('default').set(rawLayout);
+          }
+
+          const layout = normalizeLayout(rawLayout);
+          appState.layout = layout;
+          appState.loading.layout = false;
+          buildSectionsFromState();
+          updateSettingsFromLayout();
+
+          if (layoutSource !== 'layout_config') {
+            try {
+              await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(layout), { merge: true });
+            } catch (syncError) {
+              console.warn('Unable to sync layout_config/main', syncError);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading layout', error);
+          showToast(`Failed to load layout: ${error.message}`, 'error');
+          appState.loading.layout = false;
+        }
+      }
+
+      function renderPeople() {
+        if (!elements.peopleCards) {
+          return;
+        }
+        elements.peopleCards.innerHTML = '';
+
+        if (appState.loading.people) {
+          if (elements.peopleLoadingState) {
+            elements.peopleCards.appendChild(elements.peopleLoadingState);
+          }
+          return;
+        }
+
+        const people = appState.people.filter(person => {
+          if (!appState.search) {
+            return true;
+          }
+          const haystack = [
+            person.name,
+            person.display_name,
+            person.instrument,
+            person.role,
+            person.section_override
+          ].filter(Boolean).join(' ').toLowerCase();
+          return haystack.includes(appState.search);
+        });
+
+        if (!people.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.innerHTML = '<h3>No matching people</h3><div>Add someone or adjust your search.</div>';
+          elements.peopleCards.appendChild(empty);
+          return;
+        }
+
+        const layout = appState.layout;
+
+        people.forEach(person => {
+          const card = document.createElement('div');
+          card.className = 'person-card';
+
+          const sectionTitle = typeof person.position === 'number' && layout
+            ? getSectionTitle(layout, person.position)
+            : 'Unassigned';
+
+          const infoLines = [];
+          if (person.display_name) {
+            infoLines.push(`<span class="chip">Display: ${escapeHtml(person.display_name)}</span>`);
+          }
+          if (person.instrument) {
+            infoLines.push(`<span>🎵 ${escapeHtml(person.instrument)}</span>`);
+          }
+          if (person.section_override) {
+            infoLines.push(`<span>📍 ${escapeHtml(person.section_override)}</span>`);
+          }
+
+          const assignedLabel = person.position === null || person.position === undefined
+            ? '<span class="chip">UNASSIGNED</span>'
+            : `<span class="chip">${escapeHtml(sectionTitle)}</span>`;
+
+          card.innerHTML = `
+            <div class="person-header">
+              <div>
+                <div class="person-name">${escapeHtml(person.name || '')}</div>
+                ${person.role ? `<div class="person-tag">${escapeHtml(person.role)}</div>` : ''}
+              </div>
+              ${assignedLabel}
+            </div>
+            <div class="person-info">
+              ${infoLines.join('')}
+            </div>
+            <div class="person-actions">
+              <button class="btn btn-secondary btn-sm" data-action="assign">Assign</button>
+              <button class="btn btn-secondary btn-sm" data-action="edit">Edit</button>
+              <button class="btn btn-danger btn-sm" data-action="delete">Delete</button>
+            </div>
+          `;
+
+          card.querySelector('[data-action="assign"]').addEventListener('click', () => openAssignmentModal(person.id));
+          card.querySelector('[data-action="edit"]').addEventListener('click', () => openPersonModal(person.id));
+          card.querySelector('[data-action="delete"]').addEventListener('click', () => deletePerson(person.id, person.name));
+
+          elements.peopleCards.appendChild(card);
+        });
+      }
+
+      function renderSections() {
+        if (!elements.sectionsGrid) {
+          return;
+        }
+        elements.sectionsGrid.innerHTML = '';
+
+        if (appState.loading.layout || appState.loading.people) {
+          if (elements.sectionsLoadingState) {
+            elements.sectionsGrid.appendChild(elements.sectionsLoadingState);
+          }
+          return;
+        }
+
+        const sections = appState.sections || [];
+        const layout = appState.layout;
+
+        if (elements.sectionsCountLabel) {
+          const count = getSectionCount(layout);
+          elements.sectionsCountLabel.textContent = `${count} section${count === 1 ? '' : 's'}`;
+        }
+
+        if (elements.sectionsWidthMeta) {
+          if (layout && layout.section_width_vw) {
+            elements.sectionsWidthMeta.textContent = `Width: ${layout.section_width_vw} vw`;
+          } else {
+            elements.sectionsWidthMeta.textContent = '';
+          }
+        }
+
+        if (!sections.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.innerHTML = '<h3>No sections configured</h3><div>Use the add button to create a section.</div>';
+          elements.sectionsGrid.appendChild(empty);
+          return;
+        }
+
+        sections.forEach(section => {
+          const card = document.createElement('div');
+          card.className = 'section-card';
+          if (section.isUnassigned) {
+            card.classList.add('unassigned');
+          }
+
+          const badges = [`${section.members.length} member${section.members.length === 1 ? '' : 's'}`];
+          if (!section.visibility.showName) {
+            badges.push('Name Hidden');
+          }
+          if (!section.visibility.showRole) {
+            badges.push('Role Hidden');
+          }
+          if (!section.visibility.showTitle) {
+            badges.push('Title Hidden');
+          }
+
+          const membersHtml = section.members.length
+            ? section.members.map(member => {
+                const lines = [];
+                const display = member.display_name || member.name || '';
+                lines.push(`<div><strong>${escapeHtml(display)}</strong></div>`);
+                if (member.instrument || member.role) {
+                  lines.push(`<div>${escapeHtml(member.instrument || member.role)}</div>`);
+                }
+                return `<div>${lines.join('')}</div>`;
+              }).join('')
+            : '<div class="form-description">Empty section</div>';
+
+          card.innerHTML = `
+            <div class="section-header-row">
+              <div class="section-title">${escapeHtml(section.title)}</div>
+              <div class="section-actions">
+                <button class="btn btn-secondary btn-sm" data-action="edit">Edit</button>
+                ${!section.isUnassigned ? '<button class="btn btn-secondary btn-sm" data-action="assign">Assign</button>' : ''}
+              </div>
+            </div>
+            <div class="section-badges">${badges.map(badge => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}</div>
+            <div class="section-body">${membersHtml}</div>
+          `;
+
+          card.querySelector('[data-action="edit"]').addEventListener('click', () => openSectionEditModal(section.id));
+          if (!section.isUnassigned) {
+            card.querySelector('[data-action="assign"]').addEventListener('click', () => openSectionAssignmentFromSection(section.id));
+          }
+
+          elements.sectionsGrid.appendChild(card);
+        });
+      }
+
+      function setActiveTab(tabName) {
+        qsa('.tab-button').forEach(button => {
+          button.classList.toggle('active', button.dataset.tab === tabName);
+        });
+        qsa('.tab-content').forEach(content => {
+          content.classList.toggle('active', content.id === `${tabName}Tab`);
+        });
+      }
+
+      function openPersonModal(personId = null) {
+        currentPersonId = personId;
+        const isEditing = Boolean(personId);
+
+        if (elements.personModalTitle) {
+          elements.personModalTitle.textContent = isEditing ? 'Edit Person' : 'Add Person';
+        }
+
+        if (elements.personForm) {
+          elements.personForm.reset();
+        }
+
+        populateSectionSelect(elements.personInputs.sectionSelect, true);
+
+        if (isEditing) {
+          const person = appState.people.find(entry => entry.id === personId);
+          if (person) {
+            elements.personInputs.name.value = person.name || '';
+            elements.personInputs.displayName.value = person.display_name || '';
+            elements.personInputs.role.value = person.role || '';
+            elements.personInputs.instrument.value = person.instrument || '';
+            elements.personInputs.imageUrl.value = person.background_image || '';
+            if (typeof person.position === 'number') {
+              elements.personInputs.sectionSelect.value = String(person.position);
+            } else {
+              elements.personInputs.sectionSelect.value = '';
+            }
+          }
+        } else {
+          // Creating a new person: default to unassigned
+          elements.personInputs.sectionSelect.value = '';
+        }
+
+        // Show modal
+        if (elements.personModal) {
+          elements.personModal.classList.add('active');
+        }
+      }
+
+      // ========= Helpers and derived state =========
+      function escapeHtml(str) {
+        if (str === undefined || str === null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function getSectionCount(layout) {
+        if (!layout) return 0;
+        return Number(layout.section_count || (layout.section_titles ? layout.section_titles.length : 0)) || 0;
+      }
+
+      function getSectionTitle(layout, index) {
+        if (!layout) return `Section ${index + 1}`;
+        if (Array.isArray(layout.section_titles) && layout.section_titles[index]) {
+          return layout.section_titles[index];
+        }
+        return `Section ${index + 1}`;
+      }
+
+      function normalizeLayout(raw) {
+        const layout = { ...raw };
+        // Count and titles
+        const count = Math.max(0, Number(layout.section_count || (Array.isArray(layout.section_titles) ? layout.section_titles.length : 0)) || 0);
+        layout.section_count = count || 0;
+        if (!Array.isArray(layout.section_titles)) layout.section_titles = [];
+        while (layout.section_titles.length < layout.section_count) {
+          layout.section_titles.push(`Section ${layout.section_titles.length + 1}`);
+        }
+        if (layout.section_titles.length > layout.section_count) {
+          layout.section_titles = layout.section_titles.slice(0, layout.section_count);
+        }
+
+        // Widths
+        if (typeof layout.section_width_vw !== 'number') {
+          // If old percent widths exist, we can ignore and use a sensible default per-section width.
+          layout.section_width_vw = 4.0;
+        }
+
+        // Alignment and info box
+        layout.alignment = layout.alignment || 'left';
+        layout.info_box_position = layout.info_box_position || 'bottom';
+        layout.info_box_height = typeof layout.info_box_height === 'number' ? layout.info_box_height : 20;
+
+        // Theme/typography/textFormatting/background (optional)
+        layout.theme = layout.theme || 'overlay';
+        layout.typography = layout.typography || { fontFamily: "'Roboto', sans-serif", fontSize: 16 };
+        layout.textFormatting = layout.textFormatting || {
+          capsLockName: false,
+          capsLockRole: false,
+          capsLockInstrument: false,
+          capsLockSectionTitle: false
+        };
+        layout.background = layout.background || { imageUrl: '', blur: 0 };
+
+        // Per-section visibility
+        if (!Array.isArray(layout.visibility)) layout.visibility = [];
+        for (let i = 0; i < layout.section_count; i++) {
+          const v = layout.visibility[i] || {};
+          layout.visibility[i] = {
+            showName: v.showName !== false,
+            showRole: v.showRole !== false,
+            showTitle: v.showTitle !== false
+          };
+        }
+        return layout;
+      }
+
+      function createLayoutConfigPayload(layout) {
+        return {
+          section_count: layout.section_count,
+          section_titles: layout.section_titles,
+          section_width_vw: layout.section_width_vw,
+          alignment: layout.alignment,
+          info_box_position: layout.info_box_position,
+          info_box_height: layout.info_box_height,
+          theme: layout.theme,
+          typography: layout.typography,
+          textFormatting: layout.textFormatting,
+          background: layout.background,
+          visibility: layout.visibility
+        };
+      }
+
+      function buildSectionsFromState() {
+        const layout = appState.layout;
+        if (!layout) return;
+        const count = getSectionCount(layout);
+        const byIndex = new Array(count).fill(null).map((_, idx) => ({
+          id: String(idx),
+          title: getSectionTitle(layout, idx),
+          members: [],
+          visibility: layout.visibility[idx] || { showName: true, showRole: true, showTitle: true },
+          isUnassigned: false
+        }));
+
+        const people = appState.people || [];
+        const unassigned = [];
+        people.forEach(p => {
+          if (typeof p.position === 'number' && p.position >= 0 && p.position < count) {
+            byIndex[p.position].members.push(p);
+          } else {
+            unassigned.push(p);
+          }
+        });
+
+        const sections = [...byIndex];
+        sections.push({ id: 'unassigned', title: 'Unassigned', members: unassigned, visibility: { showName: true, showRole: true, showTitle: true }, isUnassigned: true });
+        appState.sections = sections;
+      }
+
+      function populateSectionSelect(selectEl, includeUnassigned = true) {
+        if (!selectEl) return;
+        const layout = appState.layout;
+        selectEl.innerHTML = '';
+        if (includeUnassigned) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = '-- Unassigned --';
+          selectEl.appendChild(opt);
+        }
+        const count = getSectionCount(layout);
+        for (let i = 0; i < count; i++) {
+          const opt = document.createElement('option');
+          opt.value = String(i);
+          opt.textContent = getSectionTitle(layout, i);
+          selectEl.appendChild(opt);
+        }
+      }
+
+      function updateSettingsFromLayout() {
+        const l = appState.layout;
+        if (!l) return;
+        if (elements.settings.sectionWidthSummary) elements.settings.sectionWidthSummary.textContent = String(l.section_width_vw);
+        if (elements.settings.sectionWidthInput) elements.settings.sectionWidthInput.value = l.section_width_vw;
+        if (elements.settings.alignmentSelect) elements.settings.alignmentSelect.value = l.alignment;
+        if (elements.settings.infoBoxPosition) elements.settings.infoBoxPosition.value = l.info_box_position;
+        if (elements.settings.infoBoxHeight) elements.settings.infoBoxHeight.value = l.info_box_height;
+        if (elements.settings.displayTheme) elements.settings.displayTheme.value = l.theme || 'overlay';
+        if (elements.settings.infoBoxThemePosition) elements.settings.infoBoxThemePosition.value = l.info_box_position || 'bottom';
+        if (elements.settings.infoBoxThemeHeight) elements.settings.infoBoxThemeHeight.value = l.info_box_height || 20;
+        if (elements.settings.fontFamily) elements.settings.fontFamily.value = l.typography?.fontFamily || "'Roboto', sans-serif";
+        if (elements.settings.fontSize) elements.settings.fontSize.value = l.typography?.fontSize || 16;
+        if (elements.settings.capsLockName) elements.settings.capsLockName.checked = !!l.textFormatting?.capsLockName;
+        if (elements.settings.capsLockRole) elements.settings.capsLockRole.checked = !!l.textFormatting?.capsLockRole;
+        if (elements.settings.capsLockInstrument) elements.settings.capsLockInstrument.checked = !!l.textFormatting?.capsLockInstrument;
+        if (elements.settings.capsLockSectionTitle) elements.settings.capsLockSectionTitle.checked = !!l.textFormatting?.capsLockSectionTitle;
+        if (elements.settings.backgroundImageUrl) elements.settings.backgroundImageUrl.value = l.background?.imageUrl || '';
+        if (elements.settings.backgroundBlur) elements.settings.backgroundBlur.value = l.background?.blur || 0;
+        if (elements.settings.backgroundBlurValue) elements.settings.backgroundBlurValue.textContent = l.background?.blur || 0;
+      }
+
+      // ========= Toast =========
+      let toastTimer;
+      function showToast(message, type = 'success') {
+        const toast = elements.toast;
+        if (!toast) return;
+        toast.className = 'toast';
+        toast.textContent = message;
+        if (type) toast.classList.add(type);
+        requestAnimationFrame(() => {
+          toast.classList.add('show');
+        });
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      // ========= Modal close helpers =========
+      function closePersonModal() {
+        if (elements.personModal) elements.personModal.classList.remove('active');
+        currentPersonId = null;
+      }
+
+      function closeAssignmentModal() {
+        if (elements.assignmentModal) elements.assignmentModal.classList.remove('active');
+        assignmentPersonId = null;
+        if (elements.assignmentOptions) elements.assignmentOptions.innerHTML = '';
+      }
+
+      function closeSectionEditModal() {
+        if (elements.sectionEditModal) elements.sectionEditModal.classList.remove('active');
+        currentSectionId = null;
+      }
+
+      // ========= People CRUD =========
+      async function handlePersonSubmit(event) {
+        event.preventDefault();
+        if (!db) return showToast('Database not ready', 'error');
+        const name = elements.personInputs.name.value.trim();
+        if (!name) return showToast('Name is required', 'error');
+
+        const payload = {
+          name,
+          display_name: elements.personInputs.displayName.value.trim() || '',
+          role: elements.personInputs.role.value.trim() || '',
+          instrument: elements.personInputs.instrument.value.trim() || '',
+          background_image: elements.personInputs.imageUrl.value.trim() || ''
+        };
+        const posVal = elements.personInputs.sectionSelect.value;
+        payload.position = posVal === '' ? null : Number(posVal);
+
+        try {
+          if (currentPersonId) {
+            await db.collection('band_members').doc(currentPersonId).set(payload, { merge: true });
+            showToast('Person updated', 'success');
+          } else {
+            await db.collection('band_members').add({ ...payload, createdAt: firebase.firestore.FieldValue.serverTimestamp?.() });
+            showToast('Person added', 'success');
+          }
+          closePersonModal();
+          await loadPeople();
+          renderPeople();
+          renderSections();
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed to save: ${e.message}`, 'error');
+        }
+      }
+
+      async function deletePerson(id, name) {
+        if (!db) return showToast('Database not ready', 'error');
+        try {
+          await db.collection('band_members').doc(id).delete();
+          showToast(`Deleted ${name || 'person'}`, 'success');
+          await loadPeople();
+          renderPeople();
+          renderSections();
+        } catch (e) {
+          console.error(e);
+          showToast(`Delete failed: ${e.message}`, 'error');
+        }
+      }
+
+      // ========= Assignment =========
+      function openAssignmentModal(personId) {
+        if (!appState.layout) return;
+        assignmentPersonId = personId;
+        const optionsEl = elements.assignmentOptions;
+        if (!optionsEl) return;
+        optionsEl.innerHTML = '';
+        const count = getSectionCount(appState.layout);
+
+        // Unassigned option
+        const un = document.createElement('button');
+        un.type = 'button';
+        un.className = 'assignment-option';
+        un.textContent = '-- Unassigned --';
+        un.addEventListener('click', () => assignPersonToSection(personId, null));
+        optionsEl.appendChild(un);
+
+        for (let i = 0; i < count; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'assignment-option';
+          btn.textContent = getSectionTitle(appState.layout, i);
+          btn.addEventListener('click', () => assignPersonToSection(personId, i));
+          optionsEl.appendChild(btn);
+        }
+        if (elements.assignmentModal) elements.assignmentModal.classList.add('active');
+      }
+
+      async function assignPersonToSection(personId, indexOrNull) {
+        if (!db) return showToast('Database not ready', 'error');
+        try {
+          await db.collection('band_members').doc(personId).set({ position: indexOrNull }, { merge: true });
+          showToast('Assignment saved', 'success');
+          closeAssignmentModal();
+          await loadPeople();
+          renderPeople();
+          renderSections();
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed to assign: ${e.message}`, 'error');
+        }
+      }
+
+      function openSectionAssignmentFromSection(sectionId) {
+        // Simple flow: choose a person to put into this section
+        const secIndex = Number(sectionId);
+        const opts = elements.assignmentOptions;
+        if (!opts) return;
+        opts.innerHTML = '';
+
+        const title = document.createElement('div');
+        title.className = 'form-description';
+        title.textContent = 'Select a person to assign:';
+        opts.appendChild(title);
+
+        const people = appState.people || [];
+        people.forEach(p => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'assignment-option';
+          const display = p.display_name || p.name || 'Unnamed';
+          btn.textContent = display;
+          btn.addEventListener('click', () => assignPersonToSection(p.id, secIndex));
+          opts.appendChild(btn);
+        });
+
+        if (elements.assignmentModal) elements.assignmentModal.classList.add('active');
+      }
+
+      // ========= Section Edit =========
+      function openSectionEditModal(sectionId) {
+        currentSectionId = sectionId;
+        const idx = Number(sectionId);
+        const layout = appState.layout;
+        if (!layout) return;
+
+        if (elements.sectionEditModalTitle) {
+          elements.sectionEditModalTitle.textContent = `Edit ${getSectionTitle(layout, idx)}`;
+        }
+        if (elements.sectionEditInputs.name) {
+          elements.sectionEditInputs.name.value = getSectionTitle(layout, idx);
+        }
+
+        // member dropdown
+        const dd = elements.sectionEditInputs.memberDropdown;
+        if (dd) {
+          dd.innerHTML = '';
+          const none = document.createElement('option');
+          none.value = '';
+          none.textContent = '-- Unassigned --';
+          dd.appendChild(none);
+          const people = appState.people || [];
+          people.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.display_name || p.name || 'Unnamed';
+            dd.appendChild(opt);
+          });
+          const currentMembers = (appState.sections?.find(s => s.id === String(idx))?.members) || [];
+          if (currentMembers[0]) dd.value = currentMembers[0].id;
+          else dd.value = '';
+        }
+
+        const vis = layout.visibility[idx] || { showName: true, showRole: true, showTitle: true };
+        elements.sectionEditInputs.showName.checked = vis.showName !== false;
+        elements.sectionEditInputs.showRole.checked = vis.showRole !== false;
+        elements.sectionEditInputs.showTitle.checked = vis.showTitle !== false;
+
+        if (elements.sectionEditModal) elements.sectionEditModal.classList.add('active');
+      }
+
+      async function handleUnassignSectionMember() {
+        const idx = Number(currentSectionId);
+        if (!db || Number.isNaN(idx)) return;
+        try {
+          const people = appState.people.filter(p => p.position === idx);
+          const batch = db.batch?.() || null;
+          if (batch && db.batch) {
+            people.forEach(p => {
+              batch.update(db.collection('band_members').doc(p.id), { position: null });
+            });
+            await batch.commit();
+          } else {
+            // fallback one by one
+            for (const p of people) {
+              await db.collection('band_members').doc(p.id).set({ position: null }, { merge: true });
+            }
+          }
+          showToast('Section cleared', 'success');
+          await loadPeople();
+          renderPeople();
+          renderSections();
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveSectionEdit() {
+        const idx = Number(currentSectionId);
+        const layout = appState.layout;
+        if (!db || !layout || Number.isNaN(idx)) return;
+        try {
+          // Title
+          const newTitle = elements.sectionEditInputs.name.value.trim() || getSectionTitle(layout, idx);
+          layout.section_titles[idx] = newTitle;
+          // Visibility
+          layout.visibility[idx] = {
+            showName: elements.sectionEditInputs.showName.checked,
+            showRole: elements.sectionEditInputs.showRole.checked,
+            showTitle: elements.sectionEditInputs.showTitle.checked
+          };
+          // Member
+          const selectedPersonId = elements.sectionEditInputs.memberDropdown.value || '';
+          // Unassign existing members in this section
+          const currentMembers = appState.people.filter(p => p.position === idx);
+          for (const p of currentMembers) {
+            await db.collection('band_members').doc(p.id).set({ position: null }, { merge: true });
+          }
+          if (selectedPersonId) {
+            await db.collection('band_members').doc(selectedPersonId).set({ position: idx }, { merge: true });
+          }
+          // Save layout
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(layout), { merge: true });
+          appState.layout = normalizeLayout(layout);
+          buildSectionsFromState();
+          renderSections();
+          closeSectionEditModal();
+          showToast('Section updated', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Save failed: ${e.message}`, 'error');
+        }
+      }
+
+      // ========= Sections add/remove =========
+      async function addSection() {
+        const layout = appState.layout;
+        if (!db || !layout) return;
+        try {
+          layout.section_count += 1;
+          layout.section_titles.push(`Section ${layout.section_count}`);
+          layout.visibility.push({ showName: true, showRole: true, showTitle: true });
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(layout), { merge: true });
+          await loadLayout();
+          renderSections();
+          showToast('Section added', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Add failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function removeLastSection() {
+        const layout = appState.layout;
+        if (!db || !layout || layout.section_count <= 0) return;
+        try {
+          layout.section_count -= 1;
+          layout.section_titles = layout.section_titles.slice(0, layout.section_count);
+          layout.visibility = layout.visibility.slice(0, layout.section_count);
+          // Unassign anyone beyond new count
+          const cutoff = layout.section_count;
+          const toUnassign = appState.people.filter(p => typeof p.position === 'number' && p.position >= cutoff);
+          for (const p of toUnassign) {
+            await db.collection('band_members').doc(p.id).set({ position: null }, { merge: true });
+          }
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(layout), { merge: true });
+          await loadLayout();
+          await loadPeople();
+          renderSections();
+          showToast('Last section removed', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Remove failed: ${e.message}`, 'error');
+        }
+      }
+
+      // ========= Settings =========
+      function saveSettings() {
+        const serverUrl = elements.settings.serverUrl.value.trim();
+        const payload = { serverUrl };
+        localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(payload));
+        showToast('Settings saved', 'success');
+      }
+
+      async function saveAndRefreshViewers() {
+        // Persist layout to layout_config and legacy layout document, then optionally trigger refresh
+        if (!db || !appState.layout) return;
+        try {
+          const payload = createLayoutConfigPayload(appState.layout);
+          await db.collection('layout_config').doc('main').set(payload, { merge: true });
+          await db.collection('layout').doc('default').set({
+            section_count: payload.section_count,
+            section_titles: payload.section_titles,
+            section_widths: new Array(payload.section_count).fill(100 / Math.max(1, payload.section_count)),
+            alignment: payload.alignment,
+            info_box_position: payload.info_box_position,
+            info_box_height: payload.info_box_height
+          }, { merge: true });
+          // Optional: knock a refresh doc
+          await db.collection('meta').doc('refresh').set({ ts: Date.now() }, { merge: true }).catch(() => {});
+          showToast('Saved and refresh signaled', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Save failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function forceDataRefresh() {
+        if (!db) return;
+        try {
+          await db.collection('meta').doc('refresh').set({ ts: Date.now() }, { merge: true });
+          showToast('Refresh event sent', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed to refresh: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveSectionWidth() {
+        const l = appState.layout;
+        if (!db || !l) return;
+        const v = Number(elements.settings.sectionWidthInput.value);
+        if (!Number.isFinite(v) || v <= 0) return showToast('Enter a valid width', 'error');
+        l.section_width_vw = v;
+        try {
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(l), { merge: true });
+          updateSettingsFromLayout();
+          showToast('Section width saved', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveAlignment() {
+        const l = appState.layout;
+        if (!db || !l) return;
+        l.alignment = elements.settings.alignmentSelect.value;
+        l.info_box_position = elements.settings.infoBoxPosition.value;
+        l.info_box_height = Number(elements.settings.infoBoxHeight.value) || l.info_box_height;
+        try {
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(l), { merge: true });
+          showToast('Alignment saved', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveDisplayTheme() {
+        const l = appState.layout;
+        if (!db || !l) return;
+        l.theme = elements.settings.displayTheme.value;
+        // Keep info box in sync with theme panel controls
+        l.info_box_position = elements.settings.infoBoxThemePosition.value;
+        l.info_box_height = Number(elements.settings.infoBoxThemeHeight.value) || l.info_box_height;
+        try {
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(l), { merge: true });
+          showToast('Theme saved', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveTypography() {
+        const l = appState.layout;
+        if (!db || !l) return;
+        l.typography = {
+          fontFamily: elements.settings.fontFamily.value,
+          fontSize: Number(elements.settings.fontSize.value) || 16
+        };
+        try {
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(l), { merge: true });
+          showToast('Typography saved', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveTextFormatting() {
+        const l = appState.layout;
+        if (!db || !l) return;
+        l.textFormatting = {
+          capsLockName: elements.settings.capsLockName.checked,
+          capsLockRole: elements.settings.capsLockRole.checked,
+          capsLockInstrument: elements.settings.capsLockInstrument.checked,
+          capsLockSectionTitle: elements.settings.capsLockSectionTitle.checked
+        };
+        try {
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(l), { merge: true });
+          showToast('Text formatting saved', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+      async function saveBackgroundSettings() {
+        const l = appState.layout;
+        if (!db || !l) return;
+        l.background = {
+          imageUrl: elements.settings.backgroundImageUrl.value.trim(),
+          blur: Number(elements.settings.backgroundBlur.value) || 0
+        };
+        try {
+          await db.collection('layout_config').doc('main').set(createLayoutConfigPayload(l), { merge: true });
+          showToast('Background saved', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast(`Failed: ${e.message}`, 'error');
+        }
+      }
+
+    })();
+  </script>
+</body>
+</html>
