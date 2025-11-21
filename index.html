@@ -1,245 +1,1066 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <title>Micah Crandell</title>
+    <title>Micah Crandell | Production & Code</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        dark: '#050505',
+                        accent: '#f97316',
+                        secondary: '#ea580c'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        :root {
+            --cursor-size: 20px;
+        }
+
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            font-weight: 700;
-            margin: 0;
-            padding: 0;
-            background-color: #000000;
-            color: #ececec;
-            line-height: 1.6;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 2px; 
-            overflow-y: auto;
+            background-color: #050505;
+            color: #e5e5e5;
             overflow-x: hidden;
+            max-width: 100vw;
+            cursor: none;
         }
 
-        .navigation {
+        /* Custom Cursor */
+        #cursor {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            font-size: 14px;
-            z-index: 9002;
-            background: rgba(0, 0, 0, 0.0);
-            padding: 10px;
-            border-radius: 5px;
+            top: 0;
+            left: 0;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
         }
 
-        .navigation .menu-toggle {
-            display: none;
-            font-size: 24px;
-            background: none;
-            color: rgb(241, 241, 241);
-            border: none;
-            cursor: pointer;
-            margin-bottom: 10px;
+        #cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
         }
 
-        .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        body:hover #cursor {
+            opacity: 1;
         }
 
-        @media (max-width: 1050px) {
-            .navigation {
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.0);
-                padding: 10px 0;
-                display: flex;
-                justify-content: center;
-                box-sizing: border-box;
-                overflow: hidden;
-            }
-
-            .nav-links {
-                display: flex; 
-                flex-direction: row; 
-                justify-content: center; 
-                flex-wrap: wrap; 
-                gap: 10px;
-                padding: 0 10px;
-                max-width: 100%;
-                box-sizing: border-box;
-            }
-
-            .nav-links div {
-                text-align: center;
-                white-space: nowrap;
-            }
-
-            .nav-links a {
-                font-size: clamp(12px, 2.5vw, 16px);
-                padding: 5px 8px;
-                border-radius: 3px;
-                text-align: center;
-                transition: 0.3s;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .nav-links a:hover {
-                background: rgba(255, 255, 255, 0.1);
-            }
-
-            body {
-                overflow-x: hidden;
-            }
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            margin-top: 60px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1;
-            position: relative;
-            border-radius: 5px;
-        }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        a {
-            color: #a0a0a0;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .contact {
-            margin-top: 30px;
-        }
-
-        canvas {
-            display: block;
+        /* Aurora Background (Global) */
+        .aurora-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 9001; 
-            pointer-events: auto;
+            z-index: -1;
+            overflow: hidden;
+            background: #050505;
+            pointer-events: none;
         }
 
-        #controls {
+        .aurora-blob {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(7, 7, 7, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 9001;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            will-change: transform;
         }
 
-        .typing-animation {
-            font-size: 2rem;
-            color: #dfdfdf;
+        /* Firefly / Particles */
+        .firefly-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 45;
+            pointer-events: none;
+        }
+
+        .firefly {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        /* Hero Section Blobs */
+        @keyframes blob {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
+        }
+
+        .background-blobs {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            filter: blur(80px);
+            opacity: 0.4;
+        }
+
+        .blob-1 {
+            top: 10%;
+            left: 20%;
+            width: 40vw;
+            height: 40vw;
+            background: #ea580c;
+            animation: blob 10s infinite;
+        }
+
+        .blob-2 {
+            top: 20%;
+            right: 20%;
+            width: 35vw;
+            height: 35vw;
+            background: #d97706;
+            animation: blob 10s infinite 2s;
+        }
+
+        /* Text Reveal Wrappers */
+        .reveal-text {
+            overflow: hidden;
+            display: block;
+        }
+
+        .reveal-text span {
+            display: block;
+            transform: translateY(100%);
+            opacity: 0;
+            padding: 0 0.5em;
+            /* Prevent clipping of italic swashes */
+        }
+
+        .reveal-text span em {
+            padding-right: 0.2em;
+            /* Fix for bg-clip-text clipping italic swash */
+        }
+
+        /* Horizontal Scroll Section */
+        .horizontal-section {
+            height: 100%;
+            display: flex;
+            flex-wrap: nowrap;
+            will-change: transform;
+        }
+
+        .work-panel {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            flex-shrink: 0;
             position: relative;
-            margin-top: 20px;
-            text-align: left; 
-            transition: color 0.3s ease;
-            height: 2.5rem;
-            line-height: 2.5rem; 
+            overflow: hidden;
+        }
+
+        /* Image Hover Effects */
+        .img-wrapper {
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.5s ease-out;
+        }
+
+        .img-wrapper img {
+            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1), filter 0.5s ease, opacity 1.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .project-number {
+            font-family: 'Playfair Display', serif;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            color: transparent;
+            line-height: 1;
+        }
+
+        /* Marquee */
+        .marquee-container {
             overflow: hidden;
             white-space: nowrap;
-            letter-spacing: 6px;
+            position: relative;
+            display: flex;
         }
 
-        .typing-animation:hover {
-            color: #00FF00;
+        .marquee-content {
+            flex-shrink: 0;
+            animation: marquee 30s linear infinite;
+            padding-right: 2rem;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .stroke-text {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="jets_simulation/vector.js"></script>
-    <script src="jets_simulation/boid.js"></script>
-    <script src="jets_simulation/obstacle.js"></script>
-    <script src="jets_simulation/simulation.js"></script>
-    <script src="jets_simulation/canvas_init.js"></script>
-    <script src="jets_simulation/boids.js"></script>
-    <script src="jets_simulation/turret.js"></script>
-    <script src="jets_simulation/missile.js"></script>
 </head>
-<body>
-    <canvas id="boids1"></canvas>
 
-    <div class="navigation">
-        <button class="menu-toggle" aria-label="Toggle navigation">&#9776;</button>
-        <div class="nav-links">
-            <div><a href="index.html">&lt;home&gt;</a></div>
-            <div><a href="control_it/index.html">control it</a></div>
-            <div><a href="regex_dev_tool/index.html">regex: dev tool</a></div>
-            <div><a href="https://github.com/micah1crandell" target="_blank">github</a></div>
-            <div><a href="random/random.html">random</a></div>
-            <div><a href="radiant/home.html">radiant production</a></div>
+<body class="antialiased">
+
+    <div id="cursor"></div>
+    <div id="cursor-dot"></div>
+
+    <div class="aurora-bg">
+        <div class="aurora-blob w-[40vw] h-[40vw] bg-orange-900/30 top-[-10%] left-[-10%]" data-speed="0.2"></div>
+        <div class="aurora-blob w-[35vw] h-[35vw] bg-red-900/30 bottom-[10%] right-[-5%]" data-speed="0.3"></div>
+        <div class="aurora-blob w-[30vw] h-[30vw] bg-amber-900/20 top-[40%] left-[30%]" data-speed="0.1"></div>
+    </div>
+
+    <div class="firefly-container" id="fireflies"></div>
+
+    <nav class="fixed top-0 left-0 w-full z-50 glass-nav py-6">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="logo group flex items-center gap-3 hover-trigger">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-orange-600 to-amber-600 rounded-lg flex items-center justify-center font-serif italic font-bold text-xl transition-transform duration-500 group-hover:rotate-12 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+                    M
+                </div>
+                <span
+                    class="font-bold tracking-[0.2em] text-sm group-hover:text-orange-300 transition-colors">CRANDELL</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#approach"
+                    class="text-sm font-medium text-gray-400 hover:text-white transition-colors hover-trigger">APPROACH</a>
+                <a href="#works"
+                    class="text-sm font-medium text-gray-400 hover:text-white transition-colors hover-trigger">WORKS</a>
+                <a href="https://github.com/micah1crandell" target="_blank"
+                    class="px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300 text-sm font-bold uppercase tracking-wider hover-trigger">
+                    Open Source
+                </a>
+            </div>
         </div>
-    </div>    
+    </nav>
 
-    <div class="container">
-        <div class="typing-animation" id="typing-animation"></div>
-        <p>i am the <a href="#">production director at radiant church</a> and <a href="#">a hobbyist coder</a>.</p>
-        <p>i developed and released my first ios app, <a href="./control_it/index.html">control it</a>, to solve a specific problem i was having while working at church. it was an exciting milestone that fired me up for building practical tools through coding.</p>
-        <p>currently, i'm developing more apps to <a href="#">challenge myself</a>, <a href="#">learn new skills</a>, and simply because I enjoy the process.</p>
-        <p>i jump at any chance to learn something new while discovering better ways to merge creativity and technology.</p>
-        <p class="contact">you can reach me at <a href="mailto:micahcrandell.dev@gmail.com">micahcrandell.dev@gmail.com</a> or on <a href="#">twitter</a>.</p>
-    </div>    
+    <section class="relative h-screen flex items-center justify-center overflow-hidden" id="hero">
+        <div class="background-blobs">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+        </div>
+
+        <div class="relative z-20 text-center px-6 max-w-5xl mx-auto">
+
+
+            <h1 class="font-serif text-[clamp(3rem,8vw,7.5rem)] leading-[0.9] tracking-tight mb-6 text-white">
+                <div class="reveal-text"><span>The Art of</span></div>
+                <div class="reveal-text"><span><em
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-amber-300 to-white">Practical</em></span>
+                </div>
+                <div class="reveal-text"><span>Creation.</span></div>
+            </h1>
+
+            <p
+                class="text-gray-400 text-lg md:text-xl max-w-xl mx-auto leading-relaxed mb-12 opacity-0 translate-y-10 hero-desc">
+                Church Production Director & Hobbyist Coder.<br>
+                Building tools that solve real problems.
+            </p>
+
+            <div class="opacity-0 translate-y-10 hero-btn">
+                <a href="#works" class="hover-trigger inline-block">
+                    <svg class="w-12 h-12 text-white/50 animate-bounce" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div
+        class="py-4 -my-10 bg-black border-y border-white/5 rotate-[-2deg] scale-110 z-30 relative overflow-hidden pointer-events-none">
+        <div class="marquee-container opacity-20 hover:opacity-100 transition-opacity duration-500">
+            <div class="marquee-content text-4xl md:text-6xl font-sans font-bold tracking-tight text-accent">
+                SWIFT • HTML • CSS • JS • PRODUCTION DESIGN • UI/UX • AUTOMATION • PYTHON • SWIFT •
+                HTML • CSS • JS • PRODUCTION DESIGN •
+            </div>
+            <div class="marquee-content text-4xl md:text-6xl font-sans font-bold tracking-tight text-accent"
+                aria-hidden="true">
+                SWIFT • HTML • CSS • JS • PRODUCTION DESIGN • UI/UX • AUTOMATION • PYTHON • SWIFT •
+                HTML • CSS • JS • PRODUCTION DESIGN •
+            </div>
+        </div>
+    </div>
+
+    <section id="approach" class="relative py-12 bg-dark z-20 overflow-hidden">
+        <div class="container mx-auto px-6 relative">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div id="logic-art-carousel"
+                        class="img-wrapper aspect-[4/5] rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 border border-white/10 shadow-2xl relative">
+                        <!-- Images will be injected by JS -->
+                    </div>
+                    <div class="absolute -bottom-10 -right-10 w-48 p-6 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl z-10 parallax-card"
+                        data-speed="0.1">
+                        <p class="text-orange-400 text-xs font-bold uppercase tracking-widest mb-2">Efficiency</p>
+                        <p class="text-sm text-gray-300">"A UI should feel like a physical tool. Reliable. Weighted.
+                            Precise."</p>
+                    </div>
+                </div>
+
+                <div class="pl-0 md:pl-12">
+                    <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-serif leading-none mb-8">
+                        The Fusion of <br>
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 italic pr-2">Logic
+                            & Art.</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        Most developers don't understand the behind the scenes of a live production environment. Most
+                        directors don't understand the potential of code.
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-10">
+                        I live in the intersection. I build tools that don't just look good—they thrive in the chaos of
+                        the real world.
+                    </p>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col gap-1">
+                            <span id="stat-repos" class="text-3xl font-bold text-white counter">0</span>
+                            <span class="text-xs uppercase tracking-widest text-gray-500">Public Repos</span>
+                        </div>
+                        <div class="w-px h-12 bg-white/10 mx-4"></div>
+                        <div class="flex flex-col gap-1">
+                            <span id="stat-years" class="text-3xl font-bold text-white counter">0</span>
+                            <span class="text-xs uppercase tracking-widest text-gray-500">Years Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="relative z-20 bg-dark" id="works-wrapper">
+        <div class="sticky top-0 h-screen overflow-hidden" id="horizontal-scroll-container">
+            <div class="horizontal-section" id="horizontal-track">
+
+                <div
+                    class="work-panel bg-dark flex-col items-center justify-center relative border-r border-white/5 px-4">
+                    <div
+                        class="absolute top-10 right-10 w-32 h-32 md:w-64 md:h-64 border border-white/5 rounded-full animate-[spin_20s_linear_infinite]">
+                    </div>
+                    <div
+                        class="absolute bottom-20 left-20 w-20 h-20 md:w-32 md:h-32 border border-dashed border-white/10 rounded-full">
+                    </div>
+
+                    <h2
+                        class="text-[10px] md:text-xs text-orange-400 font-bold tracking-[0.4em] uppercase mb-4 md:mb-8 animate-pulse">
+                        My Favorite Projects
+                    </h2>
+                    <div class="relative z-10 text-center">
+                        <h2 class="text-[clamp(3rem,12vw,12rem)] font-serif leading-[0.8] text-white">
+                            Recent<br>
+                            <span class="italic text-white/50">Works</span>
+                        </h2>
+                    </div>
+                    <div
+                        class="mt-8 md:mt-12 flex items-center gap-4 md:gap-6 text-gray-500 text-[10px] md:text-sm tracking-widest uppercase">
+                        <span>Scroll to Explore</span>
+                        <div class="w-10 md:w-20 h-[1px] bg-white/20"></div>
+                        <span class="text-white">2023 — 2025</span>
+                    </div>
+                </div>
+
+                <div class="work-panel bg-dark border-r border-white/5">
+                    <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
+
+                        <div
+                            class="absolute top-4 left-4 md:top-0 md:left-20 text-[8rem] md:text-[20rem] project-number opacity-20 pointer-events-none select-none z-0 leading-none">
+                            01</div>
+
+                        <div
+                            class="w-full h-[45vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1">
+                            <div
+                                class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                </div>
+                                <img src="control_it/Subject2.png"
+                                    onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop'"
+                                    class="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 duration-700"
+                                    alt="Control It Interface">
+                            </div>
+                        </div>
+
+                        <div
+                            class="w-full h-auto md:h-full md:col-span-5 flex flex-col justify-center p-6 md:pr-20 relative z-10 bg-dark md:bg-transparent order-2">
+                            <div class="space-y-4 md:space-y-6">
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">iOS
+                                        / Swift</span>
+                                    <span
+                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Networking</span>
+                                </div>
+                                <h3 class="text-4xl md:text-7xl font-serif text-white leading-[0.9]">Control<br><span
+                                        class="italic text-orange-400">It.</span></h3>
+                                <p
+                                    class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-md line-clamp-3 md:line-clamp-none">
+                                    Network control, simplified. A unified interface for HTTP, OSC, TCP, and MIDI
+                                    devices. Full production control without being tethered to a desk.
+                                </p>
+                                <a href="control_it/index.html"
+                                    class="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-colors group hover-trigger mt-2 md:mt-4">
+                                    <span
+                                        class="uppercase tracking-widest text-xs md:text-sm font-bold border-b border-white/20 pb-1 group-hover:border-orange-400">
+                                        About Control-It</span>
+                                    <svg class="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-panel bg-dark border-r border-white/5">
+                    <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
+
+                        <div
+                            class="absolute top-4 right-4 md:bottom-0 md:right-20 md:top-auto text-[8rem] md:text-[20rem] project-number opacity-20 pointer-events-none select-none z-0 leading-none">
+                            02</div>
+
+                        <div
+                            class="w-full h-[45vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1 md:order-2">
+                            <div
+                                class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10 opacity-50 group-hover:opacity-0 transition-opacity duration-500">
+                                </div>
+                                <img src="https://github.com/micah1crandell/websiteImages/blob/main/hero/29.jpg?raw=true"
+                                    onerror="this.src='https://images.unsplash.com/photo-1514525253440-b393452e3383?q=80&w=1974&auto=format&fit=crop'"
+                                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 duration-700"
+                                    alt="Radiant Production">
+                            </div>
+                        </div>
+
+                        <div
+                            class="w-full h-auto md:h-full md:col-span-5 flex flex-col justify-center p-6 md:pl-20 relative z-10 bg-dark md:bg-transparent order-2 md:order-1">
+                            <div class="space-y-4 md:space-y-6 md:text-right items-start md:items-end flex flex-col">
+                                <div class="flex flex-wrap gap-2 md:justify-end">
+                                    <span
+                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Production
+                                        Design</span>
+                                    <span
+                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Leadership</span>
+                                </div>
+                                <h3 class="text-4xl md:text-7xl font-serif text-white leading-[0.9]">Radiant<br><span
+                                        class="italic text-amber-400">Prod.</span></h3>
+                                <p
+                                    class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-md md:text-right line-clamp-3 md:line-clamp-none">
+                                    Creating immersive worship experiences. Blending lighting, video, and scenic design
+                                    to foster environments of engagement and inspiration.
+                                </p>
+                                <a href="radiant/home.html"
+                                    class="inline-flex items-center gap-3 text-white hover:text-amber-400 transition-colors group hover-trigger mt-2 md:mt-4">
+                                    <span
+                                        class="uppercase tracking-widest text-xs md:text-sm font-bold border-b border-white/20 pb-1 group-hover:border-amber-400">View
+                                        Project</span>
+                                    <svg class="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-panel bg-dark border-r border-white/5">
+                    <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
+
+                        <div
+                            class="absolute top-4 left-4 md:top-0 md:left-20 text-[8rem] md:text-[20rem] project-number opacity-20 pointer-events-none select-none z-0 leading-none">
+                            03</div>
+
+                        <div
+                            class="w-full h-[50vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1">
+                            <div class="relative group hover-trigger scale-75 md:scale-100">
+                                <div
+                                    class="absolute inset-0 bg-emerald-500 blur-[60px] md:blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700">
+                                </div>
+                                <div
+                                    class="relative w-[200px] md:w-[280px] aspect-[9/19] border-[6px] md:border-[8px] border-gray-800 bg-black rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl transform group-hover:-translate-y-4 transition-transform duration-500">
+                                    <div
+                                        class="absolute inset-0 bg-gray-900 flex flex-col items-center justify-center text-gray-700 font-mono text-xs p-4">
+                                        <img src="regex_dev_tool/app-icon.png" onerror="this.style.display='none'"
+                                            class="w-full h-full object-cover absolute inset-0">
+                                        <div class="z-10 text-center space-y-2">
+                                            <div
+                                                class="w-10 h-10 md:w-12 md:h-12 bg-emerald-900/30 rounded-xl mx-auto flex items-center justify-center text-emerald-500 mb-4">
+                                                <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <p class="text-[8px] md:text-[10px]">Match Found:<br><span
+                                                    class="text-emerald-400">/Success/g</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="w-full h-auto md:h-full md:col-span-5 flex flex-col justify-center p-6 md:pr-20 relative z-10 bg-dark md:bg-transparent order-2">
+                            <div class="space-y-4 md:space-y-6">
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">SwiftUI</span>
+                                    <span
+                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Utility</span>
+                                </div>
+                                <h3 class="text-4xl md:text-7xl font-serif text-white leading-[0.9]">Regex<br><span
+                                        class="italic text-emerald-400">Dev.</span></h3>
+                                <p
+                                    class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-md line-clamp-3 md:line-clamp-none">
+                                    Powerful Regular Expression testing in your pocket. Real-time pattern matching,
+                                    library management, and cheat sheets for developers on the go.
+                                </p>
+                                <a href="regex_dev_tool/index.html"
+                                    class="inline-flex items-center gap-3 text-white hover:text-emerald-400 transition-colors group hover-trigger mt-2 md:mt-4">
+                                    <span
+                                        class="uppercase tracking-widest text-xs md:text-sm font-bold border-b border-white/20 pb-1 group-hover:border-emerald-400">View
+                                        Application</span>
+                                    <svg class="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-panel bg-black relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-20 pointer-events-none"
+                        style="background-image: linear-gradient(0deg, transparent 24%, rgba(34, 197, 94, .1) 25%, rgba(34, 197, 94, .1) 26%, transparent 27%, transparent 74%, rgba(34, 197, 94, .1) 75%, rgba(34, 197, 94, .1) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(34, 197, 94, .1) 25%, rgba(34, 197, 94, .1) 26%, transparent 27%, transparent 74%, rgba(34, 197, 94, .1) 75%, rgba(34, 197, 94, .1) 76%, transparent 77%, transparent); background-size: 50px 50px;">
+                    </div>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 w-full max-w-7xl px-6 items-center gap-8 md:gap-12 relative z-10 h-full content-center">
+                        <div class="order-2 md:order-1">
+                            <div class="font-mono text-green-500 mb-4 md:mb-6 text-xs md:text-sm">
+                                > sudo initiate_sequence<br>
+                                > loading_modules...<br>
+                                > <span class="animate-pulse">status: experimental</span>
+                            </div>
+                            <h3 class="text-4xl md:text-7xl font-serif text-white mb-4 md:mb-6">The<br><span
+                                    class="text-green-500">Playground</span></h3>
+                            <p class="text-gray-400 max-w-md mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
+                                When I want to build for fun, try something new, or just mess around, I come here. These
+                                are a collection of random projects I've built.
+                            </p>
+                            <a href="random/random.html"
+                                class="text-green-400 border-b border-green-500/50 hover:border-green-400 pb-1 hover:text-green-300 transition-colors font-mono text-xs md:text-sm hover-trigger">
+                                > Enter_Terminal
+                            </a>
+                        </div>
+
+                        <div class="order-1 md:order-2 flex justify-center">
+                            <div
+                                class="w-full max-w-[250px] md:max-w-md aspect-square bg-black border border-green-900/50 p-2 rounded-lg shadow-[0_0_50px_rgba(34,197,94,0.1)] group hover-trigger relative overflow-hidden">
+                                <div
+                                    class="w-full h-full bg-gray-900/50 rounded flex flex-col font-mono text-[10px] md:text-xs p-4 text-green-600 overflow-hidden">
+                                    <div class="flex gap-2 mb-4 border-b border-green-900/30 pb-2">
+                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500/50"></div>
+                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-500/50"></div>
+                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500/50"></div>
+                                    </div>
+                                    <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                        const random = () => {<br>
+                                        &nbsp;&nbsp;return creativity * chaos;<br>
+                                        }<br><br>
+                                        // Hover to execute<br>
+                                        console.log("Hello World");
+                                    </div>
+                                    <div
+                                        class="absolute bottom-4 right-4 w-8 h-8 md:w-12 md:h-12 border-r-2 border-b-2 border-green-500/50">
+                                    </div>
+                                    <div
+                                        class="absolute top-16 right-10 w-16 h-16 md:w-20 md:h-20 bg-green-500/10 blur-xl rounded-full animate-pulse">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <section id="contact" class="relative py-32 bg-black overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-30">
+            <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2072&auto=format&fit=crop"
+                class="w-full h-full object-cover grayscale">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent z-0"></div>
+
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <p class="text-orange-400 font-bold tracking-widest uppercase mb-6">Philosophy</p>
+            <h2
+                class="text-[clamp(3rem,10vw,8rem)] font-serif leading-none mb-12 hover:text-orange-200 transition-colors cursor-pointer hover-trigger">
+                Open Source<br>& Free to Use.
+            </h2>
+
+            <div class="flex flex-col md:flex-row justify-center gap-8 mb-20">
+                <a href="mailto:hello@micah.com"
+                    class="group relative px-12 py-4 bg-transparent border border-white/20 rounded-full overflow-hidden hover-trigger">
+                    <span
+                        class="absolute inset-0 w-full h-full bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                    <span
+                        class="relative z-10 text-white group-hover:text-black font-bold uppercase tracking-wider transition-colors">Email
+                        Me</span>
+                </a>
+                <a href="https://github.com/micah1crandell" target="_blank"
+                    class="px-12 py-4 bg-white text-black border border-white rounded-full font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors hover-trigger">
+                    GitHub Profile
+                </a>
+            </div>
+
+            <div class="flex justify-between items-end border-t border-white/10 pt-12">
+                <div class="text-left">
+                    <span class="block text-xs text-gray-500 uppercase tracking-widest mb-2">Socials</span>
+                    <div class="flex gap-6">
+                        <a href="https://github.com/micah1crandell" target="_blank"
+                            class="text-gray-300 hover:text-white transition-colors hover-trigger">GitHub</a>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-600 uppercase tracking-widest">© 2025 Micah Crandell</p>
+            </div>
+        </div>
+    </section>
 
     <script>
-        const text = "micah_crandell";
-        let index = 0;
-        let isDeleting = false;
+        window.addEventListener("load", () => {
 
-        function type() {
-            const typingAnimation = document.getElementById('typing-animation');
-            const speed = 200;
+            // --- GLOBAL VARS FOR SCROLL TRACKING ---
+            let horizontalPinStart = 0;
+            let horizontalPinEnd = 0;
 
-            if (isDeleting) {
-                typingAnimation.textContent = text.substring(0, index - 1);
-                index--;
-            } else {
-                typingAnimation.textContent = text.substring(0, index + 1);
-                index++;
+            // 1. Lenis Init
+            let lenis;
+            if (typeof Lenis !== 'undefined') {
+                lenis = new Lenis({
+                    duration: 1.2,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    direction: 'vertical',
+                    gestureDirection: 'vertical',
+                    smooth: true,
+                    mouseMultiplier: 1,
+                    smoothTouch: false,
+                    touchMultiplier: 2,
+                });
+
+                lenis.on('scroll', ScrollTrigger.update);
+                gsap.ticker.add((time) => lenis.raf(time * 1000));
+                gsap.ticker.lagSmoothing(0);
             }
 
-            if (index === text.length + 1) {
-                isDeleting = true;
+            gsap.registerPlugin(ScrollTrigger);
+
+            // 2. Horizontal Scroll Section
+            const section = document.getElementById('works-wrapper');
+            const container = document.getElementById('horizontal-scroll-container');
+            const track = document.getElementById('horizontal-track');
+            const panels = gsap.utils.toArray('.work-panel');
+
+            // Set width of track to hold all panels
+            track.style.width = `${panels.length * 100}%`;
+
+            const hTrigger = gsap.to(track, {
+                xPercent: -100 * (panels.length - 1) / panels.length,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: section,
+                    pin: true,
+                    scrub: 1,
+                    // Adjust snapping to feel more "page-like"
+                    snap: {
+                        snapTo: 1 / (panels.length - 1),
+                        duration: { min: 0.2, max: 0.5 },
+                        delay: 0.1,
+                        ease: "power1.inOut"
+                    },
+                    // Determine duration of scroll based on number of panels
+                    end: () => "+=" + (window.innerWidth * panels.length),
+                    onRefresh: self => {
+                        // Capture Pin Coordinates for Firefly Logic
+                        horizontalPinStart = self.start;
+                        horizontalPinEnd = self.end;
+                    }
+                }
+            });
+
+            // 3. MULTI-DIRECTIONAL FIREFLIES
+            function initFireflies() {
+                const container = document.getElementById('fireflies');
+                const count = 50;
+                const fireflies = [];
+
+                for (let i = 0; i < count; i++) {
+                    const div = document.createElement('div');
+                    div.classList.add('firefly');
+                    container.appendChild(div);
+
+                    const depth = Math.random() * 0.8 + 0.2; // 0.2 (far) to 1.0 (close)
+                    const size = (depth * 3) + 1;
+                    const startX = Math.random() * window.innerWidth;
+                    const startY = Math.random() * window.innerHeight;
+
+                    // Initial Position
+                    gsap.set(div, {
+                        x: startX,
+                        y: startY,
+                        opacity: 0,
+                        scale: size / 4
+                    });
+
+                    // Store physics data (using separate wander props to avoid tween conflicts)
+                    const f = {
+                        element: div,
+                        x: startX,
+                        y: startY,
+                        wanderX: 0,
+                        wanderY: 0,
+                        speed: depth * 0.5,
+                        depth: depth
+                    };
+                    fireflies.push(f);
+
+                    // Wandering Animation (Targets custom properties)
+                    gsap.to(f, {
+                        wanderX: Math.random() * 100 - 50,
+                        wanderY: Math.random() * 100 - 50,
+                        duration: Math.random() * 10 + 10,
+                        ease: "sine.inOut",
+                        repeat: -1,
+                        yoyo: true
+                    });
+
+                    // Flashing
+                    gsap.to(div, {
+                        opacity: Math.random() * 0.7 + 0.1,
+                        duration: Math.random() * 2 + 1,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut",
+                        delay: Math.random() * 2
+                    });
+                }
+
+                // MASTER PHYSICS LOOP
+                ScrollTrigger.create({
+                    trigger: "body",
+                    start: "top top",
+                    end: "bottom bottom",
+                    onUpdate: (self) => {
+                        const scroll = self.scroll();
+                        const width = window.innerWidth;
+                        const height = window.innerHeight;
+
+                        // Calculate Effective Scroll Vectors (Isolate Vertical vs Horizontal movement)
+                        let yScroll, xScroll;
+
+                        if (scroll < horizontalPinStart) {
+                            // Zone 1: Before Horizontal Section
+                            yScroll = scroll;
+                            xScroll = 0;
+                        } else if (scroll >= horizontalPinStart && scroll <= horizontalPinEnd) {
+                            // Zone 2: Inside Horizontal Section (Pinned)
+                            yScroll = horizontalPinStart; // Freeze Vertical Physics
+                            xScroll = scroll - horizontalPinStart; // Transfer to Horizontal Physics
+                        } else {
+                            // Zone 3: After Horizontal Section
+                            yScroll = scroll - (horizontalPinEnd - horizontalPinStart); // Resume Vertical, subtract pinned gap
+                            xScroll = horizontalPinEnd - horizontalPinStart; // Maintain acquired horizontal offset
+                        }
+
+                        fireflies.forEach(f => {
+                            // 1. Calculate Movements
+                            // Vertical Move = Base Y + Wander - (Scrolled Y * Speed)
+                            // Horizontal Move = Base X + Wander - (Scrolled X * Speed)
+                            const movementY = yScroll * f.speed * 0.5;
+                            const movementX = xScroll * f.speed * 0.5;
+
+                            let finalY = f.y + f.wanderY - movementY;
+                            let finalX = f.x + f.wanderX - movementX;
+
+                            // 2. Infinite Wrapping (Seamless Field)
+                            // Wrap Y (-100px buffer)
+                            finalY = gsap.utils.wrap(-100, height + 100, finalY);
+                            // Wrap X (-100px buffer)
+                            finalX = gsap.utils.wrap(-100, width + 100, finalX);
+
+                            // 3. Render
+                            gsap.set(f.element, { x: finalX, y: finalY });
+                        });
+                    }
+                });
             }
 
-            if (index === 0) {
-                isDeleting = false;
+            initFireflies();
+
+            // --- OTHER ANIMATIONS ---
+
+            const nav = document.querySelector('nav');
+            ScrollTrigger.create({
+                start: 'top top',
+                end: 99999,
+                onUpdate: (self) => {
+                    if (self.direction === -1) {
+                        gsap.to(nav, { yPercent: 0, duration: 0.5, ease: 'power3.out', overwrite: true });
+                    } else if (self.direction === 1 && self.scroll() > 100) {
+                        gsap.to(nav, { yPercent: -100, duration: 0.5, ease: 'power3.out', overwrite: true });
+                    }
+                }
+            });
+
+            const cursor = document.getElementById('cursor');
+            const cursorDot = document.getElementById('cursor-dot');
+            const hoverTriggers = document.querySelectorAll('.hover-trigger');
+
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX;
+                const y = e.clientY;
+                cursorDot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+                setTimeout(() => {
+                    cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+                }, 50);
+            });
+
+            // Use event delegation for dynamically added hover triggers if needed, 
+            // but here we just re-query or can stick to static binding for now.
+            // For best performance with static content:
+            document.querySelectorAll('.hover-trigger').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.width = '60px';
+                    cursor.style.height = '60px';
+                    cursor.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                    cursor.style.mixBlendMode = 'normal';
+                    cursor.style.borderColor = 'transparent';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.backgroundColor = 'transparent';
+                    cursor.style.mixBlendMode = 'difference';
+                    cursor.style.borderColor = 'rgba(255,255,255,0.5)';
+                });
+            });
+
+            const tl = gsap.timeline();
+            tl.to('.reveal-text span', {
+                y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'power3.out', delay: 0.2
+            })
+
+                .to('.hero-desc', { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=0.8')
+                .to('.hero-btn', { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=0.8');
+
+            gsap.utils.toArray('.parallax-card').forEach(card => {
+                gsap.to(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: 1.5
+                    },
+                    y: -80,
+                    ease: 'none'
+                });
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                document.querySelectorAll('.aurora-blob').forEach(blob => {
+                    const speed = parseFloat(blob.getAttribute('data-speed'));
+                    const x = (window.innerWidth - mouseX * 100) * speed;
+                    const y = (window.innerHeight - mouseY * 100) * speed;
+                    gsap.to(blob, { x: x, y: y, duration: 3, ease: 'power2.out' });
+                });
+            });
+
+            // --- GITHUB STATS FETCH & ANIMATE ---
+            function fetchGitHubStats() {
+                fetch('https://api.github.com/users/micah1crandell')
+                    .then(response => {
+                        if (!response.ok) throw new Error('GitHub API failed');
+                        return response.json();
+                    })
+                    .then(data => {
+                        const repos = data.public_repos || 0;
+
+                        // Calculate years active
+                        const createdDate = new Date(data.created_at);
+                        const currentDate = new Date();
+                        const years = currentDate.getFullYear() - createdDate.getFullYear();
+
+                        animateCounter('#stat-repos', repos);
+                        animateCounter('#stat-years', years);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        // Fallback values if fetch fails
+                        animateCounter('#stat-repos', 50);
+                        animateCounter('#stat-years', 5);
+                    });
             }
 
-            setTimeout(type, isDeleting ? speed / 2 : speed);
-        }
+            function animateCounter(selector, value) {
+                const element = document.querySelector(selector);
+                if (element) {
+                    gsap.to(element, {
+                        textContent: value,
+                        duration: 2,
+                        ease: "power2.out",
+                        snap: { textContent: 1 },
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 85%",
+                            once: true
+                        }
+                    });
+                }
+            }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            type();
+            fetchGitHubStats();
+            // --- LOGIC & ART CAROUSEL ---
+            const carouselContainer = document.getElementById('logic-art-carousel');
+            if (carouselContainer) {
+                // USER: Add your image URLs here
+                const carouselImageUrls = [
+                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/micboard.png?raw=true?q=80&w=2070&auto=format&fit=crop",
+                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/launchScreenImage.PNG?raw=true?q=80&w=2070&auto=format&fit=crop",
+                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/IMG_3402.png?raw=true?q=80&w=2070&auto=format&fit=crop",
+                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/IMG_3633.PNG?raw=true?q=80&w=2070&auto=format&fit=crop"
+                ];
+
+                // Create and append images
+                carouselImageUrls.forEach((url, index) => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    // First image is visible (opacity-100), others hidden (opacity-0)
+                    // Added 'absolute inset-0 w-full h-full object-cover' to ensure they stack and fill
+                    img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
+                    img.alt = "Logic and Art Fusion";
+                    carouselContainer.appendChild(img);
+                });
+
+                let currentCarouselIndex = 0;
+
+                // Switch images every 4 seconds
+                setInterval(() => {
+                    const images = carouselContainer.querySelectorAll('img');
+                    if (images.length > 1) {
+                        // Fade out current
+                        images[currentCarouselIndex].classList.remove('opacity-100');
+                        images[currentCarouselIndex].classList.add('opacity-0');
+
+                        // Move to next index
+                        currentCarouselIndex = (currentCarouselIndex + 1) % images.length;
+
+                        // Fade in next
+                        images[currentCarouselIndex].classList.remove('opacity-0');
+                        images[currentCarouselIndex].classList.add('opacity-100');
+                    }
+                }, 4000);
+            }
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.nav-links');
-    
-            menuToggle.addEventListener('click', function () {
-                navLinks.classList.toggle('active');
-            });
-        });
-    </script>    
 </body>
+
 </html>
