@@ -458,13 +458,16 @@
                             class="w-full h-[45vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1">
                             <div
                                 class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                </div>
-                                <img src="control_it/Subject2.png"
-                                    onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop'"
-                                    class="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 duration-700"
-                                    alt="Control It Interface">
+                                <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none"
+                                    style="background: transparent;"></iframe>
+                                <button onclick="openSimModal()"
+                                    class="absolute bottom-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-md text-white p-2 rounded-full border border-white/10 transition-all duration-300 z-20 group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
+                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
@@ -1058,6 +1061,53 @@
                         images[currentCarouselIndex].classList.add('opacity-100');
                     }
                 }, 4000);
+            }
+        });
+    </script>
+    <!-- Simulator Modal -->
+    <dialog id="simModal"
+        class="bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-sm w-full h-full max-w-none max-h-none m-0 fixed inset-0 z-[100] open:flex items-center justify-center">
+        <div class="relative w-full h-full flex items-center justify-center"
+            onclick="if(event.target === this) closeSimModal()">
+            <button onclick="closeSimModal()"
+                class="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 z-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+            <div class="w-full h-full max-w-[500px] max-h-[90vh] p-4">
+                <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none rounded-[3.5rem]"
+                    style="background: transparent;"></iframe>
+            </div>
+        </div>
+    </dialog>
+
+    <script>
+        const simModal = document.getElementById('simModal');
+
+        function openSimModal() {
+            simModal.showModal();
+            document.body.style.overflow = 'hidden'; // Lock scroll
+            if (typeof lenis !== 'undefined') {
+                lenis.stop();
+            }
+        }
+
+        function closeSimModal() {
+            simModal.close();
+            document.body.style.overflow = ''; // Unlock scroll
+            if (typeof lenis !== 'undefined') {
+                lenis.start();
+            }
+        }
+
+        // Close on Escape key
+        simModal.addEventListener('cancel', () => {
+            document.body.style.overflow = '';
+            if (typeof lenis !== 'undefined') {
+                lenis.start();
             }
         });
     </script>
