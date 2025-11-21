@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .btn-press:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+            transition: transform 0.1s;
+        }
+
+        .mask-linear {
+            mask-image: linear-gradient(to right, black 85%, transparent 100%);
+        }
+
+        body {
+            background-color: #f4f4f5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons ---
+        const Icons = {
+            Home: ({ active }) => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={active
+                ? "currentColor" : "none"} stroke="currentColor" strokeWidth={active ? "0" : "2"} strokeLinecap="round"
+                strokeLinejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>,
+            Grid: ({ active }) => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={active
+                ? "currentColor" : "none"} stroke="currentColor" strokeWidth={active ? "0" : "2"} strokeLinecap="round"
+                strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>,
+            Connections: ({ active }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active
+                    ? "currentColor" : "currentColor"} strokeWidth={active ? "3" : "2"} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 20h.01" />
+                    <path d="M2 8.82a15 15 0 0 1 20 0" />
+                    <path d="M5 12.859a10 10 0 0 1 14 0" />
+                    <path d="M8.5 16.429a5 5 0 0 1 7 0" />
+                </svg>
+            ),
+            Discover: ({ active }) => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active
+                    ? "currentColor" : "currentColor"} strokeWidth={active ? "3" : "2"} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                    <path d="M12 12v9" />
+                    <path d="m8 17 4 4 4-4" />
+                </svg>
+            ),
+            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" x2="12" y1="8" y2="16" />
+                <line x1="8" x2="16" y1="12" y2="12" />
+            </svg>,
+            User: () => <div className="w-11 h-11 rounded-full bg-zinc-800 overflow-hidden border-2 border-zinc-700"><img
+                src="https://api.dicebear.com/7.x/micah/svg?seed=Felix&mouth=smile" alt="user"
+                className="w-full h-full object-cover" /></div>,
+            Wave: () => <span className="text-3xl">👋🏻</span>,
+            Lock: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                stroke="none">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>,
+            Maximize: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="4" ry="4" />
+                <line x1="3" y1="8" x2="21" y2="8" />
+            </svg>,
+            Heart: ({ filled }) => <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill={filled
+                ? "currentColor" : "none"} stroke={filled ? "none" : "currentColor"} strokeWidth="2" strokeLinecap="round"
+                strokeLinejoin="round" className={filled ? "text-[#FF3B30]" : "text-[#98989D]"}>
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>,
+            Actions: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                <path d="M13 13l6 6" />
+            </svg>, // Cursor icon
+            Link: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>,
+            ConnGrid: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h.01" />
+                <path d="M2 8.82a15 15 0 0 1 20 0" />
+                <path d="M5 12.859a10 10 0 0 1 14 0" />
+                <path d="M8.5 16.429a5 5 0 0 1 7 0" />
+            </svg>,
+            Refresh: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                <path d="M3 21v-5h5" />
+            </svg>,
+            Bolt: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>,
+            BoltSlash: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                <line x1="3" y1="3" x2="21" y2="21" />
+            </svg>,
+            Globe: () => <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" x2="22" y1="12" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>,
+            Server: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
+                <rect width="20" height="8" x="2" y="14" rx="2" ry="2" />
+                <line x1="6" x2="6.01" y1="6" y2="6" />
+                <line x1="6" x2="6.01" y1="18" y2="18" />
+            </svg>,
+            Signal: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"
+                stroke="none">
+                <path d="M2 22h20V2z" />
+            </svg>,
+            Wifi: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                <line x1="12" y1="20" x2="12.01" y2="20" />
+            </svg>,
+            Battery: () => <svg xmlns="http://www.w3.org/2000/svg" width="26" height="12" viewBox="0 0 24 12" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400">
+                <rect x="1" y="1" width="18" height="10" rx="2" ry="2" />
+                <line x1="23" y1="4" x2="23" y2="8" />
+                <rect x="3" y="3" width="14" height="6" rx="1" fill="white" />
+            </svg>,
+            ChevronDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#007AFF]">
+                <path d="m6 9 6 6 6-6" />
+            </svg>,
+            GridIcon: () => <div className="grid grid-cols-2 gap-[3px] w-[42px] h-[42px]">
+                <div className="bg-white rounded-[3px]"></div>
+                <div className="bg-white rounded-[3px]"></div>
+                <div className="bg-white rounded-[3px]"></div>
+                <div className="bg-white rounded-[3px]"></div>
+            </div>
+        };
+
+        // --- Data Models ---
+        const connectionsData = [
+            { id: 1, name: "Bravia 3", ip: "192.168.11.40", port: "20060", status: "offline" },
+            { id: 2, name: "Bravia 1", ip: "192.168.11.14", port: "20060", status: "offline" },
+            { id: 3, name: "Main ProP", ip: "192.168.1.53", port: "1025", status: "offline" },
+            { id: 4, name: "claude.home.local", ip: "192.168.1.207", port: "8060", status: "online" },
+            { id: 5, name: "Bravia 4", ip: "192.168.11.18", port: "20060", status: "offline" },
+        ];
+
+        const trendingGrids = [
+            {
+                id: 1, name: "ProPresenter: Co...", desc: "A basic ProPresenter starter grid featuring pr...", actions: 16,
+                connections: 2, likes: 53, liked: true
+            },
+            {
+                id: 2, name: "Roku Remote", desc: "Control your Roku TV!", actions: 16, connections: 1, likes: 7, connGrid: 1, liked:
+                    false
+            },
+            {
+                id: 3, name: "SUNDAY", desc: "My default Grid that I have open for services...", actions: 18, connections: 5, likes:
+                    2, liked: false
+            },
+        ];
+
+        const myGrids = [
+            { id: 3, name: "SUNDAY", layout: "grid" },
+            { id: 4, name: "ATEM", layout: "grid" },
+            { id: 5, name: "Bravia R...", layout: "grid" },
+            { id: 6, name: "Creat...", layout: "grid" },
+        ];
+
+        // --- Grid Configurations ---
+        const gridConfigurations = {
+            'SUNDAY': [
+                {
+                    id: 1, label: "Previous", sub: "Main ProP", color: "bg-[#007AFF]", glow: "shadow-[0_0_15px_rgba(0,122,255,0.6)]",
+                    span: 1
+                },
+                {
+                    id: 2, label: "Next Slide", sub: "Main ProP", color: "bg-[#007AFF]", glow: "shadow-[0_0_15px_rgba(0,122,255,0.6)]",
+                    span: 1
+                },
+                {
+                    id: 3, label: "02:16:25", sub: "Current Timer", color: "bg-[#FF3B30]", glow: "shadow-[0_0_15px_rgba(255,59,48,0.6)]",
+                    span: 1, active: true
+                },
+                { id: 4, label: "MACRO\nOFF", sub: "USE THIS ONE", color: "bg-black border border-zinc-600", span: 1, isBlack: true },
+                { id: 5, label: "SLIDE OFF", sub: "Companion", color: "bg-black border border-zinc-600", span: 1, isBlack: true },
+                {
+                    id: 6, label: "\"0:00:00\"", sub: "Video Countdown", color: "bg-black border border-zinc-600", span: 1, isBlack: true
+                },
+                {
+                    id: 7, label: "Worship:\nStandard", sub: "", color: "bg-[#007AFF]", glow: "shadow-[0_0_15px_rgba(0,122,255,0.6)]",
+                    span: 1, active: true
+                },
+                { id: 8, label: "", sub: "", color: "bg-transparent border border-zinc-700", span: 1, disabled: true },
+                { id: 9, label: "00:03:44", sub: "isMainProAlive", color: "bg-zinc-700/50 border border-zinc-500", span: 1 },
+                {
+                    id: 10, label: "OVERLAY\nON", sub: "", color: "bg-[#FF9500]", glow: "shadow-[0_0_15px_rgba(255,149,0,0.6)]", span: 1,
+                    active: true
+                },
+                {
+                    id: 11, label: "OVERLAY\nOFF", sub: "", color: "bg-[#FF9500]", glow: "shadow-[0_0_15px_rgba(255,149,0,0.6)]", span: 1
+                },
+                {
+                    id: 12, label: "Clear\nProps", sub: "", color: "bg-[#FF3B30]", glow: "shadow-[0_0_15px_rgba(255,59,48,0.6)]", span: 1,
+                    active: true
+                },
+                { id: 13, label: "Go -", sub: "GrandMA3", color: "bg-zinc-700/50 border border-zinc-600", span: 1 },
+                { id: 14, label: "Go +", sub: "GrandMA3", color: "bg-zinc-700/50 border border-zinc-600", span: 1 },
+                { id: 15, label: "", sub: "", color: "bg-transparent border border-zinc-700", span: 1, disabled: true },
+                { id: 16, label: "Pause", sub: "ProP", color: "bg-[#FF3B30]", glow: "shadow-[0_0_15px_rgba(255,59,48,0.6)]", span: 1 },
+                { id: 17, label: "Play", sub: "ProP", color: "bg-[#FF3B30]", glow: "shadow-[0_0_15px_rgba(255,59,48,0.6)]", span: 1 },
+                { id: 18, label: "", sub: "", color: "bg-transparent border border-zinc-700", span: 1, disabled: true },
+            ],
+            'ATEM': [
+                { id: 1, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 2, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 3, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 4, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 5, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 6, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 7, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 8, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 9, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 10, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 11, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 12, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+            ],
+            'Creative Office': [
+                { id: 1, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 2, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 3, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 4, label: "C", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 5, label: "P", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 6, label: "M", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 7, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 8, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 9, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 10, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 11, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 12, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+            ],
+            'GrandMA3': [
+                { id: 1, label: "G", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+                { id: 2, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 3, label: "H", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+                { id: 4, label: "G", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+                { id: 5, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 6, label: "H", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+                { id: 7, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 8, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 9, label: "H", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+                { id: 10, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 11, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 12, label: "H", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+            ],
+            'Philips Hue Starter': [
+                { id: 1, label: "B", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 2, label: "B", sub: "", color: "bg-black border border-zinc-600", isBlack: true },
+                { id: 3, label: "G", sub: "", color: "bg-[#2C2C2E] border border-zinc-700", isBlack: true },
+                { id: 4, label: "A", sub: "", color: "bg-[#8E8E93] border border-zinc-600", isBlack: true },
+                { id: 5, label: "A", sub: "", color: "bg-[#007AFF] border border-zinc-600" },
+                { id: 6, label: "A", sub: "", color: "bg-[#AF52DE] border border-zinc-600" },
+                { id: 7, label: "C", sub: "", color: "bg-[#30D158] border border-zinc-600" },
+                { id: 8, label: "A", sub: "", color: "bg-[#FF9500] border border-zinc-600" },
+                { id: 9, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 10, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 11, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+                { id: 12, label: "", sub: "", color: "bg-transparent border border-zinc-700", disabled: true },
+            ]
+        };
+
+        // --- Components ---
+
+        const StatusBar = () => (
+            <div
+                className="flex justify-between items-center px-8 pt-4 pb-2 text-white text-[15px] font-semibold z-50 relative select-none">
+                <div className="flex items-center space-x-1 w-1/3">
+                    <span>12:36</span>
+                </div>
+                <div className="w-1/3"></div> {/* Spacer for dynamic island */}
+                <div className="flex items-center justify-end space-x-2 w-1/3">
+                    <Icons.Signal />
+                    <Icons.Wifi />
+                    <Icons.Battery />
+                </div>
+            </div>
+        );
+
+        const TabBar = ({ activeTab, setActiveTab }) => (
+            <div
+                className="absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-zinc-800 pb-9 pt-3 px-6 flex justify-between items-center z-40 rounded-b-[2.5rem]">
+                <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center ${activeTab === 'home' ?
+                    'text-white' : 'text-zinc-500'}`}>
+                    <Icons.Home active={activeTab === 'home'} />
+                </button>
+                <button onClick={() => setActiveTab('grids')} className={`flex flex-col items-center ${activeTab === 'grids' ?
+                    'text-white' : 'text-zinc-500'}`}>
+                    <Icons.Grid active={activeTab === 'grids'} />
+                </button>
+                <button onClick={() => setActiveTab('connections')} className={`flex flex-col items-center ${activeTab ===
+                    'connections' ? 'text-white' : 'text-zinc-500'}`}>
+                    <div className="relative">
+                        <Icons.Connections active={activeTab === 'connections'} />
+                    </div>
+                </button>
+                <button onClick={() => setActiveTab('discover')} className={`flex flex-col items-center ${activeTab === 'discover' ?
+                    'text-white' : 'text-zinc-500'}`}>
+                    <Icons.Discover active={activeTab === 'discover'} />
+                </button>
+                <button className="flex flex-col items-center text-zinc-500">
+                    <Icons.Plus />
+                </button>
+            </div>
+        );
+
+        const GridCard = ({ name, onClick }) => (
+            <button onClick={onClick}
+                className="btn-press flex flex-col items-center justify-center w-[6.8rem] h-[6.8rem] bg-[#1C1C1E] rounded-[1.3rem] p-3 space-y-3">
+                <Icons.GridIcon />
+                <span className="text-[12px] font-bold text-white truncate w-full text-center tracking-wide mt-2">{name}</span>
+            </button>
+        );
+
+        const DiscoverCard = ({ item, onClick }) => (
+            <div onClick={onClick} className="btn-press bg-[#1C1C1E] rounded-[1.5rem] p-5 mb-4 cursor-pointer">
+                <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-[17px] font-bold text-white tracking-tight">{item.name}</h3>
+                    <div className="flex flex-col items-end space-y-1.5">
+                        <div className="flex items-center space-x-2 text-[11px] font-bold text-[#007AFF]">
+                            <Icons.Actions />
+                            <span>Actions</span>
+                            <span className="w-4 text-right font-mono text-[#007AFF]">{item.actions}</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-[11px] font-bold text-[#007AFF]">
+                            <Icons.Link />
+                            <span>Connections</span>
+                            <span className="w-4 text-right font-mono text-[#007AFF]">{item.connections}</span>
+                        </div>
+                        {item.connGrid && (
+                            <div className="flex items-center space-x-2 text-[11px] font-bold text-[#007AFF]">
+                                <Icons.ConnGrid />
+                                <span>Conn-Grid</span>
+                                <span className="w-4 text-right font-mono text-[#007AFF]">{item.connGrid}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <p className="text-[#98989D] text-[13px] font-medium mb-4 line-clamp-2 leading-relaxed pr-2">{item.desc}</p>
+                <div className="flex items-center space-x-2 text-xs font-semibold">
+                    <Icons.Heart filled={item.liked} />
+                    <span className={item.liked ? "text-[#FF3B30]" : "text-[#98989D]"}>{item.likes}</span>
+                </div>
+            </div>
+        );
+
+        const ConnectionItem = ({ item }) => (
+            <div className="flex justify-between py-3.5 border-b border-zinc-800/60">
+                <div className="flex items-start space-x-4">
+                    <div className="pt-1.5">
+                        <div className={`w-2.5 h-2.5 rounded-full ${item.status === 'online' ? 'bg-[#30D158]' : 'bg-[#FF3B30]'}`}>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="font-bold text-[17px] text-white tracking-tight mb-0.5">{item.name}</div>
+                        <div className="text-[#98989D] text-[13px] font-medium tracking-wide">{item.ip}</div>
+                    </div>
+                </div>
+                <div className="text-[#98989D] text-[13px] font-medium self-end pb-[1px] tracking-wide">{item.port}</div>
+            </div>
+        );
+
+        // --- Views ---
+
+        const HomeView = ({ setView }) => (
+            <div className="pt-10 px-6 pb-32">
+                {/* Header Section */}
+                <div className="flex justify-between items-start mb-8">
+                    <div>
+                        <h1 className="text-[34px] font-bold mb-0.5 tracking-tight text-white">Hey, micah</h1>
+                        <div className="flex items-center text-[20px] text-zinc-400 font-medium mb-6">
+                            <span>Welcome back</span>
+                            <span className="ml-2 mb-1">
+                                <Icons.Wave />
+                            </span>
+                        </div>
+                        <div className="text-[15px] font-medium text-white space-y-[2px]">
+                            <div>Connected to: Arbys WiFi</div>
+                            <div>IP Address: 192.168.1.152</div>
+                        </div>
+                    </div>
+                    <div className="pt-1">
+                        <Icons.User />
+                    </div>
+                </div>
+
+                {/* Grids Section */}
+                <div className="mb-10">
+                    <h2 className="text-[22px] font-bold mb-4 tracking-tight text-white">Grids</h2>
+                    <div className="flex space-x-4 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
+                        {myGrids.map(grid => (
+                            <div key={grid.id} className="flex-shrink-0">
+                                <GridCard name={grid.name} onClick={() => setView({ type: 'grid-detail', title: grid.name })} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Active Connections Section */}
+                <div>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-[22px] font-bold tracking-tight text-white">Active Connections</h2>
+                        <span className="text-[#007AFF] font-bold text-[18px]">6%</span>
+                    </div>
+                    <div className="bg-[#1C1C1E] rounded-[1.2rem] p-4 flex justify-between items-center">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-[10px] h-[10px] rounded-full bg-[#30D158] shadow-[0_0_10px_rgba(48,209,88,0.5)]">
+                            </div>
+                            <div>
+                                <div className="font-bold text-[15px] tracking-tight text-white">claude.home.local</div>
+                                <div className="text-zinc-500 text-[11px] font-bold mt-[2px]">HTTP</div>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-white font-mono text-[15px] font-bold tracking-tight">192.168.1.207</div>
+                            <div className="text-zinc-500 text-[11px] font-mono mt-[2px]">8060</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const DiscoverView = ({ setView }) => (
+            <div className="pt-8 px-5 pb-32">
+                {/* Header Tabs */}
+                <div className="flex justify-between items-center mb-8">
+                    <div className="flex space-x-6 text-[#98989D] font-bold text-[17px] overflow-x-auto no-scrollbar mask-linear">
+                        <span className="text-[#0A84FF] border-b-[3px] border-[#0A84FF] pb-1 px-1">Discover</span>
+                        <span className="pb-1">Creators</span>
+                        <span className="pb-1 whitespace-nowrap">New Grids</span>
+                        <span className="pb-1">Feat</span>
+                    </div>
+                    <Icons.User />
+                </div>
+
+                <h2 className="text-[22px] font-bold mb-4 text-white tracking-tight">Trending</h2>
+                {trendingGrids.map(item => (
+                    <DiscoverCard key={item.id} item={item} onClick={() => item.name === 'SUNDAY' && setView({
+                        type: 'grid-detail',
+                        title: item.name
+                    })} />
+                ))}
+
+                <h2 className="text-[22px] font-bold mt-10 mb-4 text-white tracking-tight">All</h2>
+
+                {/* Empty "All" Card placeholder */}
+                <div className="bg-[#1C1C1E] rounded-[1.5rem] p-4 h-32 relative overflow-hidden">
+                    <div className="absolute right-4 top-4">
+                        <div className="flex flex-col items-end space-y-1.5 opacity-40">
+                            <div className="flex items-center space-x-2 text-[11px] font-bold text-[#007AFF]">
+                                <Icons.Actions />
+                                <span>Actions</span>
+                                <span className="w-4 text-right text-[#007AFF]">0</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-[11px] font-bold text-[#007AFF]">
+                                <Icons.Link />
+                                <span>Connec-</span>
+                                <span className="w-4 text-right text-[#007AFF]">0</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-[11px] font-bold text-[#007AFF]">
+                                <span>tions</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        className="absolute bottom-5 left-5 flex items-center space-x-2 text-[#98989D] text-xs font-semibold opacity-40">
+                        <Icons.Heart />
+                        <span>0</span>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const ConnectionsView = () => (
+            <div className="pt-10 px-5 pb-32 h-full flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-[34px] font-bold tracking-tight text-white">Connections</h1>
+                    <Icons.ChevronDown />
+                </div>
+
+                {/* Filter Bar - Matches IMG_3638 */}
+                <div className="bg-[#1C1C1E] rounded-[10px] p-[2px] mb-8 flex h-[3.5rem] relative">
+                    {/* Bolt */}
+                    <button className="flex-1 rounded-lg flex justify-center items-center text-[#98989D]">
+                        <Icons.BoltSlash />
+                    </button>
+
+                    {/* Globe - Selected state */}
+                    <button className="flex-1 rounded-lg flex flex-col items-center justify-center text-white h-full">
+                        <Icons.Globe />
+                        <span className="text-[10px] font-bold mt-0.5 leading-none">All</span>
+                    </button>
+
+                    {/* Server */}
+                    <button className="flex-1 rounded-lg flex justify-center items-center text-[#98989D]">
+                        <Icons.Server />
+                    </button>
+                </div>
+
+                {/* Connection List */}
+                <div className="flex-1 overflow-y-auto no-scrollbar">
+                    {connectionsData.map(conn => (
+                        <ConnectionItem key={conn.id} item={conn} />
+                    ))}
+                    <div className="text-center text-[#0A84FF] font-bold text-[15px] mt-6 cursor-pointer hover:opacity-80">See More
+                    </div>
+                </div>
+
+                {/* Footer Device Status */}
+                <div className="mt-4 mb-2">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-[22px] font-bold w-1/2 leading-tight tracking-tight">Devices on<br />the Network</h2>
+                        <div className="flex items-center space-x-4 w-1/2 justify-end pl-4">
+                            <div className="h-[6px] bg-[#2C2C2E] rounded-full w-full overflow-hidden">
+                                <div className="h-full bg-[#0A84FF] w-[35%] rounded-full"></div>
+                            </div>
+                            <div className="text-white">
+                                <Icons.Refresh />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const MiniGrid = ({ pattern }) => (
+            <div className="grid grid-cols-3 gap-[5px] p-0.5">
+                {pattern.map((cell, i) => (
+                    <div key={i} className={` aspect-square rounded-[0.4rem] flex items-center justify-center text-[9px] font-bold
+                ${cell === 'OFF' ? 'bg-transparent border border-zinc-800' : ''} ${cell === 'C'
+                            ? 'bg-black text-white border border-zinc-700' : ''} ${cell === 'P'
+                                ? 'bg-black text-white border border-zinc-700' : ''} ${cell === 'M'
+                                    ? 'bg-black text-white border border-zinc-700' : ''} ${cell === 'G' ? 'bg-[#2C2C2E] text-white' : ''}
+                ${cell === 'H' ? 'bg-[#2C2C2E] text-white' : ''} ${cell === 'B' ? 'bg-black text-white border border-zinc-700' : ''
+                        } ${cell === 'A_GR' ? 'bg-[#8E8E93] text-white' : ''} ${cell === 'A_BL' ? 'bg-[#007AFF] text-white' : ''}
+                ${cell === 'A_PI' ? 'bg-[#AF52DE] text-white' : ''} ${cell === 'C_GN' ? 'bg-[#30D158] text-white' : ''}
+                ${cell === 'A_OR' ? 'bg-[#FF9500] text-white' : ''} ${cell === 'A_RD' ? 'bg-[#FF3B30] text-white' : ''} `}>
+                        {cell !== 'OFF' && cell.split('_')[0]}
+                    </div>
+                ))}
+            </div>
+        );
+
+        const GridsView = ({ setView }) => {
+            // Exact patterns from IMG_3637.jpg
+            const atemPattern = ['C', 'C', 'C', 'C', 'C', 'C', 'OFF', 'OFF', 'OFF'];
+            const creativePattern = ['C', 'C', 'C', 'C', 'P', 'M', 'OFF', 'OFF', 'OFF'];
+            const grandmaPattern = ['G', 'OFF', 'H', 'G', 'OFF', 'H', 'OFF', 'OFF', 'H'];
+            const huePattern = ['B', 'B', 'G', 'A_GR', 'A_BL', 'A_PI', 'C_GN', 'A_OR', 'OFF'];
+            const sundayPattern = ['A_BL', 'A_BL', 'A_RD', 'C', 'C', 'C', 'A_BL', 'OFF', 'H', 'A_OR', 'A_OR', 'A_RD', 'H', 'H', 'OFF',
+                'A_RD', 'A_RD', 'OFF'];
+
+            return (
+                <div className="pt-10 px-5 pb-32 overflow-y-auto no-scrollbar h-full">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-[22px] font-bold tracking-tight text-white">Connection Grids</h2>
+                        <Icons.ChevronDown />
+                    </div>
+                    <div className="space-y-4 mb-10">
+                        <div className="bg-[#1C1C1E] p-4 rounded-[1.2rem] flex items-center space-x-4">
+                            <div className="w-[10px] h-[10px] rounded-full bg-[#007AFF]"></div>
+                            <div>
+                                <div className="font-bold text-[15px] text-white">Bravia Remote</div>
+                                <div className="text-zinc-500 text-[13px] font-medium mt-0.5">Connections: 4</div>
+                            </div>
+                        </div>
+                        <div className="bg-[#1C1C1E] p-4 rounded-[1.2rem] flex items-center space-x-4">
+                            <div className="w-[10px] h-[10px] rounded-full bg-[#007AFF]"></div>
+                            <div>
+                                <div className="font-bold text-[15px] text-white">Roku Remote</div>
+                                <div className="text-zinc-500 text-[13px] font-medium mt-0.5">Connections: 1</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-[22px] font-bold tracking-tight text-white">Standard Grids</h2>
+                        <Icons.ChevronDown />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-8 px-1">
+                        <div>
+                            <div className="text-[15px] font-medium mb-3 text-white">SUNDAY</div>
+                            <div onClick={() => setView({ type: 'grid-detail', title: 'SUNDAY' })} className="cursor-pointer">
+                                {/* Slicing first 9 items for the 3x3 preview */}
+                                <MiniGrid pattern={sundayPattern.slice(0, 9)} />
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-[15px] font-medium mb-3 text-white">ATEM</div>
+                            <div onClick={() => setView({ type: 'grid-detail', title: 'ATEM' })} className="cursor-pointer">
+                                <MiniGrid pattern={atemPattern} />
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-[15px] font-medium mb-3 text-white">Creative Office</div>
+                            <div onClick={() => setView({ type: 'grid-detail', title: 'Creative Office' })} className="cursor-pointer">
+                                <MiniGrid pattern={creativePattern} />
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-[15px] font-medium mb-3 text-white">GrandMA3</div>
+                            <div onClick={() => setView({ type: 'grid-detail', title: 'GrandMA3' })} className="cursor-pointer">
+                                <MiniGrid pattern={grandmaPattern} />
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-[15px] font-medium mb-3 text-white leading-tight">Philips<br />Hue Starter</div>
+                            <div onClick={() => setView({ type: 'grid-detail', title: 'Philips Hue Starter' })}
+                                className="cursor-pointer">
+                                <MiniGrid pattern={huePattern} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const DetailView = ({ close, title }) => {
+            // Lookup grid configuration based on title, default to SUNDAY if not found
+            const buttons = gridConfigurations[title] || gridConfigurations['SUNDAY'];
+
+            return (
+                <div
+                    className="absolute inset-0 bg-black z-30 flex flex-col rounded-[2.7rem] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    {/* Header */}
+                    <div className="px-6 pt-16 pb-4 flex justify-between items-center bg-black border-b border-zinc-900/50 z-10">
+                        <button onClick={close}
+                            className="flex items-center text-white font-bold text-[22px] tracking-tight hover:opacity-80 transition-opacity">
+                            {/* Custom Back Arrow */}
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
+                                strokeLinecap="round" strokeLinejoin="round" className="mr-1 pb-[2px]">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                            {title || 'SUNDAY'}
+                        </button>
+                        <div className="flex items-center space-x-5">
+                            <Icons.Lock />
+                            <Icons.Maximize />
+                        </div>
+                    </div>
+
+                    {/* Grid Area */}
+                    <div className="flex-1 p-5 pb-10 overflow-y-auto no-scrollbar bg-black/95">
+                        <div className="grid grid-cols-3 gap-3 h-full content-start">
+                            {buttons.map(btn => (
+                                <button key={btn.id} disabled={btn.disabled} className={` relative aspect-square rounded-[1.2rem] p-3 flex
+                        flex-col justify-between text-left transition-all duration-150 btn-press overflow-hidden ${btn.color}
+                        ${btn.glow ? btn.glow : ''} ${btn.active ? 'border-[1.5px] border-white/40' : ''} ${btn.disabled
+                                        ? 'opacity-50 cursor-default' : 'hover:brightness-110'} `}>
+                                    {!btn.disabled && (
+                                        <>
+                                            <span className={`font-extrabold text-[15px] leading-[1.1] tracking-tight ${btn.isBlack
+                                                ? 'text-white' : 'text-white'}`}>
+                                                {btn.label.split('\n').map((line, i) => (
+                                                    <React.Fragment key={i}>
+                                                        {line}
+                                                        {i < btn.label.split('\n').length - 1 && <br />}
+                                                    </React.Fragment>
+                                                ))}
+                                            </span>
+                                            {btn.sub && (
+                                                <span className={`text-[10px] font-bold opacity-90 ${btn.isBlack ? 'text-zinc-400' : 'text-white/90'
+                                                    }`}>
+                                                    {btn.sub}
+                                                </span>
+                                            )}
+                                        </>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('home');
+            const [view, setView] = useState({ type: 'default', title: '' });
+
+            const renderContent = () => {
+                switch (activeTab) {
+                    case 'home': return <HomeView setView={setView} />;
+                    case 'discover': return <DiscoverView setView={setView} />;
+                    case 'connections': return <ConnectionsView />;
+                    case 'grids': return <GridsView setView={setView} />;
+                    default: return <HomeView setView={setView} />;
+                }
+            };
+
+            return (
+                <>
+                    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-zinc-100 font-sans">
+                        {/* iPhone Frame */}
+                        <div
+                            className="relative w-[370px] h-[780px] bg-zinc-900 rounded-[3.5rem] shadow-2xl p-[6px] border-[7px] border-zinc-800 ring-1 ring-zinc-950/50">
+                            {/* Screen Container */}
+                            <div className="w-full h-full bg-black rounded-[2.9rem] overflow-hidden relative flex flex-col">
+
+                                {/* Dynamic Island / Notch */}
+                                <div
+                                    className="absolute top-[0.7rem] left-1/2 transform -translate-x-1/2 w-[110px] h-[32px] bg-black rounded-full z-50 flex items-center justify-center pointer-events-none">
+                                    <div className="w-full h-full bg-black rounded-full relative overflow-hidden">
+                                        <div
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-zinc-900/80 rounded-full blur-[1px]">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Status Bar */}
+                                <StatusBar />
+
+                                {/* Main Content Scroll Area */}
+                                <div className="flex-1 overflow-y-auto no-scrollbar relative bg-black">
+                                    {renderContent()}
+                                </div>
+
+                                {/* Tab Bar */}
+                                <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+                                {/* Modal View (covers content and tab bar if open) */}
+                                {view.type === 'grid-detail' && (
+                                    <DetailView title={view.title} close={() => setView({ type: 'default', title: '' })} />
+                                )}
+                            </div>
+
+                            {/* Physical Buttons */}
+                            <div className="absolute top-28 -left-[9px] w-[4px] h-8 bg-zinc-700 rounded-l-md shadow-sm"></div>
+                            <div className="absolute top-44 -left-[9px] w-[4px] h-14 bg-zinc-700 rounded-l-md shadow-sm"></div>
+                            <div className="absolute top-60 -left-[9px] w-[4px] h-14 bg-zinc-700 rounded-l-md shadow-sm"></div>
+                            <div className="absolute top-48 -right-[9px] w-[4px] h-24 bg-zinc-700 rounded-r-md shadow-sm"></div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
