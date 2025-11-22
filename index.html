@@ -16,6 +16,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/Observer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollToPlugin.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
@@ -45,7 +47,8 @@
         body {
             background-color: #050505;
             color: #e5e5e5;
-            overflow-x: hidden;
+            overflow: hidden;
+            /* Disable native scroll */
             max-width: 100vw;
             cursor: none;
         }
@@ -421,7 +424,7 @@
             <div class="horizontal-section" id="horizontal-track">
 
                 <div
-                    class="work-panel bg-dark flex-col items-center justify-center relative border-r border-white/5 px-4">
+                    class="work-panel w-screen h-screen bg-dark flex-col items-center justify-center relative border-r border-white/5 px-4 shrink-0">
                     <div
                         class="absolute top-10 right-10 w-32 h-32 md:w-64 md:h-64 border border-white/5 rounded-full animate-[spin_20s_linear_infinite]">
                     </div>
@@ -447,7 +450,7 @@
                     </div>
                 </div>
 
-                <div class="work-panel bg-dark border-r border-white/5">
+                <div class="work-panel w-screen h-screen bg-dark border-r border-white/5 shrink-0">
                     <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
 
                         <div
@@ -504,7 +507,7 @@
                     </div>
                 </div>
 
-                <div class="work-panel bg-dark border-r border-white/5">
+                <div class="work-panel w-screen h-screen bg-dark border-r border-white/5 shrink-0">
                     <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
 
                         <div
@@ -558,7 +561,7 @@
                     </div>
                 </div>
 
-                <div class="work-panel bg-dark border-r border-white/5">
+                <div class="work-panel w-screen h-screen bg-dark border-r border-white/5 shrink-0">
                     <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
 
                         <div
@@ -721,28 +724,28 @@
             let horizontalPinStart = 0;
             let horizontalPinEnd = 0;
 
-            // 1. Lenis Init
-            let lenis;
-            if (typeof Lenis !== 'undefined') {
-                lenis = new Lenis({
-                    duration: 1.2,
-                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                    direction: 'vertical',
-                    gestureDirection: 'vertical',
-                    smooth: true,
-                    mouseMultiplier: 1,
-                    smoothTouch: false,
-                    touchMultiplier: 2,
-                });
+            // Disable Lenis for presentation mode
+            // let lenis;
+            // if (typeof Lenis !== 'undefined') {
+            //     lenis = new Lenis({
+            //         duration: 1.2,
+            //         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            //         direction: 'vertical',
+            //         gestureDirection: 'vertical',
+            //         smooth: true,
+            //         mouseMultiplier: 1,
+            //         smoothTouch: false,
+            //         touchMultiplier: 2,
+            //     });
 
-                lenis.on('scroll', ScrollTrigger.update);
-                gsap.ticker.add((time) => lenis.raf(time * 1000));
-                gsap.ticker.lagSmoothing(0);
-            }
+            //     lenis.on('scroll', ScrollTrigger.update);
+            //     gsap.ticker.add((time) => lenis.raf(time * 1000));
+            //     gsap.ticker.lagSmoothing(0);
+            // }
 
-            gsap.registerPlugin(ScrollTrigger);
+            gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 
-            // 2. Horizontal Scroll Section
+            // 2. Horizontal Scroll Section Setup
             const section = document.getElementById('works-wrapper');
             const container = document.getElementById('horizontal-scroll-container');
             const track = document.getElementById('horizontal-track');
@@ -751,29 +754,130 @@
             // Set width of track to hold all panels
             track.style.width = `${panels.length * 100}%`;
 
-            const hTrigger = gsap.to(track, {
-                xPercent: -100 * (panels.length - 1) / panels.length,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    pin: true,
-                    scrub: 1,
-                    // Adjust snapping to feel more "page-like"
-                    snap: {
-                        snapTo: 1 / (panels.length - 1),
-                        duration: { min: 0.2, max: 0.5 },
-                        delay: 0.1,
-                        ease: "power1.inOut"
-                    },
-                    // Determine duration of scroll based on number of panels
-                    end: () => "+=" + (window.innerWidth * panels.length),
-                    onRefresh: self => {
-                        // Capture Pin Coordinates for Firefly Logic
-                        horizontalPinStart = self.start;
-                        horizontalPinEnd = self.end;
-                    }
+            // --- PRESENTATION MODE LOGIC ---
+            let currentIndex = 0;
+            let isAnimating = false;
+
+            // Define Slides
+            // 0: Hero
+            // 1: Approach
+            // 2: Works Panel 1
+            // ...
+            // Last: Contact
+
+            const verticalSections = [
+                document.getElementById('hero'),
+                document.getElementById('approach'),
+                document.getElementById('works-wrapper'), // This handles all horizontal panels
+                document.getElementById('contact')
+            ];
+
+            // Map global index to specific state
+            function getState(index) {
+                // 0 -> Hero
+                if (index === 0) return { type: 'vertical', target: verticalSections[0] };
+                // 1 -> Approach
+                if (index === 1) return { type: 'vertical', target: verticalSections[1] };
+
+                // Works Section Indices
+                // Base index for works is 2
+                const worksIndexStart = 2;
+                const worksIndexEnd = 2 + panels.length - 1;
+
+                if (index >= worksIndexStart && index <= worksIndexEnd) {
+                    const panelIndex = index - worksIndexStart;
+                    return {
+                        type: 'horizontal',
+                        target: verticalSections[2],
+                        panelIndex: panelIndex
+                    };
                 }
+
+                // Contact
+                if (index === worksIndexEnd + 1) return { type: 'vertical', target: verticalSections[3] };
+
+                return null;
+            }
+
+            const totalSlides = 2 + panels.length + 1; // Hero + Approach + Panels + Contact
+
+            function gotoSlide(index) {
+                if (index < 0 || index >= totalSlides || isAnimating) return;
+
+                isAnimating = true;
+                const state = getState(index);
+                const prevState = getState(currentIndex);
+
+                // Determine animation
+                const tl = gsap.timeline({
+                    onComplete: () => {
+                        currentIndex = index;
+                        isAnimating = false;
+
+                        // Update firefly logic vars if needed, though they relied on ScrollTrigger
+                        // We might need to manually update them or let them drift
+                    }
+                });
+
+                if (state.type === 'vertical') {
+                    // Scroll to vertical section
+                    tl.to(window, {
+                        scrollTo: { y: state.target, autoKill: false },
+                        duration: 1,
+                        ease: "power2.inOut"
+                    });
+
+                    // If we are leaving horizontal or entering it, ensure track is reset or set?
+                    // If we go to Works Wrapper (index 2), we want track at 0
+                    if (index === 2) { // First panel
+                        tl.to(track, { xPercent: 0, duration: 1, ease: "power2.inOut" }, "<");
+                    }
+                } else if (state.type === 'horizontal') {
+                    // We are in works wrapper
+                    // First ensure we are vertically at the works wrapper
+                    tl.to(window, {
+                        scrollTo: { y: state.target, autoKill: false },
+                        duration: 1,
+                        ease: "power2.inOut"
+                    });
+
+                    // Then animate track
+                    const xPercent = -100 * state.panelIndex; // 0, -100, -200...
+                    // Note: xPercent is relative to the element width. 
+                    // Since track width is panels.length * 100%, 
+                    // moving it by -100 / panels.length percent might be what we want if using xPercent on the track itself?
+                    // Wait, previous logic was: xPercent: -100 * (panels.length - 1) / panels.length
+                    // That was for the WHOLE scroll.
+                    // Here we want to show 1 panel (100vw).
+                    // Track is e.g. 300vw.
+                    // To show 2nd panel, we move track -100vw.
+                    // -100vw is -33.33% of 300vw.
+                    // So xPercent should be -100 * panelIndex / panels.length ?
+                    // Actually, let's use x: window.innerWidth * -panelIndex
+
+                    tl.to(track, {
+                        x: () => -window.innerWidth * state.panelIndex,
+                        duration: 1,
+                        ease: "power2.inOut"
+                    }, "<");
+                }
+            }
+
+            Observer.create({
+                target: window,
+                type: "wheel,touch,pointer",
+                onUp: () => !isAnimating && gotoSlide(currentIndex + 1),
+                onDown: () => !isAnimating && gotoSlide(currentIndex - 1),
+                tolerance: 10,
+                preventDefault: true
             });
+
+            // Initial set
+            // gotoSlide(0); // Browser handles refresh scroll position, but we might want to force top?
+            // Let's just let it be, or force top on load
+            window.scrollTo(0, 0);
+
+
 
             // 3. MULTI-DIRECTIONAL FIREFLIES
             function initFireflies() {
