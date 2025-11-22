@@ -738,43 +738,18 @@
                 }
             };
 
-            const [scale, setScale] = useState(1);
 
-            useEffect(() => {
-                const handleResize = () => {
-                    const padding = 40; // Padding around the phone
-                    const phoneWidth = 370;
-                    const phoneHeight = 780;
 
-                    // Calculate scale based on window size vs phone size
-                    // We want to fit the phone within the window with some padding
-                    const scaleX = (window.innerWidth - padding) / phoneWidth;
-                    const scaleY = (window.innerHeight - padding) / phoneHeight;
 
-                    // Use the smaller scale factor to ensure it fits both dimensions
-                    // But don't scale up beyond 1 (original size) unless you want it huge on huge screens, 
-                    // usually capping at 1 is safer for quality, but let's allow it to be at most 1.
-                    const newScale = Math.min(Math.min(scaleX, scaleY), 1);
-
-                    setScale(newScale);
-                };
-
-                // Initial calc
-                handleResize();
-
-                window.addEventListener('resize', handleResize);
-                return () => window.removeEventListener('resize', handleResize);
-            }, []);
 
             return (
                 <>
                     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-transparent font-sans overflow-hidden">
                         {/* iPhone Frame */}
                         <div
-                            style={{ transform: `scale(${scale})` }}
-                            className="relative w-[370px] h-[780px] bg-zinc-900 rounded-[3.5rem] shadow-2xl p-[6px] border-[7px] border-zinc-800 ring-1 ring-zinc-950/50 transition-transform duration-200 ease-out origin-center">
+                            className="relative w-[430px] h-[862px] bg-black rounded-[55px] shadow-xl border-[12px] border-[#1a1a1a] overflow-hidden select-none ring-1 ring-white/10 transition-transform duration-200 ease-out origin-center">
                             {/* Screen Container */}
-                            <div className="w-full h-full bg-black rounded-[2.9rem] overflow-hidden relative flex flex-col">
+                            <div className="w-full h-full bg-black rounded-[43px] overflow-hidden relative flex flex-col">
 
                                 {/* Dynamic Island / Notch */}
                                 <div
