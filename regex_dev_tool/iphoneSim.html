@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Dev Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Custom Scrollbar for content areas */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4 selection:bg-[#00DC82] selection:text-black">
+
+    <!-- iPhone Mockup -->
+    <div
+        class="relative w-[430px] h-[862px] bg-black rounded-[55px] shadow-xl border-[12px] border-[#1a1a1a] overflow-hidden select-none ring-1 ring-white/10">
+
+        <!-- Notch / Dynamic Island -->
+        <div class="absolute top-0 inset-x-0 h-12 flex justify-center pointer-events-none z-50">
+            <div class="w-36 h-8 bg-black rounded-b-3xl flex items-center justify-between px-4 mt-3">
+                <div class="w-16 h-5 bg-[#00DC82]/20 rounded-full animate-pulse opacity-50"></div>
+                <div class="h-5 w-5 bg-black rounded-full border-2 border-[#00DC82]/20"></div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div
+            class="h-14 w-full flex justify-between items-end px-10 pb-2 text-white font-bold text-sm absolute top-0 z-40 bg-gradient-to-b from-black/80 to-transparent">
+            <span id="clock">4:11</span>
+            <div class="flex space-x-1 items-center">
+                <div class="h-3 w-3 bg-white rounded-full opacity-20"></div>
+                <div class="h-3 w-3 bg-white rounded-full opacity-20"></div>
+                <div class="text-[10px]">82</div>
+            </div>
+        </div>
+
+        <!-- Screen Content -->
+        <div class="w-full h-full pt-14 pb-[88px] bg-black overflow-hidden rounded-[43px] relative">
+
+            <!-- Views -->
+            <div id="view-tester"
+                class="view-section h-full overflow-y-auto custom-scrollbar px-4 pt-4 pb-24 font-mono">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-xs font-bold tracking-[0.2em] text-gray-400">REGEX</h1>
+                    <div class="flex items-center space-x-4">
+                        <button
+                            class="text-[10px] font-bold tracking-widest text-gray-400 hover:text-white transition-colors">FLAGS</button>
+                        <div class="flex items-center space-x-1 text-gray-400 hover:text-white cursor-pointer transition-colors"
+                            onclick="switchTab('library')">
+                            <i data-lucide="list" size="14"></i>
+                            <span class="text-[10px] font-bold tracking-widest">LIBRARY</span>
+                        </div>
+                        <div
+                            class="flex items-center space-x-1 text-[#00DC82] cursor-pointer hover:opacity-80 transition-opacity">
+                            <i data-lucide="download" size="14"></i>
+                            <span class="text-[10px] font-bold tracking-widest">STORE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern Input -->
+                <div class="mb-6">
+                    <input type="text" id="regex-pattern"
+                        class="w-full bg-transparent text-3xl font-bold text-white outline-none placeholder-gray-700 font-mono"
+                        placeholder="Regular Expression..." spellcheck="false" value="\s" />
+                </div>
+
+                <!-- Flags -->
+                <div class="flex space-x-3 mb-8" id="flags-container">
+                    <!-- Flags injected by JS -->
+                </div>
+
+                <!-- Center Action -->
+                <div class="flex justify-center mb-6">
+                    <i data-lucide="menu" class="text-gray-600"></i>
+                </div>
+
+                <!-- Text Section Header -->
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-[10px] font-bold tracking-widest text-gray-400">TEXT</span>
+                    <div class="flex space-x-4">
+                        <button class="flex items-center space-x-1 text-[#00DC82] hover:opacity-80 transition-opacity">
+                            <i data-lucide="file-text" size="16"></i>
+                            <span class="text-xs font-bold tracking-wider">DOCS</span>
+                        </button>
+                        <button class="flex items-center space-x-1 text-[#00DC82] hover:opacity-80 transition-opacity">
+                            <i data-lucide="copy" size="16"></i>
+                            <span class="text-xs font-bold tracking-wider">COPY</span>
+                        </button>
+                        <span id="match-count"
+                            class="bg-[#1E3A2F] text-[#00DC82] px-3 py-1 rounded-full text-[10px] font-bold tracking-wider">
+                            0 MATCHES
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Highlighted Text Display -->
+                <div id="highlight-display"
+                    class="mb-2 font-mono text-lg bg-transparent outline-none text-white break-words whitespace-pre-wrap min-h-[40px]">
+                </div>
+
+                <!-- Text Input -->
+                <textarea id="test-text"
+                    class="w-full bg-[#111] text-gray-400 text-sm p-3 rounded-lg border border-gray-800 focus:border-[#00DC82] outline-none min-h-[100px] font-mono mb-6 transition-colors"
+                    placeholder="Test string goes here..." spellcheck="false">Hello there, World!</textarea>
+
+                <!-- Matches List -->
+                <div id="matches-list" class="flex flex-col space-y-1">
+                    <!-- Matches injected by JS -->
+                </div>
+
+                <!-- File Upload Placeholder -->
+                <div
+                    class="mt-12 flex flex-col items-center justify-center text-center p-8 border border-dashed border-gray-800 rounded-xl bg-[#0a0a0a] group hover:border-[#00DC82] transition-colors cursor-pointer">
+                    <i data-lucide="file-text" size="48"
+                        class="text-[#00DC82] mb-4 opacity-80 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-white font-bold text-lg mb-2">Select a Document</h3>
+                    <p class="text-gray-500 text-sm mb-6 max-w-[200px]">Choose a file to test your regex patterns
+                        against</p>
+                    <button
+                        class="bg-[#00DC82] hover:opacity-90 text-black font-bold py-3 px-6 rounded-lg text-sm transition-all">
+                        Browse Files
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-library" class="view-section h-full px-4 pt-6 pb-24 overflow-y-auto custom-scrollbar hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-white">Library</h1>
+                    <i data-lucide="plus" class="text-white cursor-pointer hover:text-[#00DC82] transition-colors"
+                        size="28"></i>
+                </div>
+
+                <!-- Search -->
+                <div
+                    class="bg-[#121212] flex items-center px-3 py-3 rounded-lg mb-6 border border-[#1E1E1E] focus-within:border-[#333] transition-colors">
+                    <i data-lucide="search" size="18" class="text-gray-500 mr-2"></i>
+                    <input type="text" placeholder="Search patterns..."
+                        class="bg-transparent text-white w-full outline-none placeholder-gray-600 text-sm" />
+                </div>
+
+                <!-- Cards -->
+                <div id="library-list" class="space-y-4">
+                    <!-- Library items injected by JS -->
+                </div>
+            </div>
+
+            <div id="view-reference"
+                class="view-section h-full px-4 pt-6 pb-24 overflow-y-auto custom-scrollbar hidden">
+                <!-- Search -->
+                <div
+                    class="bg-[#121212] flex items-center px-3 py-3 rounded-xl mb-6 border border-[#1E1E1E] focus-within:border-[#333] transition-colors">
+                    <i data-lucide="search" size="18" class="text-gray-500 mr-2"></i>
+                    <input type="text" placeholder="Search patterns, descriptions, or tags..."
+                        class="bg-transparent text-white w-full outline-none placeholder-gray-600 text-sm" />
+                </div>
+
+                <div class="mb-2 text-[10px] font-bold tracking-widest text-gray-400 uppercase">Category</div>
+
+                <!-- Category Pills -->
+                <div id="ref-categories"
+                    class="flex space-x-2 overflow-x-auto pt-1 pb-4 mb-0 no-scrollbar min-h-[50px]">
+                    <!-- Categories injected by JS -->
+                </div>
+
+                <!-- List -->
+                <div id="ref-list" class="space-y-3">
+                    <!-- Reference items injected by JS -->
+                </div>
+            </div>
+
+            <div id="view-settings" class="view-section h-full px-4 pt-6 pb-24 overflow-y-auto custom-scrollbar hidden">
+                <h1 class="text-center text-xl font-mono text-white mb-8">Settings</h1>
+
+                <div class="mb-2 text-[10px] font-bold tracking-widest text-gray-500 uppercase ml-2">DATA</div>
+                <div class="bg-[#121212] rounded-xl overflow-hidden mb-8 border border-[#1E1E1E]">
+                    <div
+                        class="flex justify-between items-center p-4 hover:bg-[#1A1A1A] cursor-pointer transition-colors">
+                        <span class="text-white text-base">Manage Pattern Data</span>
+                        <i data-lucide="chevron-right" size="16" class="text-gray-600"></i>
+                    </div>
+                </div>
+
+                <div class="mb-2 text-[10px] font-bold tracking-widest text-gray-500 uppercase ml-2">ABOUT</div>
+                <div class="bg-[#121212] rounded-xl p-5 border border-[#1E1E1E]">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="hammer" class="text-[#00DC82]" size="28"></i>
+                        <div>
+                            <h3 class="text-white font-bold text-lg">RegEX Dev Tool</h3>
+                            <span class="text-gray-500 text-xs">Version 1.0</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                        A powerful regular expression testing and pattern management tool for developers.
+                    </p>
+
+                    <div class="space-y-1">
+                        <div
+                            class="flex justify-between items-center py-3 border-b border-[#1E1E1E] cursor-pointer hover:opacity-80 transition-opacity">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm w-4 text-center text-[#00DC82]">✋</span>
+                                <span class="text-white text-base font-medium">Privacy Policy</span>
+                            </div>
+                            <i data-lucide="chevron-right" size="16" class="text-gray-600"></i>
+                        </div>
+                        <div
+                            class="flex justify-between items-center py-3 border-b border-[#1E1E1E] cursor-pointer hover:opacity-80 transition-opacity">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm w-4 text-center text-[#00DC82]">📄</span>
+                                <span class="text-white text-base font-medium">Terms of Service</span>
+                            </div>
+                            <i data-lucide="chevron-right" size="16" class="text-gray-600"></i>
+                        </div>
+                        <div
+                            class="flex justify-between items-center py-3 border-b border-[#1E1E1E] cursor-pointer hover:opacity-80 transition-opacity">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm w-4 text-center text-[#00DC82]">❔</span>
+                                <span class="text-white text-base font-medium">Support</span>
+                            </div>
+                            <i data-lucide="chevron-right" size="16" class="text-gray-600"></i>
+                        </div>
+                        <div
+                            class="flex justify-between items-center py-3 cursor-pointer hover:opacity-80 transition-opacity">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm w-4 text-center text-[#00DC82]">⭐</span>
+                                <span class="text-white text-base font-medium">Rate App</span>
+                            </div>
+                            <i data-lucide="chevron-right" size="16" class="text-gray-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div
+            class="h-[88px] bg-black/95 backdrop-blur-md border-t border-[#1E1E1E] flex justify-around items-start pt-2 absolute bottom-0 w-full z-50">
+            <button onclick="switchTab('tester')"
+                class="nav-item flex flex-col items-center justify-center space-y-1 w-full py-2 transition-colors duration-200 text-[#00DC82]"
+                data-tab="tester">
+                <i data-lucide="hammer" size="24" stroke-width="2.5"></i>
+                <span class="text-[10px] font-medium">Tester</span>
+            </button>
+            <button onclick="switchTab('library')"
+                class="nav-item flex flex-col items-center justify-center space-y-1 w-full py-2 transition-colors duration-200 text-[#888888]"
+                data-tab="library">
+                <i data-lucide="folder" size="24" stroke-width="2"></i>
+                <span class="text-[10px] font-medium">Library</span>
+            </button>
+            <button onclick="switchTab('reference')"
+                class="nav-item flex flex-col items-center justify-center space-y-1 w-full py-2 transition-colors duration-200 text-[#888888]"
+                data-tab="reference">
+                <i data-lucide="book-open" size="24" stroke-width="2"></i>
+                <span class="text-[10px] font-medium">Reference</span>
+            </button>
+            <button onclick="switchTab('settings')"
+                class="nav-item flex flex-col items-center justify-center space-y-1 w-full py-2 transition-colors duration-200 text-[#888888]"
+                data-tab="settings">
+                <i data-lucide="settings" size="24" stroke-width="2"></i>
+                <span class="text-[10px] font-medium">Settings</span>
+            </button>
+        </div>
+
+        <!-- Bottom Indicator -->
+        <div class="absolute bottom-2 inset-x-0 flex justify-center pointer-events-none z-50">
+            <div class="w-36 h-1 bg-white/30 rounded-full"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // --- Data ---
+        const LIBRARY_DATA = [
+            {
+                id: 1,
+                title: 'Complex Password',
+                pattern: '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}',
+                tags: ['Password', 'Advanced'],
+            },
+            {
+                id: 2,
+                title: 'Numbers not part of words',
+                pattern: '(?<!\\w)\\d+(?!\\w)',
+                tags: ['Numbers'],
+            },
+            {
+                id: 3,
+                title: 'Duplicate Words',
+                pattern: '\\b(\\w+)\\s+\\1\\b',
+                tags: ['Words'],
+                flags: 'gi'
+            }
+        ];
+
+        const REFERENCE_DATA = [
+            {
+                category: 'Common',
+                items: [
+                    { symbol: '\\d', description: 'Matches any digit (0-9)', tags: ['digit', 'number', 'basic'] },
+                    { symbol: '\\w', description: 'Matches any word character (a-z, A-Z, 0-9, _)', tags: ['word', 'alphanumeric', 'basic'] },
+                    { symbol: '\\s', description: 'Matches any whitespace character (space, tab, newline)', tags: ['whitespace', 'space', 'basic'] },
+                ]
+            },
+            {
+                category: 'Anchors',
+                items: [
+                    { symbol: '^', description: 'Start of string (or line in multiline mode)', tags: ['start', 'beginning'] },
+                    { symbol: '$', description: 'End of string (or line in multiline mode)', tags: ['end', 'finish'] },
+                    { symbol: '\\b', description: 'Word boundary', tags: ['boundary', 'word'] },
+                ]
+            },
+            {
+                category: 'Quantifiers',
+                items: [
+                    { symbol: '*', description: '0 or more matches', tags: ['zero', 'more'] },
+                    { symbol: '+', description: '1 or more matches', tags: ['one', 'more'] },
+                    { symbol: '?', description: '0 or 1 match', tags: ['optional'] },
+                ]
+            }
+        ];
+
+        // --- State ---
+        let state = {
+            activeTab: 'tester',
+            pattern: '\\s',
+            flags: { i: false, m: false, s: false, x: false, u: false },
+            text: 'Hello there, World!',
+            activeRefCategory: 'Common'
+        };
+
+        // --- Navigation ---
+        function switchTab(tabName) {
+            state.activeTab = tabName;
+
+            // Update View Visibility
+            document.querySelectorAll('.view-section').forEach(el => {
+                if (el.id === `view-${tabName}`) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                // Lucide replaces <i> with <svg>, so we try to find the svg first, then fallback to i
+                const icon = btn.querySelector('svg') || btn.querySelector('i');
+
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.remove('text-[#888888]');
+                    btn.classList.add('text-[#00DC82]', 'drop-shadow-[0_0_8px_rgba(0,220,130,0.6)]');
+                    if (icon) icon.setAttribute('stroke-width', '2.5');
+                } else {
+                    btn.classList.remove('text-[#00DC82]', 'drop-shadow-[0_0_8px_rgba(0,220,130,0.6)]');
+                    btn.classList.add('text-[#888888]');
+                    if (icon) icon.setAttribute('stroke-width', '2');
+                }
+            });
+
+            // Re-render icons for any newly injected content (like in Library/Reference views)
+            lucide.createIcons();
+        }
+
+        // --- Tester Logic ---
+        const patternInput = document.getElementById('regex-pattern');
+        const textInput = document.getElementById('test-text');
+        const highlightDisplay = document.getElementById('highlight-display');
+        const matchesList = document.getElementById('matches-list');
+        const matchCountBadge = document.getElementById('match-count');
+        const flagsContainer = document.getElementById('flags-container');
+
+        function renderFlags() {
+            flagsContainer.innerHTML = '';
+            ['i', 'm', 's', 'x', 'u'].forEach(flag => {
+                const btn = document.createElement('button');
+                const isActive = state.flags[flag];
+                btn.className = `w-8 h-8 rounded-full border flex items-center justify-center text-xs font-bold transition-all duration-200 ${isActive
+                    ? 'bg-[#00DC82] text-black border-transparent'
+                    : 'bg-transparent text-[#888888] border-[#333] hover:border-white hover:text-white'
+                    }`;
+                btn.textContent = flag;
+                btn.onclick = () => {
+                    state.flags[flag] = !state.flags[flag];
+                    renderFlags();
+                    runRegex();
+                };
+                flagsContainer.appendChild(btn);
+            });
+        }
+
+        function runRegex() {
+            const pattern = state.pattern;
+            const text = state.text;
+            let matches = [];
+
+            try {
+                let flagStr = 'g';
+                if (state.flags.i) flagStr += 'i';
+                if (state.flags.m) flagStr += 'm';
+                if (state.flags.s) flagStr += 's';
+                if (state.flags.u) flagStr += 'u';
+
+                const regex = new RegExp(pattern, flagStr);
+                let match;
+                let matchCount = 0;
+                const MAX_MATCHES = 1000;
+
+                while ((match = regex.exec(text)) !== null) {
+                    matches.push({
+                        index: match.index,
+                        value: match[0],
+                        length: match[0].length,
+                        end: match.index + match[0].length
+                    });
+
+                    if (match[0].length === 0) {
+                        regex.lastIndex++;
+                    }
+
+                    matchCount++;
+                    if (matchCount > MAX_MATCHES) break;
+                }
+            } catch (e) {
+                // Invalid regex
+                matches = [];
+            }
+
+            updateUI(matches);
+        }
+
+        function updateUI(matches) {
+            // Update Badge
+            matchCountBadge.textContent = `${matches.length} MATCHES`;
+
+            // Render Highlights
+            if (!state.pattern) {
+                highlightDisplay.textContent = state.text;
+            } else {
+                let lastIndex = 0;
+                let html = '';
+
+                matches.forEach((match, i) => {
+                    // Text before match
+                    if (match.index > lastIndex) {
+                        html += escapeHtml(state.text.slice(lastIndex, match.index));
+                    }
+
+                    const isWhitespace = /^\s*$/.test(match.value);
+
+                    if (isWhitespace && match.value.length > 0) {
+                        html += `<span class="bg-[#00DC82] text-black font-bold px-1 rounded mx-[1px] text-xs inline-flex items-center justify-center h-5 select-none">${i + 1}</span>`;
+                    } else {
+                        const content = match.value || '';
+                        html += `<span class="bg-[#00DC82] text-black px-1 rounded mx-[1px]">${escapeHtml(content)}</span>`;
+                    }
+
+                    lastIndex = match.end;
+                });
+
+                if (lastIndex < state.text.length) {
+                    html += escapeHtml(state.text.slice(lastIndex));
+                }
+
+                highlightDisplay.innerHTML = html;
+            }
+
+            // Render Matches List
+            matchesList.innerHTML = '';
+            if (matches.length === 0) {
+                matchesList.innerHTML = '<div class="text-center text-gray-600 py-4 text-sm">No matches found</div>';
+            } else {
+                matches.forEach((m, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center py-3 border-b border-[#1E1E1E] group';
+
+                    let displayValue = m.value;
+                    if (m.value === '') displayValue = '<empty>';
+                    else if (/^\s+$/.test(m.value)) displayValue = '<whitespace>';
+
+                    div.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-[#00DC82] text-black w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold">
+                                ${idx + 1}
+                            </span>
+                            <span class="text-gray-300 text-sm truncate max-w-[200px]">
+                                ${escapeHtml(displayValue)}
+                            </span>
+                        </div>
+                        <span class="text-gray-500 text-xs">@${m.index}</span>
+                    `;
+                    matchesList.appendChild(div);
+                });
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Listeners
+        patternInput.addEventListener('input', (e) => {
+            state.pattern = e.target.value;
+            runRegex();
+        });
+
+        textInput.addEventListener('input', (e) => {
+            state.text = e.target.value;
+            runRegex();
+        });
+
+        // --- Library Logic ---
+        function renderLibrary() {
+            const list = document.getElementById('library-list');
+            list.innerHTML = '';
+            LIBRARY_DATA.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'bg-[#121212] p-4 rounded-xl border border-[#1E1E1E] hover:border-[#333] transition-colors';
+
+                const tagsHtml = item.tags.map(tag =>
+                    `<span class="text-[10px] font-bold bg-[#003d24] text-[#00DC82] px-2 py-1 rounded">${tag}</span>`
+                ).join('');
+
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-white font-bold text-base">${item.title}</h3>
+                    </div>
+                    <div class="bg-black/50 p-2 rounded-lg mb-3 overflow-x-auto custom-scrollbar">
+                        <code class="text-gray-300 text-sm font-mono whitespace-nowrap">${item.pattern}</code>
+                    </div>
+                    <div class="flex gap-2">
+                        ${tagsHtml}
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // --- Reference Logic ---
+        function renderReference() {
+            const catContainer = document.getElementById('ref-categories');
+            const listContainer = document.getElementById('ref-list');
+
+            // Categories
+            catContainer.innerHTML = '';
+            REFERENCE_DATA.forEach(data => {
+                const btn = document.createElement('button');
+                const isActive = state.activeRefCategory === data.category;
+                btn.className = `px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors flex-shrink-0 ${isActive ? 'bg-[#00DC82] text-black' : 'bg-[#121212] text-gray-400 hover:text-white'
+                    }`;
+                btn.textContent = data.category;
+                btn.onclick = () => {
+                    state.activeRefCategory = data.category;
+                    renderReference();
+                };
+                catContainer.appendChild(btn);
+            });
+
+            // List
+            const activeData = REFERENCE_DATA.find(d => d.category === state.activeRefCategory) || REFERENCE_DATA[0];
+            listContainer.innerHTML = '';
+
+            activeData.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'bg-[#121212] p-4 rounded-xl border border-[#1E1E1E] group';
+
+                const tagsHtml = item.tags.map(t =>
+                    `<span class="text-[10px] bg-[#1E1E1E] text-gray-400 px-2 py-1 rounded-md font-bold">${t}</span>`
+                ).join('');
+
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-mono text-xl font-bold text-[#00DC82] bg-[#00291D] px-2 py-1 rounded">
+                            ${escapeHtml(item.symbol)}
+                        </span>
+                        <div class="flex space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i data-lucide="copy" size="18" class="text-gray-500 hover:text-white cursor-pointer"></i>
+                            <i data-lucide="play-circle" size="18" class="text-gray-500 hover:text-[#00DC82] cursor-pointer"></i>
+                        </div>
+                    </div>
+                    <p class="text-white font-medium mb-3 text-sm">${item.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        ${tagsHtml}
+                    </div>
+                    <div class="flex items-center text-gray-500 text-xs font-bold cursor-pointer hover:text-white transition-colors">
+                        <i data-lucide="chevron-right" size="14" class="mr-1"></i>
+                        Example
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        // --- Clock ---
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12 || 12;
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Init ---
+        renderFlags();
+        runRegex();
+        renderLibrary();
+        renderReference();
+        switchTab('tester');
+
+    </script>
+</body>
+
+</html>

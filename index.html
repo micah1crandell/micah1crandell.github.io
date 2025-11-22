@@ -460,7 +460,7 @@
                                 class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
                                 <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none"
                                     style="background: transparent;"></iframe>
-                                <button onclick="openSimModal()"
+                                <button onclick="openSimModal('control_it/iphoneSim.html')"
                                     class="absolute bottom-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-md text-white p-2 rounded-full border border-white/10 transition-all duration-300 z-20 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -567,31 +567,18 @@
 
                         <div
                             class="w-full h-[50vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1">
-                            <div class="relative group hover-trigger scale-75 md:scale-100">
-                                <div
-                                    class="absolute inset-0 bg-emerald-500 blur-[60px] md:blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700">
-                                </div>
-                                <div
-                                    class="relative w-[200px] md:w-[280px] aspect-[9/19] border-[6px] md:border-[8px] border-gray-800 bg-black rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl transform group-hover:-translate-y-4 transition-transform duration-500">
-                                    <div
-                                        class="absolute inset-0 bg-gray-900 flex flex-col items-center justify-center text-gray-700 font-mono text-xs p-4">
-                                        <img src="regex_dev_tool/app-icon.png" onerror="this.style.display='none'"
-                                            class="w-full h-full object-cover absolute inset-0">
-                                        <div class="z-10 text-center space-y-2">
-                                            <div
-                                                class="w-10 h-10 md:w-12 md:h-12 bg-emerald-900/30 rounded-xl mx-auto flex items-center justify-center text-emerald-500 mb-4">
-                                                <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
-                                                    </path>
-                                                </svg>
-                                            </div>
-                                            <p class="text-[8px] md:text-[10px]">Match Found:<br><span
-                                                    class="text-emerald-400">/Success/g</span></p>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div
+                                class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
+                                <iframe src="regex_dev_tool/iphoneSIm.html" class="w-full h-full border-none"
+                                    style="background: transparent;"></iframe>
+                                <button onclick="openSimModal('regex_dev_tool/iphoneSIm.html')"
+                                    class="absolute bottom-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-md text-white p-2 rounded-full border border-white/10 transition-all duration-300 z-20 group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
+                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
@@ -1077,22 +1064,51 @@
                     <path d="m6 6 12 12" />
                 </svg>
             </button>
-            <div class="w-full h-full max-w-[500px] max-h-[90vh] p-4">
-                <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none rounded-[3.5rem]"
+            <div id="sim-container" class="origin-center transition-transform duration-300 ease-out"
+                style="width: 430px; height: 862px;">
+                <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none rounded-[55px]"
                     style="background: transparent;"></iframe>
             </div>
         </div>
     </dialog>
 
     <script>
-        const simModal = document.getElementById('simModal');
+        const simContainer = document.getElementById('sim-container');
 
-        function openSimModal() {
+        function resizeSimulator() {
+            if (!simModal.open) return;
+
+            const padding = 40; // Safety padding
+            const baseWidth = 430;
+            const baseHeight = 862;
+
+            const availableWidth = window.innerWidth - padding;
+            const availableHeight = window.innerHeight - padding;
+
+            const scaleX = availableWidth / baseWidth;
+            const scaleY = availableHeight / baseHeight;
+
+            // Use the smaller scale factor to ensure it fits both dimensions
+            const scale = Math.min(scaleX, scaleY, 1); // Max scale 1 to prevent pixelation if screen is huge
+
+            simContainer.style.transform = `scale(${scale})`;
+        }
+
+        function openSimModal(url) {
+            const iframe = simModal.querySelector('iframe');
+            if (iframe && url) {
+                iframe.src = url;
+            }
             simModal.showModal();
             document.body.style.overflow = 'hidden'; // Lock scroll
             if (typeof lenis !== 'undefined') {
                 lenis.stop();
             }
+
+            // Calculate scale immediately
+            resizeSimulator();
+            // Add resize listener
+            window.addEventListener('resize', resizeSimulator);
         }
 
         function closeSimModal() {
@@ -1101,6 +1117,7 @@
             if (typeof lenis !== 'undefined') {
                 lenis.start();
             }
+            window.removeEventListener('resize', resizeSimulator);
         }
 
         // Close on Escape key
@@ -1109,6 +1126,7 @@
             if (typeof lenis !== 'undefined') {
                 lenis.start();
             }
+            window.removeEventListener('resize', resizeSimulator);
         });
     </script>
 </body>
