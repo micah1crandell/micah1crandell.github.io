@@ -384,15 +384,15 @@
         </div>
     </div>
 
-    <section id="approach" class="relative py-12 bg-dark z-20 overflow-hidden">
-        <div class="container mx-auto px-6 relative">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <div class="relative">
+    <section id="approach" class="relative h-[100dvh] py-6 md:py-12 bg-dark z-20 overflow-hidden flex items-center">
+        <div class="container mx-auto px-6 relative h-full flex flex-col justify-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 items-center h-full md:h-auto">
+                <div class="relative h-[30vh] md:h-auto w-full flex justify-center md:block">
                     <div id="logic-art-carousel"
-                        class="img-wrapper aspect-[4/5] rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 border border-white/10 shadow-2xl relative">
+                        class="img-wrapper aspect-video md:aspect-[4/5] h-full md:h-auto w-auto md:w-full rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 border border-white/10 shadow-2xl relative">
                         <!-- Images will be injected by JS -->
                     </div>
-                    <div class="absolute -bottom-10 -right-10 w-48 p-6 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl z-10 parallax-card"
+                    <div class="hidden md:block absolute -bottom-10 -right-10 w-48 p-6 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl z-10 parallax-card"
                         data-speed="0.1">
                         <p class="text-orange-400 text-xs font-bold uppercase tracking-widest mb-2">Efficiency</p>
                         <p class="text-sm text-gray-300">"A UI should feel like a physical tool. Reliable. Weighted.
@@ -400,31 +400,34 @@
                     </div>
                 </div>
 
-                <div class="pl-0 md:pl-12">
-                    <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-serif leading-none mb-8">
+                <div class="pl-0 md:pl-12 flex flex-col justify-center">
+                    <h2 class="text-[clamp(2rem,5vw,4rem)] font-serif leading-none mb-4 md:mb-8">
                         The Fusion of <br>
                         <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 italic pr-2">Logic
                             & Art.</span>
                     </h2>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                    <p
+                        class="text-gray-400 text-sm md:text-lg leading-relaxed mb-4 md:mb-8 line-clamp-4 md:line-clamp-none">
                         Most developers don't understand the behind the scenes of a live production environment. Most
                         directors don't understand the potential of code.
                     </p>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-10">
+                    <p class="text-gray-400 text-sm md:text-lg leading-relaxed mb-6 md:mb-10 hidden md:block">
                         I live in the intersection. I build tools that don't just look good—they thrive in the chaos of
                         the real world.
                     </p>
 
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 mt-auto md:mt-0">
                         <div class="flex flex-col gap-1">
-                            <span id="stat-repos" class="text-3xl font-bold text-white counter">0</span>
-                            <span class="text-xs uppercase tracking-widest text-gray-500">Public Repos</span>
+                            <span id="stat-repos" class="text-2xl md:text-3xl font-bold text-white counter">0</span>
+                            <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Public
+                                Repos</span>
                         </div>
-                        <div class="w-px h-12 bg-white/10 mx-4"></div>
+                        <div class="w-px h-10 md:h-12 bg-white/10 mx-4"></div>
                         <div class="flex flex-col gap-1">
-                            <span id="stat-years" class="text-3xl font-bold text-white counter">0</span>
-                            <span class="text-xs uppercase tracking-widest text-gray-500">Years Active</span>
+                            <span id="stat-years" class="text-2xl md:text-3xl font-bold text-white counter">0</span>
+                            <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Years
+                                Active</span>
                         </div>
                     </div>
                 </div>
