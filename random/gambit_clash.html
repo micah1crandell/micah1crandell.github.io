@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gambit Clash: Multiplayer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap');
+
+        body {
+            background-color: #0f0f1a;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LAYOUT STRUCTURE --- */
+
+        #top-bar {
+            height: 60px;
+            background: #161623;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 2px solid #2a2a35;
+            z-index: 20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        #game-wrapper {
+            flex: 1;
+            position: relative;
+            background: #0a0a12;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        #bottom-controls {
+            height: 160px;
+            background: #161623;
+            border-top: 2px solid #2a2a35;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        canvas {
+            background: #1a1a2e;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border-radius: 4px;
+        }
+
+        /* --- UI ELEMENTS --- */
+
+        .hand {
+            display: flex;
+            gap: 15px; 
+            margin-top: 8px;
+            padding: 5px;
+            perspective: 500px;
+            min-width: 300px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 65px;
+            height: 90px;
+            background: linear-gradient(160deg, #444, #222);
+            border: 2px solid #555;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.8); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .card:active { transform: scale(0.9); }
+        .card.selected {
+            border-color: #ffd700;
+            transform: translateY(-25px) scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            z-index: 20;
+        }
+        .card.disabled {
+            filter: grayscale(1) brightness(0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-cost {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #0ea5e9;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 13px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .card-icon { font-size: 34px; text-shadow: 0 2px 0 rgba(0,0,0,0.3); }
+        .card-name { font-size: 8px; margin-top: 4px; text-transform: uppercase; font-weight: bold; color: #ccc; }
+        .card-desc { font-size: 7px; color: #888; text-align: center; margin-top: 2px; line-height: 1; display: none; }
+        .card.selected .card-desc { display: block; }
+
+        /* Elixir Bar */
+        .elixir-wrapper {
+            width: 90%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 5px;
+        }
+        .elixir-bg {
+            height: 10px;
+            background: #111;
+            border-radius: 6px;
+            border: 1px solid #444;
+            overflow: hidden;
+            position: relative;
+        }
+        .elixir-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d946ef, #a855f7);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        .elixir-fill.surge {
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            box-shadow: 0 0 10px #ffd700;
+        }
+        .elixir-text {
+            color: #d946ef;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: right;
+            text-shadow: 0 1px 2px black;
+        }
+
+        #timer-display {
+            font-family: 'Press Start 2P', monospace;
+            color: #aaa;
+            font-size: 12px;
+        }
+        
+        #event-banner {
+            position: absolute;
+            top: 60px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+            color: #ffd700;
+            font-size: 16px;
+            text-shadow: 3px 3px 0 #000;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 50;
+        }
+        #event-banner.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        #center-control-hud {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #4ade80;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 8px;
+            border-radius: 12px;
+            border: 1px solid #4ade80;
+            display: none;
+            z-index: 30;
+        }
+
+        #audio-btn {
+            background: none;
+            border: 1px solid #555;
+            color: #888;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        #audio-btn.active {
+            color: #4ade80;
+            border-color: #4ade80;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        /* --- MODALS --- */
+        #end-screen, #lobby-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 18, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+            z-index: 100;
+            animation: fadeIn 0.5s;
+        }
+        #end-screen { display: none; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .btn {
+            background: #e11d48;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #9f1239;
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        .btn-blue { background: #0ea5e9; box-shadow: 0 4px 0 #0284c7; }
+
+        .input-box {
+            background: #222;
+            border: 2px solid #444;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-family: monospace;
+            width: 250px;
+        }
+
+        #flash-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: white; pointer-events: none; opacity: 0; transition: opacity 0.1s;
+        }
+        
+        .tooltip-area {
+            position: absolute;
+            bottom: 170px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            pointer-events: none;
+            z-index: 40;
+        }
+        .strat-tip {
+            display: inline-block;
+            background: rgba(0,0,0,0.8);
+            border-left: 3px solid #ffd700;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #ddd;
+            border-radius: 0 4px 4px 0;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.3s;
+        }
+        .strat-tip.show { opacity: 1; transform: translateX(0); }
+    </style>
+</head>
+<body>
+
+<div id="lobby-screen">
+    <h1 class="text-4xl mb-4 font-[Press Start 2P] text-yellow-400 text-center">GAMBIT CLASH</h1>
+    <h2 class="text-sm text-gray-400 mb-8 tracking-widest">MULTIPLAYER EDITION</h2>
+
+    <div id="lobby-initial" class="flex flex-col gap-4">
+        <button class="btn btn-blue" onclick="createGame()">CREATE GAME</button>
+        <button class="btn" onclick="showJoin()">JOIN GAME</button>
+    </div>
+
+    <div id="lobby-host" style="display:none" class="flex flex-col items-center">
+        <p class="text-gray-300 mb-2">Share this code with your friend:</p>
+        <div id="my-game-code" class="input-box text-2xl font-bold text-green-400 select-all">...</div>
+        <p class="text-xs text-gray-500 mt-2">Waiting for opponent...</p>
+        <button class="text-sm text-gray-500 mt-4 underline" onclick="resetLobby()">Back</button>
+    </div>
+
+    <div id="lobby-join" style="display:none" class="flex flex-col items-center">
+        <p class="text-gray-300 mb-2">Enter Host Code:</p>
+        <input type="text" id="join-code-input" class="input-box" placeholder="Code here">
+        <button class="btn" onclick="joinGame()">CONNECT</button>
+        <button class="text-sm text-gray-500 mt-4 underline" onclick="resetLobby()">Back</button>
+    </div>
+</div>
+
+<div id="top-bar">
+    <div id="timer-display">00:00</div>
+    
+    <div class="flex items-center gap-4">
+        <button id="audio-btn" onclick="toggleAudio()">🔇</button>
+
+        <div class="flex flex-col items-end">
+            <div class="text-[10px] font-bold text-red-500 tracking-wider mb-1">ENEMY KING</div>
+            <div class="w-24 md:w-48 h-3 bg-gray-900 rounded-full border border-gray-700 relative overflow-hidden">
+                <div id="enemy-hp-fill" class="h-full bg-red-600 w-full transition-all duration-200"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="game-wrapper">
+    <div id="event-banner">MANA SURGE!</div>
+    <div id="center-control-hud">CENTER CONTROL: +0.2 ELIXIR/S</div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="flash-overlay"></div>
+
+    <div class="tooltip-area">
+        <div id="strat-tip" class="strat-tip">Control the center to gain Elixir!</div>
+    </div>
+
+    <div id="end-screen">
+        <h1 id="end-title" class="text-4xl mb-4 font-[Press Start 2P] text-center px-4 leading-tight">VICTORY</h1>
+        <p id="end-reason" class="text-gray-400 mb-8 text-sm uppercase tracking-widest">Enemy King Destroyed</p>
+        <button class="btn" onclick="location.reload()">MAIN MENU</button>
+    </div>
+</div>
+
+<div id="bottom-controls">
+    <div id="game-message" class="text-yellow-400 font-bold mb-1 text-sm h-5 drop-shadow-md"></div>
+
+    <div class="elixir-wrapper">
+        <div class="flex justify-between items-end mb-1">
+            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Elixir</span>
+            <div class="elixir-text"><span id="elixir-amt">0</span>/10</div>
+        </div>
+        <div class="elixir-bg">
+            <div id="elixir-fill" class="elixir-fill"></div>
+        </div>
+    </div>
+
+    <div class="hand" id="card-hand"></div>
+</div>
+
+<script>
+/**
+ * GAMBIT CLASH: Multiplayer Edition
+ * Logic: Peer-to-Peer lockstep simulation
+ */
+
+// --- MULTIPLAYER LOGIC ---
+let peer = null;
+let conn = null;
+let isHost = false;
+let gameStarted = false;
+
+function generateShortId() {
+    return Math.random().toString(36).substr(2, 5).toUpperCase();
+}
+
+function resetLobby() {
+    document.getElementById('lobby-initial').style.display = 'flex';
+    document.getElementById('lobby-host').style.display = 'none';
+    document.getElementById('lobby-join').style.display = 'none';
+}
+
+function createGame() {
+    document.getElementById('lobby-initial').style.display = 'none';
+    document.getElementById('lobby-host').style.display = 'flex';
+    
+    // Initialize Peer with a random ID
+    const myID = generateShortId();
+    document.getElementById('my-game-code').innerText = myID;
+    
+    peer = new Peer(myID);
+    isHost = true;
+
+    peer.on('connection', (c) => {
+        conn = c;
+        setupConnection();
+    });
+}
+
+function showJoin() {
+    document.getElementById('lobby-initial').style.display = 'none';
+    document.getElementById('lobby-join').style.display = 'flex';
+}
+
+function joinGame() {
+    const code = document.getElementById('join-code-input').value.trim().toUpperCase();
+    if(code.length < 1) return;
+    
+    peer = new Peer(); // Auto ID for joiner
+    peer.on('open', () => {
+        conn = peer.connect(code);
+        isHost = false;
+        setupConnection();
+    });
+}
+
+function setupConnection() {
+    conn.on('open', () => {
+        console.log("Connected to peer!");
+        // Start Game
+        document.getElementById('lobby-screen').style.display = 'none';
+        startGame();
+    });
+
+    conn.on('data', (data) => {
+        handlePeerData(data);
+    });
+    
+    conn.on('close', () => {
+        alert("Opponent disconnected!");
+        location.reload();
+    });
+}
+
+function sendData(data) {
+    if(conn && conn.open) {
+        conn.send(data);
+    }
+}
+
+function handlePeerData(data) {
+    if(data.type === 'SPAWN') {
+        // Mirror coordinates!
+        // The enemy spawns unit at x,y from THEIR perspective.
+        // We must flip it to render at top of OUR screen.
+        const ex = (CONFIG.COLS - 1) - data.x;
+        const ey = (CONFIG.ROWS - 1) - data.y;
+        
+        spawnUnit(data.unit, ex, ey, 'enemy');
+    }
+}
+
+// --- GAME CONFIG & ASSETS ---
+
+const CONFIG = {
+    COLS: 6,
+    ROWS: 10,
+    TILE_SIZE: 50,
+    MAX_ELIXIR: 10,
+    REGEN_RATE_BASE: 0.45, 
+    REGEN_RATE_SURGE: 1.5,
+    REGEN_RATE_CONTROL: 0.2,
+    SURGE_INTERVAL: 45000, 
+    SURGE_DURATION: 8000,
+};
+
+const CENTER_ZONES = [
+    {x: 2, y: 4}, {x: 3, y: 4},
+    {x: 2, y: 5}, {x: 3, y: 5}
+];
+
+// --- AUDIO ENGINE ---
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const sound = {
+    ctx: null,
+    enabled: false,
+    
+    init: function() {
+        if (!this.ctx) {
+            this.ctx = new AudioContext();
+            this.master = this.ctx.createGain();
+            this.master.connect(this.ctx.destination);
+            this.master.gain.value = 0.3;
+            this.startMusic();
+        } else if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+        this.enabled = true;
+        document.getElementById('audio-btn').innerText = '🔊';
+        document.getElementById('audio-btn').classList.add('active');
+    },
+
+    stop: function() {
+        if (this.ctx) this.ctx.suspend();
+        this.enabled = false;
+        document.getElementById('audio-btn').innerText = '🔇';
+        document.getElementById('audio-btn').classList.remove('active');
+    },
+
+    playTone: function(freq, type, duration, vol=1, slide=0) {
+        if (!this.enabled) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        if (slide !== 0) {
+            osc.frequency.exponentialRampToValueAtTime(freq + slide, this.ctx.currentTime + duration);
+        }
+        gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.master);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+    },
+
+    playNoise: function(duration, vol=1) {
+        if (!this.enabled) return;
+        const bufferSize = this.ctx.sampleRate * duration;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+        noise.connect(gain);
+        gain.connect(this.master);
+        noise.start();
+    },
+
+    spawn: function() { this.playTone(400, 'sine', 0.3, 0.5, 400); },
+    hit: function() { this.playNoise(0.1, 0.5); this.playTone(100, 'square', 0.1, 0.3, -50); },
+    crit: function() { this.playTone(600, 'sawtooth', 0.2, 0.6); this.playTone(800, 'sawtooth', 0.2, 0.6, -200); },
+    block: function() { this.playTone(100, 'square', 0.2, 0.6); },
+    jump: function() { this.playNoise(0.3, 0.3); },
+    land: function() { this.playTone(80, 'sawtooth', 0.2, 0.8, -40); },
+    laser: function() { this.playTone(800, 'sawtooth', 0.15, 0.3, -600); },
+    freeze: function() { this.playTone(1200, 'sine', 0.5, 0.3); },
+    burn: function() { this.playNoise(0.5, 0.2); },
+    stun: function() { this.playTone(600, 'sine', 0.1, 0.3); },
+    surge: function() { this.playTone(100, 'sawtooth', 2.0, 0.4, 200); },
+    win: function() { [0, 200, 400].forEach((t, i) => setTimeout(() => this.playTone(400 + i*100, 'square', 0.5, 0.5), t)); },
+    lose: function() { [0, 400].forEach((t, i) => setTimeout(() => this.playTone(300 - i*100, 'sawtooth', 1.0, 0.5, -50), t)); },
+    
+    startMusic: function() {
+        let beat = 0;
+        setInterval(() => {
+            if (!this.enabled || !this.ctx) return;
+            // Very minimal ambient beat
+            if (beat % 4 === 0) this.playTone(100, 'sine', 0.1, 0.2, -50);
+            beat++;
+        }, 500);
+    }
+};
+
+function toggleAudio() {
+    if (sound.enabled) sound.stop();
+    else sound.init();
+}
+
+// --- UNIT STATS ---
+const UNITS = {
+    PAWN:   { id: 'pawn',   name: 'Pawn',   icon: '♟', cost: 1, hp: 120, dmg: 35,  speed: 2000, color: '#a8dadc', range: 1, desc: "Gets shield in diagonal chain" },
+    KNIGHT: { id: 'knight', name: 'Knight', icon: '♞', cost: 4, hp: 450, dmg: 140, speed: 2000, color: '#457b9d', range: 2, isJumper: true, desc: "3x DMG vs Rook/Queen" },
+    BISHOP: { id: 'bishop', name: 'Bishop', icon: '♝', cost: 3, hp: 200, dmg: 70,  speed: 2500, color: '#f1faee', range: 3, isRanged: true, desc: "High DMG, Weak Body" },
+    ROOK:   { id: 'rook',   name: 'Rook',   icon: '♜', cost: 5, hp: 850, dmg: 90, speed: 3200, color: '#1d3557', range: 1, isTank: true, desc: "Resists Ranged 70%" },
+    QUEEN:  { id: 'queen',  name: 'Queen',  icon: '♛', cost: 8, hp: 600, dmg: 200, speed: 1200, color: '#e63946', range: 1, desc: "High DPS Glass Cannon" },
+    KING:   { id: 'king',   name: 'King',   icon: '♚', cost: 0, hp: 3000, dmg: 150, speed: 1000, color: '#ffD700', range: 4 }
+};
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let game = {
+    units: [], effects: [], projectiles: [],
+    elixir: 5, lastTime: 0, gameTime: 0, gameOver: false,
+    hand: [], deck: [], selectedHandIndex: -1,
+    scale: 1, shake: 0, isSurge: false,
+    centerControlCount: 0
+};
+
+class Particle {
+    constructor(x, y, color, type = 'spark') {
+        this.x = x; this.y = y; this.color = color; this.life = 1.0; this.type = type;
+        if (type === 'spark') {
+            this.vx = (Math.random() - 0.5) * 10; this.vy = (Math.random() - 0.5) * 10; this.size = Math.random() * 3 + 1;
+        } else if (type === 'ring') {
+            this.size = 0; this.maxSize = 40;
+        } else if (type === 'text') {
+            this.vy = -2; this.text = color; this.color = '#fff';
+        } else if (type === 'crit') {
+            this.vy = -1; this.text = "CRIT!"; this.color = '#ff4';
+        } else if (type === 'block') {
+            this.vy = -1; this.text = "BLOCKED"; this.color = '#888';
+        }
+    }
+    update() {
+        if (this.type === 'spark') { this.x += this.vx; this.y += this.vy; this.life -= 0.05; this.vy += 0.5; }
+        else if (this.type === 'ring') { this.size += (this.maxSize - this.size) * 0.2; this.life -= 0.05; }
+        else if (this.type === 'text' || this.type === 'crit' || this.type === 'block') { this.y += this.vy; this.life -= 0.02; }
+    }
+    draw(ctx) {
+        ctx.globalAlpha = Math.max(0, this.life);
+        if (this.type === 'spark') { ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); }
+        else if (this.type === 'ring') { ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.stroke(); }
+        else if (this.type === 'text' || this.type === 'crit' || this.type === 'block') { 
+            ctx.fillStyle = this.color; ctx.font = "bold 16px Roboto"; ctx.textAlign = "center"; 
+            ctx.fillText(this.text, this.x, this.y); 
+        }
+        ctx.globalAlpha = 1.0;
+    }
+}
+
+class Unit {
+    constructor(type, x, y, team) {
+        const stats = UNITS[type]; this.type = type; this.id = Math.random().toString(36).substr(2, 9);
+        this.x = x; this.y = y; this.team = team;
+        this.maxHp = stats.hp; this.hp = stats.hp; this.baseDamage = stats.dmg; this.speedMax = stats.speed;
+        this.timer = type === 'KING' ? 999999 : 500; this.icon = stats.icon;
+        this.visualX = x * CONFIG.TILE_SIZE; this.visualY = y * CONFIG.TILE_SIZE;
+        this.scaleX = 1; this.scaleY = 1; this.isJumping = false; this.jumpHeight = 0;
+        this.targetX = 0; this.targetY = 0;
+        this.synergies = { phalanx: false, royalGuard: false, battery: false, pawnChain: false };
+        this.statuses = []; this.stunAnim = 0;
+    }
+
+    applyStatus(type, duration, value = 0, chance = 1.0) {
+        if (Math.random() > chance) return;
+        const existing = this.statuses.find(s => s.type === type);
+        if (existing) existing.duration = duration;
+        else {
+            this.statuses.push({type, duration, value});
+            if (type === 'stun') { this.timer = this.speedMax; game.effects.push(new Particle(this.visualX+25, this.visualY, "💫", 'text')); sound.stun(); }
+            else if (type === 'freeze') { game.effects.push(new Particle(this.visualX+25, this.visualY, "❄️", 'text')); sound.freeze(); }
+            else if (type === 'burn') { game.effects.push(new Particle(this.visualX+25, this.visualY, "🔥", 'text')); sound.burn(); }
+        }
+    }
+    get damage() { let dmg = this.baseDamage; if (this.synergies.royalGuard) dmg *= 1.5; return dmg; }
+    
+    takeDamage(amount, sourceUnit) {
+        let finalDmg = amount; 
+        let isCrit = false;
+        let isBlock = false;
+
+        // --- HARD COUNTER LOGIC ---
+        if (sourceUnit) {
+            if (sourceUnit.type === 'KNIGHT' && (this.type === 'ROOK' || this.type === 'QUEEN')) {
+                finalDmg *= 3;
+                isCrit = true;
+            }
+            if (this.type === 'ROOK' && (sourceUnit.type === 'BISHOP' || sourceUnit.type === 'QUEEN')) {
+                finalDmg *= 0.3; 
+                isBlock = true;
+            }
+        }
+
+        if (this.synergies.pawnChain) finalDmg *= 0.6; 
+        if (this.synergies.phalanx) finalDmg *= 0.8;
+
+        this.hp -= finalDmg; this.squash(1.2, 0.8);
+        
+        if (isCrit) {
+            game.effects.push(new Particle(this.visualX + 25, this.visualY, "", 'crit'));
+            sound.crit();
+        } else if (isBlock) {
+            game.effects.push(new Particle(this.visualX + 25, this.visualY, "", 'block'));
+            sound.block();
+        } else {
+            game.effects.push(new Particle(this.visualX + 25, this.visualY + 10, "-" + Math.floor(finalDmg), 'text'));
+            sound.hit();
+        }
+
+        for(let i=0; i<3; i++) game.effects.push(new Particle(this.visualX + 25, this.visualY + 25, '#ff4444', 'spark'));
+        if (this.hp <= 0) { game.shake = 5; for(let i=0; i<15; i++) game.effects.push(new Particle(this.visualX + 25, this.visualY + 25, '#fff', 'spark')); }
+    }
+
+    squash(x, y) { this.scaleX = x; this.scaleY = y; }
+    updateVisuals(dt) {
+        this.stunAnim += dt * 0.005; this.scaleX += (1 - this.scaleX) * 0.2; this.scaleY += (1 - this.scaleY) * 0.2;
+        if (this.isJumping) {
+            const tx = this.targetX * CONFIG.TILE_SIZE; const ty = this.targetY * CONFIG.TILE_SIZE;
+            const dx = tx - this.visualX; const dy = ty - this.visualY;
+            this.visualX += dx * 0.15; this.visualY += dy * 0.15;
+            const distTotal = Math.sqrt(Math.pow((this.targetX - this.startX)*CONFIG.TILE_SIZE, 2) + Math.pow((this.targetY - this.startY)*CONFIG.TILE_SIZE, 2));
+            const distCurrent = Math.sqrt(Math.pow(tx - this.visualX, 2) + Math.pow(ty - this.visualY, 2));
+            const progress = 1 - (distCurrent / (distTotal + 0.1));
+            this.jumpHeight = Math.sin(progress * Math.PI) * 50;
+            if (distCurrent < 5) this.finishJump();
+        } else {
+            const tx = this.x * CONFIG.TILE_SIZE; const ty = this.y * CONFIG.TILE_SIZE;
+            this.visualX += (tx - this.visualX) * 0.2; this.visualY += (ty - this.visualY) * 0.2; this.jumpHeight = 0;
+        }
+    }
+    startJump(tx, ty) {
+        this.isJumping = true; this.startX = this.x; this.startY = this.y;
+        this.targetX = tx; this.targetY = ty; this.x = tx; this.y = ty; this.squash(0.7, 1.3);
+        sound.jump();
+    }
+    finishJump() {
+        this.isJumping = false; this.visualX = this.x * CONFIG.TILE_SIZE; this.visualY = this.y * CONFIG.TILE_SIZE;
+        game.shake = 8; this.squash(1.4, 0.6);
+        game.effects.push(new Particle(this.visualX + 25, this.visualY + 25, '#fff', 'ring'));
+        sound.land();
+        game.units.forEach(u => {
+            if (u.team !== this.team && Math.abs(u.x - this.x) <= 1 && Math.abs(u.y - this.y) <= 1) {
+                u.takeDamage(this.damage, this);
+                u.applyStatus('stun', 1000, 0, 0.7);
+            }
+        });
+    }
+}
+
+// --- Systems ---
+function resize() {
+    const wrapper = document.getElementById('game-wrapper');
+    const aspect = CONFIG.COLS / CONFIG.ROWS;
+    const winW = wrapper.clientWidth; const winH = wrapper.clientHeight;
+    let finalW, finalH;
+    if (winW / winH < aspect) { finalW = winW; finalH = winW / aspect; } else { finalH = winH; finalW = winH * aspect; }
+    finalW *= 0.98; finalH *= 0.98;
+    canvas.width = finalW; canvas.height = finalH;
+    game.scale = finalW / (CONFIG.COLS * CONFIG.TILE_SIZE);
+}
+window.addEventListener('resize', resize); resize();
+
+function spawnUnit(type, x, y, team) {
+    const u = new Unit(type, x, y, team);
+    game.units.push(u);
+    game.effects.push(new Particle(u.visualX + 25, u.visualY + 25, team === 'player' ? '#4ade80' : '#f87171', 'ring'));
+    u.squash(1.5, 0.5);
+    // Sound on both devices
+    sound.spawn();
+}
+
+function updateSynergies() {
+    game.units.forEach(u => {
+        u.synergies = { phalanx: false, royalGuard: false, battery: false, pawnChain: false };
+        if (u.hp <= 0) return;
+        
+        if (u.type === 'PAWN') {
+            if (game.units.some(n => n.team === u.team && n !== u && n.type === 'PAWN' && Math.abs(n.x - u.x) === 1 && n.y === u.y)) u.synergies.phalanx = true;
+            const forward = u.team === 'player' ? 1 : -1; 
+            if (game.units.some(n => n.team === u.team && n.type === 'PAWN' && Math.abs(n.x - u.x) === 1 && n.y === u.y + forward)) u.synergies.pawnChain = true;
+        }
+
+        if (u.type !== 'KING') {
+            if (game.units.some(n => n.team === u.team && n.type === 'KING' && Math.abs(n.x - u.x) <= 1 && Math.abs(n.y - u.y) <= 1)) u.synergies.royalGuard = true;
+        }
+        if (u.type === 'ROOK') {
+            if (game.units.some(n => n.team === u.team && n !== u && n.type === 'ROOK' && n.x === u.x)) u.synergies.battery = true;
+        }
+    });
+}
+
+function showTip(text) {
+    const tip = document.getElementById('strat-tip');
+    tip.innerText = text;
+    tip.classList.add('show');
+    setTimeout(() => tip.classList.remove('show'), 3000);
+}
+
+function updateGame(dt) {
+    if (game.gameOver || !gameStarted) return;
+    
+    game.gameTime += dt;
+    const seconds = Math.floor(game.gameTime / 1000);
+    const m = Math.floor(seconds / 60).toString().padStart(2,'0');
+    const s = (seconds % 60).toString().padStart(2,'0');
+    document.getElementById('timer-display').innerText = `${m}:${s}`;
+
+    // Center Control Logic
+    let playerInCenter = 0;
+    let enemyInCenter = 0;
+    CENTER_ZONES.forEach(zone => {
+        const u = getUnitAt(zone.x, zone.y);
+        if (u) {
+            if (u.team === 'player') playerInCenter++;
+            if (u.team === 'enemy') enemyInCenter++;
+        }
+    });
+    
+    // UI update for center control
+    const controlHud = document.getElementById('center-control-hud');
+    if (playerInCenter > 0) {
+        controlHud.style.display = 'block';
+        controlHud.style.color = '#4ade80';
+        controlHud.style.borderColor = '#4ade80';
+        controlHud.innerText = `CENTER CONTROL: +${(playerInCenter * CONFIG.REGEN_RATE_CONTROL).toFixed(1)} ELIXIR/S`;
+    } else if (enemyInCenter > 0) {
+        controlHud.style.display = 'block';
+        controlHud.style.color = '#f87171';
+        controlHud.style.borderColor = '#f87171';
+        controlHud.innerText = `ENEMY CONTROL!`;
+    } else {
+        controlHud.style.display = 'none';
+    }
+
+    const surgeCycle = game.gameTime % CONFIG.SURGE_INTERVAL;
+    if (surgeCycle < CONFIG.SURGE_DURATION && game.gameTime > 1000) {
+        if (!game.isSurge) {
+            game.isSurge = true;
+            document.getElementById('event-banner').classList.add('active');
+            document.getElementById('elixir-fill').classList.add('surge');
+            sound.surge();
+        }
+    } else {
+        if (game.isSurge) {
+            game.isSurge = false;
+            document.getElementById('event-banner').classList.remove('active');
+            document.getElementById('elixir-fill').classList.remove('surge');
+        }
+    }
+
+    // Regen Calculations
+    let currentRate = game.isSurge ? CONFIG.REGEN_RATE_SURGE : CONFIG.REGEN_RATE_BASE;
+    currentRate += (playerInCenter * CONFIG.REGEN_RATE_CONTROL); 
+
+    if (game.elixir < CONFIG.MAX_ELIXIR) {
+        game.elixir += currentRate * dt / 1000;
+        if (game.elixir > CONFIG.MAX_ELIXIR) game.elixir = CONFIG.MAX_ELIXIR;
+    }
+    document.getElementById('elixir-fill').style.width = (game.elixir / CONFIG.MAX_ELIXIR * 100) + '%';
+    document.getElementById('elixir-amt').innerText = Math.floor(game.elixir);
+    updateHandUI();
+
+    updateSynergies(); 
+
+    // Simulation runs locally on both clients "optimistically"
+    game.units.forEach(u => {
+        if (u.hp <= 0) return;
+        u.updateVisuals(dt);
+        for (let i = u.statuses.length - 1; i >= 0; i--) {
+            let s = u.statuses[i]; s.duration -= dt;
+            if (s.type === 'burn') {
+                u.takeDamage(0.5, null);
+                if (Math.random() > 0.7) {
+                    game.effects.push(new Particle(u.visualX + 25, u.visualY + 35, null, 'spark'));
+                }
+            }
+            if (s.duration <= 0) u.statuses.splice(i, 1);
+        }
+        const isFrozen = u.statuses.some(s => s.type === 'freeze');
+        const isStunned = u.statuses.some(s => s.type === 'stun');
+        
+        // King Logic
+        if (u.type === 'KING') {
+            u.timer -= dt;
+            if (u.timer <= 0) {
+                let target = null; let minDist = 999;
+                game.units.forEach(e => {
+                    if (e.team !== u.team && e.hp > 0) {
+                        const d = Math.abs(e.x - u.x) + Math.abs(e.y - u.y);
+                        if (d < u.range && d < minDist) { minDist = d; target = e; }
+                    }
+                });
+                if (target) {
+                    u.timer = u.speedMax;
+                    game.projectiles.push({
+                        sx: u.visualX + 25, sy: u.visualY + 25, target: target, speed: 7, dmg: u.damage, color: '#a5f3fc', type: 'ice', source: u
+                    });
+                } else { u.timer = 100; }
+            }
+            return;
+        }
+
+        if (u.isJumping) return;
+        if (!isStunned) {
+            let tick = dt;
+            if (isFrozen) tick *= 0.5;
+            if (u.synergies.battery) tick *= 1.5;
+            u.timer -= tick;
+        }
+
+        if (u.timer <= 0) {
+            u.timer = u.speedMax;
+            const moves = getMoves(u);
+            if (u.type === 'BISHOP') {
+                const target = findDiagonalTarget(u);
+                if (target) { fireLaser(u, target); u.squash(0.8, 1.2); return; }
+            }
+            if (moves.length > 0) {
+                moves.sort((a,b) => {
+                    if (a.isAttack && !b.isAttack) return -1;
+                    if (!a.isAttack && b.isAttack) return 1;
+                    
+                    // Priority: Center Zones
+                    const aInCenter = CENTER_ZONES.some(z => z.x === a.x && z.y === a.y);
+                    const bInCenter = CENTER_ZONES.some(z => z.x === b.x && z.y === b.y);
+                    if (aInCenter && !bInCenter) return -1;
+                    if (!aInCenter && bInCenter) return 1;
+
+                    // Move towards enemy end (0 for player, ROWS for enemy)
+                    const targetY = u.team === 'player' ? 0 : CONFIG.ROWS - 1;
+                    return Math.abs(a.y - targetY) - Math.abs(b.y - targetY);
+                });
+                const best = moves[0];
+                if (best.isAttack) {
+                    const target = getUnitAt(best.x, best.y);
+                    if (target) {
+                        if (u.type === 'KNIGHT') { u.startJump(best.x, best.y); }
+                        else {
+                            target.takeDamage(u.damage, u);
+                            if (u.type === 'ROOK') target.applyStatus('stun', 500, 0, 0.25);
+                            u.visualX += (best.x - u.x) * 15; u.visualY += (best.y - u.y) * 15;
+                        }
+                    }
+                } else {
+                    if (u.type === 'KNIGHT') { u.startJump(best.x, best.y); }
+                    else {
+                        u.x = best.x; u.y = best.y; u.squash(1.1, 0.9);
+                        // Check Promo
+                        if (u.type === 'PAWN') {
+                           if ((u.team === 'player' && u.y === 0) || (u.team === 'enemy' && u.y === CONFIG.ROWS-1)) {
+                               u.type = 'QUEEN'; Object.assign(u, UNITS.QUEEN);
+                               game.effects.push(new Particle(u.visualX+25, u.visualY+25, '#FFD700', 'ring'));
+                               game.effects.push(new Particle(u.visualX+25, u.visualY, "PROMOTED!", 'text'));
+                               sound.spawn();
+                           }
+                        }
+                    }
+                }
+            } else { u.timer = 200; }
+        }
+    });
+
+    game.shake > 0 ? game.shake *= 0.9 : game.shake = 0;
+    game.units = game.units.filter(u => u.hp > 0);
+    game.projectiles.forEach((p, i) => {
+        const dx = (p.target.visualX + 25) - p.sx; const dy = (p.target.visualY + 25) - p.sy;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 10 || p.target.hp <= 0) {
+            if(p.target.hp > 0) {
+                p.target.takeDamage(p.dmg, p.source);
+                if (p.type === 'ice') {
+                    p.target.applyStatus('freeze', 2000, 0, 0.4);
+                }
+            }
+            game.projectiles.splice(i, 1);
+        } else {
+            p.sx += (dx/dist) * p.speed; p.sy += (dy/dist) * p.speed;
+        }
+    });
+    game.effects.forEach(e => e.update()); game.effects = game.effects.filter(e => e.life > 0);
+    
+    const pKing = game.units.find(u => u.type === 'KING' && u.team === 'player');
+    const eKing = game.units.find(u => u.type === 'KING' && u.team === 'enemy');
+    if (eKing) document.getElementById('enemy-hp-fill').style.width = (eKing.hp / eKing.maxHp * 100) + '%';
+    if (!pKing) triggerGameOver(false); else if (!eKing) triggerGameOver(true);
+}
+
+function getUnitAt(x, y) { return game.units.find(u => u.x === x && u.y === y && u.hp > 0); }
+function getMoves(unit) {
+    let moves = []; 
+    // Logic always moves "forward" relative to team
+    const forward = unit.team === 'player' ? -1 : 1; 
+    const { x, y } = unit;
+
+    const tryAdd = (tx, ty) => {
+        if (tx>=0 && tx<CONFIG.COLS && ty>=0 && ty<CONFIG.ROWS) {
+            const occ = getUnitAt(tx, ty);
+            if (!occ) moves.push({x:tx, y:ty, isAttack: false});
+            else if (occ.team !== unit.team) moves.push({x:tx, y:ty, isAttack: true});
+        }
+    }
+    if (unit.type === 'PAWN') {
+        if (!getUnitAt(x, y+forward)) moves.push({x:x, y:y+forward, isAttack:false}); 
+        [x-1, x+1].forEach(tx => {
+            const t = getUnitAt(tx, y+forward);
+            if(t && t.team !== unit.team) moves.push({x:tx, y:y+forward, isAttack:true});
+        });
+    }
+    else if (unit.type === 'KNIGHT') {
+        [[ -2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(o => tryAdd(x+o[0], y+o[1]));
+    }
+    else if (['ROOK', 'QUEEN', 'BISHOP'].includes(unit.type)) {
+        const dirs = [];
+        if (unit.type !== 'BISHOP') dirs.push([0,1],[0,-1],[1,0],[-1,0]);
+        if (unit.type !== 'ROOK')   dirs.push([1,1],[1,-1],[-1,1],[-1,-1]);
+        dirs.forEach(d => {
+            let tx = x + d[0], ty = y + d[1];
+            while(tx>=0 && tx<CONFIG.COLS && ty>=0 && ty<CONFIG.ROWS) {
+                const occ = getUnitAt(tx, ty);
+                if (!occ) moves.push({x:tx, y:ty, isAttack:false});
+                else {
+                    if (occ.team !== unit.team) moves.push({x:tx, y:ty, isAttack:true});
+                    break;
+                }
+                tx += d[0]; ty += d[1];
+            }
+        });
+    }
+    return moves;
+}
+
+function findDiagonalTarget(unit) {
+    const dirs = [[1,1],[1,-1],[-1,1],[-1,-1]];
+    for(let d of dirs) {
+        let tx = unit.x + d[0], ty = unit.y + d[1];
+        let dist = 1;
+        while(tx>=0 && tx<CONFIG.COLS && ty>=0 && ty<CONFIG.ROWS && dist <= 3) {
+            const occ = getUnitAt(tx, ty);
+            if (occ && occ.team !== unit.team) return occ;
+            if (occ) break; tx += d[0]; ty += d[1]; dist++;
+        }
+    }
+    return null;
+}
+
+function fireLaser(unit, target) {
+    game.effects.push({
+        life: 5, type: 'laser',
+        sx: unit.visualX + 25, sy: unit.visualY + 25, ex: target.visualX + 25, ey: target.visualY + 25,
+        update: function() { this.life--; },
+        draw: function(c) {
+            c.strokeStyle = '#f97316'; c.lineWidth = this.life + 2;
+            c.beginPath(); c.moveTo(this.sx, this.sy); c.lineTo(this.ex, this.ey); c.stroke();
+        }
+    });
+    sound.laser();
+    target.takeDamage(unit.damage, unit);
+    target.applyStatus('burn', 3000, 0, 0.5); 
+    game.shake = 2;
+}
+
+
+// --- Input & Render ---
+function initDeck() {
+    const types = ['PAWN', 'PAWN', 'PAWN', 'KNIGHT', 'KNIGHT', 'BISHOP', 'ROOK', 'QUEEN'];
+    for (let i = types.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [types[i], types[j]] = [types[j], types[i]]; }
+    game.hand = types.slice(0, 4); game.deck = types.slice(4);
+    renderHand();
+    showTip("Control center squares (Green Outline) for Mana!");
+}
+function renderHand() {
+    const handEl = document.getElementById('card-hand'); handEl.innerHTML = '';
+    game.hand.forEach((type, index) => {
+        const u = UNITS[type]; const d = document.createElement('div'); d.className = 'card';
+        if (index === game.selectedHandIndex) d.classList.add('selected');
+        if (game.elixir < u.cost) d.classList.add('disabled');
+        d.innerHTML = `
+            <div class="card-cost">${u.cost}</div>
+            <div class="card-icon" style="color:${u.color}">${u.icon}</div>
+            <div class="card-name">${u.name}</div>
+            <div class="card-desc">${u.desc}</div>
+        `;
+        d.onclick = (e) => { e.stopPropagation(); selectCard(index); };
+        handEl.appendChild(d);
+    });
+}
+function selectCard(index) {
+    const type = game.hand[index]; if (game.elixir < UNITS[type].cost) return;
+    if (game.selectedHandIndex === index) game.selectedHandIndex = -1; else game.selectedHandIndex = index;
+    renderHand(); 
+}
+function updateHandUI() {
+    const cards = document.getElementById('card-hand').children;
+    for (let i = 0; i < cards.length; i++) {
+        if (!game.hand[i]) continue;
+        const type = game.hand[i]; const cost = UNITS[type].cost;
+        if (game.elixir < cost) cards[i].classList.add('disabled'); else cards[i].classList.remove('disabled');
+        if (i === game.selectedHandIndex) cards[i].classList.add('selected'); else cards[i].classList.remove('selected');
+    }
+}
+
+canvas.addEventListener('mousedown', handleInput);
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(e); });
+function handleInput(e) {
+    if (game.gameOver || !gameStarted) return;
+    if (game.selectedHandIndex === -1) return;
+    
+    if (!sound.enabled) { sound.init(); }
+
+    const rect = canvas.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    const x = Math.floor(((cx - rect.left) / game.scale) / CONFIG.TILE_SIZE);
+    const y = Math.floor(((cy - rect.top) / game.scale) / CONFIG.TILE_SIZE);
+
+    if (x >= 0 && x < CONFIG.COLS && y >= 5 && y < CONFIG.ROWS) {
+        if (!getUnitAt(x, y)) {
+            const type = game.hand[game.selectedHandIndex]; const cost = UNITS[type].cost;
+            if (game.elixir >= cost) {
+                game.elixir -= cost;
+                
+                // Spawn Local
+                spawnUnit(type, x, y, 'player');
+                
+                // Send to Network
+                sendData({ type: 'SPAWN', unit: type, x: x, y: y });
+
+                const playedCard = game.hand.splice(game.selectedHandIndex, 1)[0];
+                const nextCard = game.deck.shift();
+                game.hand.push(nextCard); game.deck.push(playedCard);
+                game.selectedHandIndex = -1; renderHand();
+            }
+        }
+    }
+}
+
+function draw() {
+    ctx.fillStyle = '#0a0a12'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    if (game.shake > 0) ctx.translate((Math.random()-0.5)*game.shake, (Math.random()-0.5)*game.shake);
+    ctx.scale(game.scale, game.scale);
+    for(let r=0; r<CONFIG.ROWS; r++) {
+        for(let c=0; c<CONFIG.COLS; c++) {
+            const isDark = (r+c)%2===1; ctx.fillStyle = isDark ? '#1f2937' : '#374151';
+            
+            // Strategic Center Zone Highlight
+            const isCenter = CENTER_ZONES.some(z => z.x === c && z.y === r);
+            if (isCenter) {
+                ctx.fillStyle = isDark ? '#2c3e50' : '#34495e';
+                ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 1; ctx.strokeRect(c*CONFIG.TILE_SIZE + 2, r*CONFIG.TILE_SIZE + 2, CONFIG.TILE_SIZE-4, CONFIG.TILE_SIZE-4);
+            }
+
+            if (game.isSurge) ctx.fillStyle = isDark ? '#2e2e44' : '#45455e';
+            if (r>=5 && game.selectedHandIndex !== -1) ctx.fillStyle = isDark ? '#14532d' : '#166534';
+            
+            ctx.fillRect(c*CONFIG.TILE_SIZE, r*CONFIG.TILE_SIZE, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+            const unitHere = getUnitAt(c, r);
+            if (unitHere && unitHere.synergies.battery) {
+                 ctx.fillStyle = 'rgba(255, 255, 0, 0.1)'; ctx.fillRect(c*CONFIG.TILE_SIZE, r*CONFIG.TILE_SIZE, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+                 ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)'; ctx.lineWidth = 2; ctx.beginPath();
+                 ctx.moveTo(c*CONFIG.TILE_SIZE + 25, 0); ctx.lineTo(c*CONFIG.TILE_SIZE + 25, CONFIG.ROWS*CONFIG.TILE_SIZE); ctx.stroke();
+            }
+        }
+    }
+    
+    game.units.sort((a,b) => a.visualY - b.visualY).forEach(u => {
+        const cx = u.visualX + 25; const cy = u.visualY + 25; ctx.save(); ctx.translate(cx, cy);
+        ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.beginPath();
+        const shadowScale = 1 - (u.jumpHeight/100); ctx.ellipse(0, 15, 15*shadowScale, 8*shadowScale, 0, 0, Math.PI*2); ctx.fill();
+        ctx.translate(0, -u.jumpHeight); ctx.scale(u.scaleX, u.scaleY);
+        if (u.statuses.some(s => s.type === 'freeze')) {
+            ctx.fillStyle = 'rgba(150, 230, 255, 0.4)'; ctx.strokeStyle = 'rgba(200, 255, 255, 0.8)'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(-20, -10); ctx.lineTo(20, -10); ctx.lineTo(15, 25); ctx.lineTo(-15, 25); ctx.closePath(); ctx.fill(); ctx.stroke();
+        }
+        ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI*2); ctx.fillStyle = '#222'; ctx.fill();
+        ctx.strokeStyle = u.team === 'player' ? '#4ade80' : '#f87171'; ctx.lineWidth = 3; ctx.stroke();
+        ctx.fillStyle = 'white'; ctx.font = '24px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(u.icon, 0, 2);
+        
+        // Status Icons
+        if (u.synergies.phalanx) { ctx.fillStyle = '#60a5fa'; ctx.font = '10px Arial'; ctx.fillText('🛡️', 15, -15); }
+        if (u.synergies.pawnChain) { ctx.fillStyle = '#60a5fa'; ctx.font = '10px Arial'; ctx.fillText('⛓️', 15, 15); }
+        if (u.synergies.royalGuard) { ctx.fillStyle = '#fbbf24'; ctx.font = '10px Arial'; ctx.fillText('⚔️', -15, -15); }
+        if (u.statuses.some(s => s.type === 'stun')) { ctx.save(); ctx.rotate(u.stunAnim * 5); ctx.fillStyle = '#FFD700'; ctx.font = '12px Arial'; ctx.fillText('⭐', 20, 0); ctx.restore(); }
+        
+        const hpPct = u.hp / u.maxHp; ctx.fillStyle = 'red'; ctx.fillRect(-15, -28, 30, 4);
+        ctx.fillStyle = '#4ade80'; ctx.fillRect(-15, -28, 30 * hpPct, 4);
+        ctx.restore();
+    });
+    game.projectiles.forEach(p => { ctx.fillStyle = p.color || 'yellow'; ctx.beginPath(); ctx.arc(p.sx, p.sy, 5, 0, Math.PI*2); ctx.fill(); });
+    game.effects.forEach(e => e.draw(ctx)); ctx.restore(); requestAnimationFrame(loop);
+}
+
+function loop(ts) {
+    const dt = ts - game.lastTime; game.lastTime = ts; updateGame(dt); draw();
+}
+
+function triggerGameOver(win) {
+    game.gameOver = true;
+    document.getElementById('end-screen').style.display = 'flex';
+    document.getElementById('end-title').innerText = win ? "VICTORY!" : "DEFEAT";
+    document.getElementById('end-title').style.color = win ? "#4ade80" : "#f87171";
+    if(win) sound.win(); else sound.lose();
+}
+
+function startGame() {
+    gameStarted = true;
+    // Spawn Kings - Local Player is always bottom
+    spawnUnit('KING', 2, CONFIG.ROWS-1, 'player');
+    spawnUnit('KING', 3, 0, 'enemy');
+    initDeck();
+    game.lastTime = performance.now();
+    requestAnimationFrame(loop);
+}
+
+// Initial Render call to show grid before start
+draw();
+
+</script>
+</body>
+</html>
