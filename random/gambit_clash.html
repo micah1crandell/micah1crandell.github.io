@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gambit Clash: Multiplayer</title>
+    <title>Gambit Clash: Duel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
@@ -262,6 +262,7 @@
         }
         .btn:active { transform: translateY(4px); box-shadow: none; }
         .btn-blue { background: #0ea5e9; box-shadow: 0 4px 0 #0284c7; }
+        .btn-green { background: #22c55e; box-shadow: 0 4px 0 #15803d; }
 
         .input-box {
             background: #222;
@@ -308,10 +309,11 @@
 
 <div id="lobby-screen">
     <h1 class="text-4xl mb-4 font-[Press Start 2P] text-yellow-400 text-center">GAMBIT CLASH</h1>
-    <h2 class="text-sm text-gray-400 mb-8 tracking-widest">MULTIPLAYER EDITION</h2>
+    <h2 class="text-sm text-gray-400 mb-8 tracking-widest">TACTICAL AUTO-BATTLER</h2>
 
     <div id="lobby-initial" class="flex flex-col gap-4">
-        <button class="btn btn-blue" onclick="createGame()">CREATE GAME</button>
+        <button class="btn btn-green" onclick="startSinglePlayer()">SINGLE PLAYER</button>
+        <button class="btn btn-blue" onclick="createGame()">CREATE MULTIPLAYER</button>
         <button class="btn" onclick="showJoin()">JOIN GAME</button>
     </div>
 
@@ -380,15 +382,23 @@
 
 <script>
 /**
- * GAMBIT CLASH: Multiplayer Edition
- * Logic: Peer-to-Peer lockstep simulation
+ * GAMBIT CLASH
+ * Modes: Single Player (NPC) & Multiplayer (P2P)
  */
 
-// --- MULTIPLAYER LOGIC ---
+// --- GLOBAL GAME STATE ---
+let gameMode = ''; // 'bot' or 'p2p'
 let peer = null;
 let conn = null;
 let isHost = false;
 let gameStarted = false;
+
+// --- NPC STATE ---
+let npc = {
+    elixir: 5,
+    deck: [], // Will follow simple weighted random
+    spawnTimer: 0
+};
 
 function generateShortId() {
     return Math.random().toString(36).substr(2, 5).toUpperCase();
@@ -398,9 +408,69 @@ function resetLobby() {
     document.getElementById('lobby-initial').style.display = 'flex';
     document.getElementById('lobby-host').style.display = 'none';
     document.getElementById('lobby-join').style.display = 'none';
+    if(peer) peer.destroy();
 }
 
+// --- SINGLE PLAYER LOGIC ---
+function startSinglePlayer() {
+    gameMode = 'bot';
+    document.getElementById('lobby-screen').style.display = 'none';
+    startGame();
+}
+
+function updateBot(dt) {
+    if (game.gameOver) return;
+
+    // 1. NPC Elixir Regen (Same rules as player)
+    let botInCenter = 0;
+    CENTER_ZONES.forEach(zone => {
+        const u = getUnitAt(zone.x, zone.y);
+        if (u && u.team === 'enemy') botInCenter++;
+    });
+
+    let currentRate = game.isSurge ? CONFIG.REGEN_RATE_SURGE : CONFIG.REGEN_RATE_BASE;
+    currentRate += (botInCenter * CONFIG.REGEN_RATE_CONTROL); 
+
+    if (npc.elixir < CONFIG.MAX_ELIXIR) {
+        npc.elixir += currentRate * dt / 1000;
+        if (npc.elixir > CONFIG.MAX_ELIXIR) npc.elixir = CONFIG.MAX_ELIXIR;
+    }
+
+    // 2. AI Decision Making
+    npc.spawnTimer -= dt;
+    if (npc.spawnTimer <= 0) {
+        // Try to spawn something
+        const availableUnits = Object.keys(UNITS).filter(k => k !== 'KING' && UNITS[k].cost <= npc.elixir);
+        
+        if (availableUnits.length > 0 && npc.elixir > 2) { // Don't always spend immediately
+            // Simple logic: 70% chance to play if we have > 4 elixir, or 10% if low elixir
+            const chance = npc.elixir > 4 ? 0.05 : 0.005; 
+            
+            if (Math.random() < chance) {
+                // Pick random unit
+                const unitType = availableUnits[Math.floor(Math.random() * availableUnits.length)];
+                const unitStats = UNITS[unitType];
+                
+                // Pick random valid column
+                const x = Math.floor(Math.random() * CONFIG.COLS);
+                // Spawn at top (y=0 or y=1 if occupied)
+                let y = 0;
+                if (getUnitAt(x, 0)) y = 1;
+                
+                if (!getUnitAt(x, y)) {
+                    npc.elixir -= unitStats.cost;
+                    spawnUnit(unitType, x, y, 'enemy');
+                    npc.spawnTimer = 1000; // Cooldown between actions
+                }
+            }
+        }
+    }
+}
+
+// --- MULTIPLAYER LOGIC ---
+
 function createGame() {
+    gameMode = 'p2p';
     document.getElementById('lobby-initial').style.display = 'none';
     document.getElementById('lobby-host').style.display = 'flex';
     
@@ -418,6 +488,7 @@ function createGame() {
 }
 
 function showJoin() {
+    gameMode = 'p2p';
     document.getElementById('lobby-initial').style.display = 'none';
     document.getElementById('lobby-join').style.display = 'flex';
 }
@@ -437,7 +508,6 @@ function joinGame() {
 function setupConnection() {
     conn.on('open', () => {
         console.log("Connected to peer!");
-        // Start Game
         document.getElementById('lobby-screen').style.display = 'none';
         startGame();
     });
@@ -453,19 +523,16 @@ function setupConnection() {
 }
 
 function sendData(data) {
-    if(conn && conn.open) {
+    if (gameMode === 'p2p' && conn && conn.open) {
         conn.send(data);
     }
 }
 
 function handlePeerData(data) {
     if(data.type === 'SPAWN') {
-        // Mirror coordinates!
-        // The enemy spawns unit at x,y from THEIR perspective.
-        // We must flip it to render at top of OUR screen.
+        // Mirror coordinates for P2P
         const ex = (CONFIG.COLS - 1) - data.x;
         const ey = (CONFIG.ROWS - 1) - data.y;
-        
         spawnUnit(data.unit, ex, ey, 'enemy');
     }
 }
@@ -568,7 +635,6 @@ const sound = {
         let beat = 0;
         setInterval(() => {
             if (!this.enabled || !this.ctx) return;
-            // Very minimal ambient beat
             if (beat % 4 === 0) this.playTone(100, 'sine', 0.1, 0.2, -50);
             beat++;
         }, 500);
@@ -784,6 +850,11 @@ function showTip(text) {
 function updateGame(dt) {
     if (game.gameOver || !gameStarted) return;
     
+    // --- MODE SPECIFIC UPDATES ---
+    if (gameMode === 'bot') {
+        updateBot(dt);
+    }
+
     game.gameTime += dt;
     const seconds = Math.floor(game.gameTime / 1000);
     const m = Math.floor(seconds / 60).toString().padStart(2,'0');
@@ -1107,7 +1178,7 @@ function handleInput(e) {
                 // Spawn Local
                 spawnUnit(type, x, y, 'player');
                 
-                // Send to Network
+                // Send to Network if Multi
                 sendData({ type: 'SPAWN', unit: type, x: x, y: y });
 
                 const playedCard = game.hand.splice(game.selectedHandIndex, 1)[0];
