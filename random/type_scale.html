@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Scale — Micah Crandell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --border: #222230;
+            --text: #fafafa;
+            --text-dim: #6b6b7a;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-content p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+        }
+
+        .controls {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .control-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .control-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .control-value {
+            font-family: 'Space Mono', monospace;
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        input[type="number"] {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent);
+        }
+
+        select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        .scale-preview {
+            flex: 1;
+        }
+
+        .scale-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1.5rem;
+            align-items: baseline;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .scale-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+            margin: 0 -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .scale-item:first-child {
+            padding-top: 0;
+        }
+
+        .scale-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .scale-size {
+            display: block;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .scale-name {
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .scale-text {
+            font-weight: 600;
+            line-height: 1.2;
+            transition: font-size 0.3s ease;
+        }
+
+        .scale-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .scale-item:hover .scale-actions {
+            opacity: 1;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .css-output {
+            margin-top: 2rem;
+        }
+
+        .css-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .css-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .css-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .css-copy-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .css-copy-btn:hover {
+            opacity: 0.8;
+        }
+
+        .css-code {
+            padding: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .css-code .property {
+            color: #7dd3fc;
+        }
+
+        .css-code .value {
+            color: #fbbf24;
+        }
+
+        .css-code .comment {
+            color: #4b5563;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                position: static;
+            }
+
+            .scale-item {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .scale-actions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Type Scale</h1>
+                <p>Calculated harmony for typography</p>
+            </div>
+            <a href="../index.html" class="back-link">← Back to Portfolio</a>
+        </header>
+
+        <div class="layout">
+            <aside class="controls">
+                <div class="control-card">
+                    <div class="control-title">Base Settings</div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Base Size</span>
+                            <span class="control-value" id="baseSizeValue">16px</span>
+                        </label>
+                        <input type="range" id="baseSize" min="10" max="24" value="16">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Scale Ratio</span>
+                        </label>
+                        <select id="scaleRatio">
+                            <option value="1.067">Minor Second (1.067)</option>
+                            <option value="1.125">Major Second (1.125)</option>
+                            <option value="1.200">Minor Third (1.200)</option>
+                            <option value="1.250" selected>Major Third (1.250)</option>
+                            <option value="1.333">Perfect Fourth (1.333)</option>
+                            <option value="1.414">Augmented Fourth (1.414)</option>
+                            <option value="1.500">Perfect Fifth (1.500)</option>
+                            <option value="1.618">Golden Ratio (1.618)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <div class="control-title">Typography</div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Font Weight</span>
+                        </label>
+                        <select id="fontWeight">
+                            <option value="300">Light (300)</option>
+                            <option value="400">Regular (400)</option>
+                            <option value="500">Medium (500)</option>
+                            <option value="600" selected>Semibold (600)</option>
+                            <option value="700">Bold (700)</option>
+                            <option value="800">Extrabold (800)</option>
+                            <option value="900">Black (900)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Letter Spacing</span>
+                            <span class="control-value" id="letterSpacingValue">-0.02em</span>
+                        </label>
+                        <input type="range" id="letterSpacing" min="-5" max="10" value="-2">
+                    </div>
+                </div>
+            </aside>
+
+            <main class="scale-preview">
+                <div id="scaleItems"></div>
+
+                <div class="css-output">
+                    <div class="css-card">
+                        <div class="css-header">
+                            <span class="css-title">CSS Custom Properties</span>
+                            <button class="css-copy-btn" id="copyCss">Copy CSS</button>
+                        </div>
+                        <pre class="css-code" id="cssCode"></pre>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const SCALE_NAMES = [
+            { name: 'xs', label: 'Extra Small', step: -2 },
+            { name: 'sm', label: 'Small', step: -1 },
+            { name: 'base', label: 'Base', step: 0 },
+            { name: 'lg', label: 'Large', step: 1 },
+            { name: 'xl', label: 'Extra Large', step: 2 },
+            { name: '2xl', label: '2X Large', step: 3 },
+            { name: '3xl', label: '3X Large', step: 4 },
+            { name: '4xl', label: '4X Large', step: 5 },
+            { name: '5xl', label: '5X Large', step: 6 },
+        ];
+
+        const SAMPLE_TEXT = 'The quick brown fox jumps over the lazy dog';
+
+        const baseSizeSlider = document.getElementById('baseSize');
+        const baseSizeValue = document.getElementById('baseSizeValue');
+        const scaleRatioSelect = document.getElementById('scaleRatio');
+        const fontWeightSelect = document.getElementById('fontWeight');
+        const letterSpacingSlider = document.getElementById('letterSpacing');
+        const letterSpacingValue = document.getElementById('letterSpacingValue');
+        const scaleItemsContainer = document.getElementById('scaleItems');
+        const cssCodeEl = document.getElementById('cssCode');
+        const copyCssBtn = document.getElementById('copyCss');
+
+        function calculateScale(baseSize, ratio, step) {
+            return baseSize * Math.pow(ratio, step);
+        }
+
+        function generateCSS(baseSize, ratio, letterSpacing) {
+            let css = '<span class="comment">/* Type Scale - Generated */</span>\n';
+            css += '<span class="property">:root</span> {\n';
+            css += `  <span class="comment">/* Base: ${baseSize}px, Ratio: ${ratio} */</span>\n`;
+
+            SCALE_NAMES.forEach(item => {
+                const size = calculateScale(baseSize, ratio, item.step);
+                css += `  <span class="property">--text-${item.name}</span>: <span class="value">${size.toFixed(2)}px</span>;\n`;
+            });
+
+            css += `\n  <span class="property">--letter-spacing</span>: <span class="value">${letterSpacing}em</span>;\n`;
+            css += '}';
+            return css;
+        }
+
+        function render() {
+            const baseSize = parseFloat(baseSizeSlider.value);
+            const ratio = parseFloat(scaleRatioSelect.value);
+            const fontWeight = fontWeightSelect.value;
+            const letterSpacing = parseFloat(letterSpacingSlider.value) / 100;
+
+            baseSizeValue.textContent = `${baseSize}px`;
+            letterSpacingValue.textContent = `${letterSpacing.toFixed(2)}em`;
+
+            let html = '';
+            SCALE_NAMES.slice().reverse().forEach(item => {
+                const size = calculateScale(baseSize, ratio, item.step);
+                html += `
+                    <div class="scale-item">
+                        <div class="scale-meta">
+                            <span class="scale-size">${size.toFixed(1)}px</span>
+                            <span class="scale-name">${item.name}</span>
+                        </div>
+                        <div class="scale-text" style="font-size: ${size}px; font-weight: ${fontWeight}; letter-spacing: ${letterSpacing}em;">
+                            ${SAMPLE_TEXT}
+                        </div>
+                        <div class="scale-actions">
+                            <button class="copy-btn" data-size="${size.toFixed(2)}px">Copy</button>
+                        </div>
+                    </div>
+                `;
+            });
+            scaleItemsContainer.innerHTML = html;
+
+            cssCodeEl.innerHTML = generateCSS(baseSize, ratio, letterSpacing);
+
+            // Add copy handlers
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(`font-size: ${btn.dataset.size};`);
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 1500);
+                });
+            });
+        }
+
+        // Event Listeners
+        baseSizeSlider.addEventListener('input', render);
+        scaleRatioSelect.addEventListener('change', render);
+        fontWeightSelect.addEventListener('change', render);
+        letterSpacingSlider.addEventListener('input', render);
+
+        copyCssBtn.addEventListener('click', () => {
+            const baseSize = parseFloat(baseSizeSlider.value);
+            const ratio = parseFloat(scaleRatioSelect.value);
+            const letterSpacing = parseFloat(letterSpacingSlider.value) / 100;
+
+            let css = `/* Type Scale - Generated */\n:root {\n`;
+            css += `  /* Base: ${baseSize}px, Ratio: ${ratio} */\n`;
+
+            SCALE_NAMES.forEach(item => {
+                const size = calculateScale(baseSize, ratio, item.step);
+                css += `  --text-${item.name}: ${size.toFixed(2)}px;\n`;
+            });
+
+            css += `\n  --letter-spacing: ${letterSpacing}em;\n`;
+            css += '}';
+
+            navigator.clipboard.writeText(css);
+            copyCssBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyCssBtn.textContent = 'Copy CSS';
+            }, 1500);
+        });
+
+        // Initial render
+        render();
+    </script>
+</body>
+
+</html>

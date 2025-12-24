@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Engine — Micah Crandell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --border: #2a2a3a;
+            --text: #e4e4e7;
+            --text-dim: #71717a;
+            --accent: #a855f7;
+            --accent-glow: rgba(168, 85, 247, 0.3);
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .visualizer-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .visualizer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .visualizer-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: background 0.3s;
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        #visualizer {
+            width: 100%;
+            height: 250px;
+            display: block;
+        }
+
+        .controls-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+        }
+
+        .control-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:hover,
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        .button-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #ec4899);
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        .presets {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-dim);
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover,
+        .preset-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .info-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .info-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .info-text {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Audio Engine</h1>
+            <a href="../index.html" class="back-link">← Back to Portfolio</a>
+        </header>
+
+        <div class="visualizer-container">
+            <div class="visualizer-header">
+                <span class="visualizer-title">Frequency Spectrum</span>
+                <div class="status">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Stopped</span>
+                </div>
+            </div>
+            <canvas id="visualizer"></canvas>
+        </div>
+
+        <div class="controls-panel">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <span class="control-label">Frequency</span>
+                    <span class="control-value" id="freqValue">440</span>
+                    <input type="range" id="frequency" min="20" max="2000" value="440">
+                    <div class="presets">
+                        <button class="preset-btn" data-freq="261.63">C4</button>
+                        <button class="preset-btn active" data-freq="440">A4</button>
+                        <button class="preset-btn" data-freq="523.25">C5</button>
+                        <button class="preset-btn" data-freq="880">A5</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Waveform</span>
+                    <select id="waveform">
+                        <option value="sine">Sine Wave</option>
+                        <option value="square">Square Wave</option>
+                        <option value="sawtooth">Sawtooth Wave</option>
+                        <option value="triangle">Triangle Wave</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Volume</span>
+                    <span class="control-value" id="gainValue">50%</span>
+                    <input type="range" id="gain" min="0" max="100" value="50">
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Visualization</span>
+                    <select id="vizMode">
+                        <option value="bars">Frequency Bars</option>
+                        <option value="wave">Waveform</option>
+                        <option value="circle">Circular</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button class="btn btn-primary" id="playBtn">
+                    <span class="btn-icon">▶</span>
+                    <span>Play</span>
+                </button>
+                <button class="btn btn-secondary" id="stopBtn">
+                    <span class="btn-icon">■</span>
+                    <span>Stop</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h3 class="info-title">About This Demo</h3>
+            <p class="info-text">
+                This synthesizer uses the Web Audio API to generate and visualize audio in real-time.
+                Adjust the frequency, waveform, and volume controls to create different sounds.
+                The visualization responds dynamically to the audio output, creating a visual representation
+                of the sound waves being generated.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Audio Context & Nodes
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+        let analyser = null;
+        let isPlaying = false;
+
+        // Canvas
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+
+        // Controls
+        const frequencySlider = document.getElementById('frequency');
+        const freqValue = document.getElementById('freqValue');
+        const waveformSelect = document.getElementById('waveform');
+        const gainSlider = document.getElementById('gain');
+        const gainValue = document.getElementById('gainValue');
+        const vizModeSelect = document.getElementById('vizMode');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.connect(audioCtx.destination);
+            }
+        }
+
+        function startAudio() {
+            initAudio();
+
+            if (oscillator) {
+                oscillator.stop();
+            }
+
+            oscillator = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+
+            oscillator.type = waveformSelect.value;
+            oscillator.frequency.value = parseFloat(frequencySlider.value);
+            gainNode.gain.value = parseFloat(gainSlider.value) / 100;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(analyser);
+
+            oscillator.start();
+            isPlaying = true;
+            updateStatus(true);
+        }
+
+        function stopAudio() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            isPlaying = false;
+            updateStatus(false);
+        }
+
+        function updateStatus(playing) {
+            statusDot.classList.toggle('active', playing);
+            statusText.textContent = playing ? 'Playing' : 'Stopped';
+            playBtn.innerHTML = playing ? '<span class="btn-icon">⏸</span><span>Pause</span>' : '<span class="btn-icon">▶</span><span>Play</span>';
+        }
+
+        function drawBars() {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+
+            ctx.fillStyle = '#12121a';
+            ctx.fillRect(0, 0, width, height);
+
+            const barWidth = (width / bufferLength) * 2.5;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArray[i] / 255) * height * 0.8;
+
+                const gradient = ctx.createLinearGradient(0, height - barHeight, 0, height);
+                gradient.addColorStop(0, '#a855f7');
+                gradient.addColorStop(1, '#ec4899');
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, height - barHeight, barWidth - 2, barHeight);
+
+                x += barWidth;
+            }
+        }
+
+        function drawWave() {
+            const bufferLength = analyser.fftSize;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteTimeDomainData(dataArray);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+
+            ctx.fillStyle = '#12121a';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#a855f7';
+            ctx.beginPath();
+
+            const sliceWidth = width / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = (v * height) / 2;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+        }
+
+        function drawCircle() {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.3;
+
+            ctx.fillStyle = '#12121a';
+            ctx.fillRect(0, 0, width, height);
+
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArray[i] / 255) * radius * 0.8;
+                const angle = (i / bufferLength) * Math.PI * 2;
+
+                const x1 = centerX + Math.cos(angle) * radius;
+                const y1 = centerY + Math.sin(angle) * radius;
+                const x2 = centerX + Math.cos(angle) * (radius + barHeight);
+                const y2 = centerY + Math.sin(angle) * (radius + barHeight);
+
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                gradient.addColorStop(0, '#a855f7');
+                gradient.addColorStop(1, '#ec4899');
+
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+        }
+
+        function drawIdle() {
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+
+            ctx.fillStyle = '#12121a';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = '#2a2a3a';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#3a3a4a';
+            ctx.font = '14px Space Mono';
+            ctx.textAlign = 'center';
+            ctx.fillText('Press Play to start', width / 2, height / 2 + 5);
+        }
+
+        function draw() {
+            if (!isPlaying) {
+                drawIdle();
+                requestAnimationFrame(draw);
+                return;
+            }
+
+            const mode = vizModeSelect.value;
+            if (mode === 'bars') drawBars();
+            else if (mode === 'wave') drawWave();
+            else if (mode === 'circle') drawCircle();
+
+            requestAnimationFrame(draw);
+        }
+
+        // Event Listeners
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                stopAudio();
+            } else {
+                startAudio();
+            }
+        });
+
+        stopBtn.addEventListener('click', stopAudio);
+
+        frequencySlider.addEventListener('input', (e) => {
+            freqValue.textContent = Math.round(e.target.value);
+            if (oscillator) {
+                oscillator.frequency.value = parseFloat(e.target.value);
+            }
+            presetBtns.forEach(btn => btn.classList.remove('active'));
+        });
+
+        gainSlider.addEventListener('input', (e) => {
+            gainValue.textContent = e.target.value + '%';
+            if (gainNode) {
+                gainNode.gain.value = parseFloat(e.target.value) / 100;
+            }
+        });
+
+        waveformSelect.addEventListener('change', () => {
+            if (oscillator) {
+                oscillator.type = waveformSelect.value;
+            }
+        });
+
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const freq = parseFloat(btn.dataset.freq);
+                frequencySlider.value = freq;
+                freqValue.textContent = Math.round(freq);
+                if (oscillator) {
+                    oscillator.frequency.value = freq;
+                }
+                presetBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Init
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        draw();
+    </script>
+</body>
+
+</html>

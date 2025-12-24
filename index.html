@@ -1,278 +1,287 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micah Crandell | Production & Code</title>
+    <title>Micah Crandell — Creative Engineer</title>
+    <meta name="description" content="Creative Engineer crafting digital experiences with precision.">
 
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+    <!-- Fonts: Syne (Unorthodox) + Space Mono (Technical) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/Observer.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollToPlugin.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
-                    colors: {
-                        dark: '#050505',
-                        accent: '#f97316',
-                        secondary: '#ea580c'
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
         :root {
-            --cursor-size: 20px;
+            --bg-primary: #ffffff;
+            --text-primary: #050505;
+            --text-secondary: #555555;
+            --accent: #2a2a2a;
+            --grid-color: rgba(0, 0, 0, 0.08);
+            --border-color: #050505;
+            --card-hover: #f4f4f0;
+            --highlight: #0000ff;
+            /* International Klein Blue for subtle tech accents */
         }
 
-        html,
-        body {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        html::-webkit-scrollbar,
-        body::-webkit-scrollbar {
-            display: none;
-        }
-
-        body {
-            background-color: #050505;
-            color: #e5e5e5;
-            overflow-x: hidden;
-            /* Disable native scroll */
-            max-width: 100vw;
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             cursor: none;
-            touch-action: none;
-            overscroll-behavior: none;
+            /* Custom cursor */
         }
 
-        /* Custom Cursor */
-        #cursor {
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+        }
+
+        /* --- Custom Cursor --- */
+        .cursor {
             position: fixed;
             top: 0;
             left: 0;
-            width: var(--cursor-size);
-            height: var(--cursor-size);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #fff;
             border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            pointer-events: none;
+            z-index: 10000;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
             mix-blend-mode: difference;
         }
 
-        #cursor-dot {
+        .cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border-color: transparent;
+        }
+
+        .cursor-dot {
             position: fixed;
             top: 0;
             left: 0;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            transform: translate(-50%, -50%);
-        }
-
-        body:hover #cursor {
-            opacity: 1;
-        }
-
-        /* Aurora Background (Global) */
-        .aurora-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100dvh;
-            z-index: -1;
-            overflow: hidden;
-            background: #050505;
-            pointer-events: none;
-        }
-
-        .aurora-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            will-change: transform;
-        }
-
-        /* Firefly / Particles */
-        .firefly-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 45;
-            pointer-events: none;
-        }
-
-        .firefly {
-            position: absolute;
             width: 4px;
             height: 4px;
             background: #fff;
             border-radius: 50%;
-            box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.4);
-            opacity: 0;
-            will-change: transform, opacity;
-        }
-
-        /* Hero Section Blobs */
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-        }
-
-        .background-blobs {
-            position: absolute;
-            inset: 0;
+            transform: translate(-50%, -50%);
             pointer-events: none;
-            z-index: 0;
+            z-index: 10001;
+            transition: background 0.3s;
+            mix-blend-mode: difference;
         }
 
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            mix-blend-mode: multiply;
-            filter: blur(80px);
-            opacity: 0.4;
-        }
-
-        .blob-1 {
-            top: 10%;
-            left: 20%;
-            width: 40vw;
-            height: 40vw;
-            background: #ea580c;
-            animation: blob 10s infinite;
-        }
-
-        .blob-2 {
-            top: 20%;
-            right: 20%;
-            width: 35vw;
-            height: 35vw;
-            background: #d97706;
-            animation: blob 10s infinite 2s;
-        }
-
-        /* Text Reveal Wrappers */
-        .reveal-text {
-            overflow: hidden;
-            display: block;
-        }
-
-        .reveal-text span {
-            display: block;
-            transform: translateY(100%);
-            opacity: 0;
-            padding: 0 0.5em;
-            /* Prevent clipping of italic swashes */
-        }
-
-        .reveal-text span em {
-            padding-right: 0.2em;
-            /* Fix for bg-clip-text clipping italic swash */
-        }
-
-        /* Horizontal Scroll Section */
-        .horizontal-section {
+        /* --- Canvas Background --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            display: flex;
-            flex-wrap: nowrap;
-            will-change: transform;
+            z-index: -2;
+            opacity: 0.6;
         }
 
-        .work-panel {
-            width: 100vw;
-            height: 100dvh;
+        /* --- Typography Classes --- */
+        .font-display {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+        }
+
+        .font-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid var(--grid-color);
+        }
+
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--text-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-            padding: 0;
-            flex-shrink: 0;
+            padding-top: 5rem;
             position: relative;
-            overflow: hidden;
         }
 
-        /* Image Hover Effects */
-        .img-wrapper {
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.5s ease-out;
-        }
-
-        .img-wrapper img {
-            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1), filter 0.5s ease, opacity 1.5s ease-in-out;
+        /* --- Physics Canvas --- */
+        #physics-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            z-index: 1;
+            /* Pointer events disabled by default to allow page scrolling */
+            /* Enabled dynamically via JS only when hovering over draggable blocks */
+            pointer-events: none;
         }
 
-        .img-wrapper:hover img {
-            transform: scale(1.05);
-        }
-
-        .project-number {
-            font-family: 'Playfair Display', serif;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
-            color: transparent;
-            line-height: 1;
-        }
-
-        /* Marquee */
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
+        .hero-main,
+        .hero .scroll-note,
+        .hero .hero-role {
             position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-main *,
+        .hero .scroll-note *,
+        .hero .hero-role * {
+            pointer-events: none;
+        }
+
+        .hero-main {
+            border-top: 1px solid var(--text-primary);
+            border-bottom: 1px solid var(--text-primary);
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 10vw, 8rem);
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .hero-role {
             display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .role-tag {
+            font-size: clamp(0.8rem, 2vw, 1.5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .scroll-note {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Marquee --- */
+        .marquee-container {
+            border-bottom: 1px solid var(--text-primary);
+            padding: 1.5rem 0;
+            overflow: hidden;
+            background: var(--text-primary);
+            color: var(--bg-primary);
         }
 
         .marquee-content {
-            flex-shrink: 0;
-            animation: marquee 30s linear infinite;
-            padding-right: 2rem;
+            display: flex;
+            gap: 4rem;
+            width: fit-content;
+            animation: marquee 20s linear infinite;
+        }
+
+        .marquee-item {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         @keyframes marquee {
@@ -281,973 +290,1478 @@
             }
 
             100% {
-                transform: translateX(-100%);
+                transform: translateX(-50%);
             }
         }
 
-        .stroke-text {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+        /* --- Projects Grid --- */
+        .work-section {
+            padding: 8rem 0;
         }
 
-        .glass-nav {
-            background: rgba(5, 5, 5, 0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .section-header {
+            margin-bottom: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--text-primary);
+            padding-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            letter-spacing: -0.03em;
+            margin: 0;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            /* Gap creates the border effect */
+            background: var(--text-primary);
+            /* Background color becomes borders */
+            border: 1px solid var(--text-primary);
+        }
+
+        .project-card {
+            background: var(--bg-primary);
+            min-height: 280px;
+            position: relative;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .project-card:hover .project-tag {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .project-card:hover .project-arrow svg {
+            stroke: #fff;
+            transform: translate(5px, -5px);
+        }
+
+        /* Grid Spans */
+        .span-12 {
+            grid-column: span 12;
+        }
+
+        .span-8 {
+            grid-column: span 8;
+        }
+
+        .span-7 {
+            grid-column: span 7;
+        }
+
+        .span-6 {
+            grid-column: span 6;
+        }
+
+        .span-5 {
+            grid-column: span 5;
+        }
+
+        .span-4 {
+            grid-column: span 4;
+        }
+
+        .span-3 {
+            grid-column: span 3;
+        }
+
+        .project-image-container {
+            width: 100%;
+            max-height: 150px;
+            flex: 1 1 auto;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+            filter: grayscale(100%);
+            transition: filter 0.4s ease;
+        }
+
+        .project-card:hover .project-image-container {
+            filter: grayscale(0%);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-card:hover .project-img {
+            transform: scale(1.05);
+        }
+
+        .project-info {
+            z-index: 2;
+        }
+
+        .project-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            max-width: 90%;
+            margin-bottom: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .project-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--text-primary);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .project-arrow {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
+
+        .project-arrow svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            transition: all 0.3s;
+        }
+
+        /* --- Philosophy --- */
+        .philosophy-section {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+        }
+
+        .big-statement {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .philosophy-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .philosophy-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            transition: padding-left 0.3s ease;
+        }
+
+        .philosophy-item:hover {
+            padding-left: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .philo-header {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .philo-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            border: 1px solid #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Contact --- */
+        .contact-section {
+            padding: 8rem 0;
+            border-top: 1px solid var(--text-primary);
+        }
+
+        .contact-large-text {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 0.9;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .contact-large-text:hover {
+            -webkit-text-stroke: 2px var(--text-primary);
+            color: transparent;
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 4rem;
+        }
+
+        /* --- Modal (Minimalist) --- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .modal-iframe-container {
+            width: 375px;
+            height: 812px;
+            border: 3px solid #000;
+            border-radius: 40px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1200px) {
+            .project-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .span-12 {
+                grid-column: span 6;
+            }
+
+            .span-8,
+            .span-7 {
+                grid-column: span 6;
+            }
+
+            .span-6,
+            .span-5,
+            .span-4 {
+                grid-column: span 3;
+            }
+
+            .span-3 {
+                grid-column: span 3;
+            }
+
+            .project-card {
+                min-height: 240px;
+                padding: 1.25rem;
+            }
+
+            .project-title {
+                font-size: 1.5rem;
+            }
+
+            .project-image-container {
+                max-height: 120px;
+            }
+
+            .philosophy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero-main {
+                padding: 2rem 0;
+            }
+
+            .hero-role {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .role-tag {
+                font-size: 0.75rem;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .span-8,
+            .span-7,
+            .span-6,
+            .span-5,
+            .span-4,
+            .span-3,
+            .span-12 {
+                grid-column: span 1;
+            }
+
+            .project-card {
+                min-height: 200px;
+                padding: 1rem;
+            }
+
+            .project-title {
+                font-size: 1.25rem;
+            }
+
+            .project-desc {
+                font-size: 0.8rem;
+            }
+
+            .project-image-container {
+                max-height: 100px;
+            }
+
+            .work-section {
+                padding: 4rem 0;
+            }
+
+            .section-header {
+                margin-bottom: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .philosophy-section {
+                padding: 4rem 0;
+            }
+
+            .contact-section {
+                padding: 4rem 0;
+            }
+
+            .contact-large-text {
+                font-size: clamp(2rem, 8vw, 4rem);
+            }
+
+            .marquee-item {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                gap: 0.75rem;
+            }
+
+            .nav-link {
+                font-size: 0.75rem;
+            }
+
+            .project-card {
+                min-height: 180px;
+            }
+
+            .project-image-container {
+                max-height: 80px;
+            }
+        }
+
+        /* --- Text Scramble Effect --- */
+        .scramble-char {
+            opacity: 0.6;
         }
     </style>
 </head>
 
-<body class="antialiased">
+<body>
+    <!-- Background Canvas for Distortion Effect -->
+    <canvas id="bg-canvas"></canvas>
 
-    <div id="cursor"></div>
-    <div id="cursor-dot"></div>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
 
-    <div class="aurora-bg">
-        <div class="aurora-blob w-[40vw] h-[40vw] bg-orange-900/30 top-[-10%] left-[-10%]" data-speed="0.2"></div>
-        <div class="aurora-blob w-[35vw] h-[35vw] bg-red-900/30 bottom-[10%] right-[-5%]" data-speed="0.3"></div>
-        <div class="aurora-blob w-[30vw] h-[30vw] bg-amber-900/20 top-[40%] left-[30%]" data-speed="0.1"></div>
-    </div>
-
-    <div class="firefly-container" id="fireflies"></div>
-
-    <nav class="fixed top-0 left-0 w-full z-50 glass-nav py-6">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <a href="#" class="logo group flex items-center gap-3 hover-trigger">
-                <div
-                    class="w-10 h-10 bg-gradient-to-tr from-orange-600 to-amber-600 rounded-lg flex items-center justify-center font-serif italic font-bold text-xl transition-transform duration-500 group-hover:rotate-12 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
-                    M
-                </div>
-                <span
-                    class="font-bold tracking-[0.2em] text-sm group-hover:text-orange-300 transition-colors">CRANDELL</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#approach"
-                    class="text-sm font-medium text-gray-400 hover:text-white transition-colors hover-trigger">APPROACH</a>
-                <a href="#works"
-                    class="text-sm font-medium text-gray-400 hover:text-white transition-colors hover-trigger">WORKS</a>
-                <a href="https://github.com/micah1crandell" target="_blank"
-                    class="px-6 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300 text-sm font-bold uppercase tracking-wider hover-trigger">
-                    Open Source
-                </a>
-            </div>
+    <nav>
+        <a href="#" class="nav-logo hover-trigger">Micah Crandell</a>
+        <div class="nav-links">
+            <a href="#work" class="nav-link hover-trigger magnetic">Work</a>
+            <a href="#philosophy" class="nav-link hover-trigger magnetic">Philosophy</a>
+            <a href="#contact" class="nav-link hover-trigger magnetic">Contact</a>
         </div>
     </nav>
 
-    <section class="relative h-[100dvh] flex items-center justify-center overflow-hidden" id="hero">
-        <div class="background-blobs">
-            <div class="blob blob-1"></div>
-            <div class="blob blob-2"></div>
-        </div>
-
-        <div class="relative z-20 text-center px-6 max-w-5xl mx-auto">
-
-
-            <h1 class="font-serif text-[clamp(3rem,8vw,7.5rem)] leading-[0.9] tracking-tight mb-6 text-white">
-                <div class="reveal-text"><span>The Art of</span></div>
-                <div class="reveal-text"><span><em
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-amber-300 to-white">Practical</em></span>
+    <div class="container">
+        <section class="hero">
+            <canvas id="physics-canvas"></canvas>
+            <div class="hero-main">
+                <h1 class="hero-title font-display" data-scramble>
+                    <span data-scramble-text="Creative">Creative</span><br><span
+                        data-scramble-text="Engineer">Engineer</span>
+                </h1>
+                <div class="hero-role">
+                    <span class="role-tag font-mono">[ Full Stack ]</span>
+                    <span class="role-tag font-mono">[ UI/UX ]</span>
+                    <span class="role-tag font-mono">[ Swift ]</span>
                 </div>
-                <div class="reveal-text"><span>Creation.</span></div>
-            </h1>
-
-            <p
-                class="text-gray-400 text-lg md:text-xl max-w-xl mx-auto leading-relaxed mb-12 opacity-0 translate-y-10 hero-desc">
-                Church Production Director & Hobbyist Coder.<br>
-                Building tools that solve real problems.
-            </p>
-
-            <div class="opacity-0 translate-y-10 hero-btn">
-                <a href="#works" class="hover-trigger inline-block">
-                    <svg class="w-12 h-12 text-white/50 animate-bounce" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                    </svg>
-                </a>
             </div>
-        </div>
-    </section>
+            <div style="text-align: right; width: 100%; position: relative; z-index: 2;">
+                <span class="scroll-note font-mono">
+                    ( Scroll for implementations )
+                </span>
+            </div>
+        </section>
+    </div>
 
-    <div
-        class="py-4 -my-10 bg-black border-y border-white/5 rotate-[-2deg] scale-110 z-30 relative overflow-hidden pointer-events-none">
-        <div class="marquee-container opacity-20 hover:opacity-100 transition-opacity duration-500">
-            <div class="marquee-content text-4xl md:text-6xl font-sans font-bold tracking-tight text-accent">
-                SWIFT • HTML • CSS • JS • PRODUCTION DESIGN • UI/UX • AUTOMATION • PYTHON • SWIFT •
-                HTML • CSS • JS • PRODUCTION DESIGN •
-            </div>
-            <div class="marquee-content text-4xl md:text-6xl font-sans font-bold tracking-tight text-accent"
-                aria-hidden="true">
-                SWIFT • HTML • CSS • JS • PRODUCTION DESIGN • UI/UX • AUTOMATION • PYTHON • SWIFT •
-                HTML • CSS • JS • PRODUCTION DESIGN •
-            </div>
+    <!-- Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span class="marquee-item">System Architecture — Creative Development — Swift — React Native — WebGL —
+                Interaction Design — </span>
+            <span class="marquee-item">System Architecture — Creative Development — Swift — React Native — WebGL —
+                Interaction Design — </span>
         </div>
     </div>
 
-    <section id="approach" class="relative h-[100dvh] py-6 md:py-12 bg-dark z-20 overflow-hidden flex items-center">
-        <div class="container mx-auto px-6 relative h-full flex flex-col justify-center">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 items-center h-full md:h-auto">
-                <div class="relative h-[30vh] md:h-auto w-full flex justify-center md:block">
-                    <div id="logic-art-carousel"
-                        class="img-wrapper aspect-video md:aspect-[4/5] h-full md:h-auto w-auto md:w-full rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 border border-white/10 shadow-2xl relative">
-                        <!-- Images will be injected by JS -->
-                    </div>
-                    <div class="hidden md:block absolute -bottom-10 -right-10 w-48 p-6 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl z-10 parallax-card"
-                        data-speed="0.1">
-                        <p class="text-orange-400 text-xs font-bold uppercase tracking-widest mb-2">Efficiency</p>
-                        <p class="text-sm text-gray-300">"A UI should feel like a physical tool. Reliable. Weighted.
-                            Precise."</p>
-                    </div>
-                </div>
-
-                <div class="pl-0 md:pl-12 flex flex-col justify-center">
-                    <h2 class="text-[clamp(2rem,5vw,4rem)] font-serif leading-none mb-4 md:mb-8">
-                        The Fusion of <br>
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 italic pr-2">Logic
-                            & Art.</span>
-                    </h2>
-                    <p
-                        class="text-gray-400 text-sm md:text-lg leading-relaxed mb-4 md:mb-8 line-clamp-4 md:line-clamp-none">
-                        Most developers don't understand the behind the scenes of a live production environment. Most
-                        directors don't understand the potential of code.
-                    </p>
-                    <p class="text-gray-400 text-sm md:text-lg leading-relaxed mb-6 md:mb-10 hidden md:block">
-                        I live in the intersection. I build tools that don't just look good—they thrive in the chaos of
-                        the real world.
-                    </p>
-
-                    <div class="flex gap-4 mt-auto md:mt-0">
-                        <div class="flex flex-col gap-1">
-                            <span id="stat-repos" class="text-2xl md:text-3xl font-bold text-white counter">0</span>
-                            <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Public
-                                Repos</span>
-                        </div>
-                        <div class="w-px h-10 md:h-12 bg-white/10 mx-4"></div>
-                        <div class="flex flex-col gap-1">
-                            <span id="stat-years" class="text-2xl md:text-3xl font-bold text-white counter">0</span>
-                            <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-500">Years
-                                Active</span>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+        <section id="work" class="work-section">
+            <div class="section-header">
+                <h2 class="section-title font-display" data-scramble data-scramble-text="Selected Work">Selected Work
+                </h2>
+                <span class="font-mono">2023 — 2025</span>
             </div>
-        </div>
-    </section>
 
-    <div class="relative z-20 bg-dark" id="works-wrapper">
-        <div class="sticky top-0 h-[100dvh] overflow-hidden" id="horizontal-scroll-container">
-            <div class="horizontal-section" id="horizontal-track">
+            <div class="project-grid">
 
-                <div
-                    class="work-panel w-screen h-screen bg-dark flex-col items-center justify-center relative border-r border-white/5 px-4 shrink-0">
-                    <div
-                        class="absolute top-10 right-10 w-32 h-32 md:w-64 md:h-64 border border-white/5 rounded-full animate-[spin_20s_linear_infinite]">
+                <!-- ROW 1 (7 + 5 = 12) -->
+                <!-- Item 1 -->
+                <div class="project-card span-7 hover-trigger" onclick="openModal('control_it/iphoneSim.html')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </div>
-                    <div
-                        class="absolute bottom-20 left-20 w-20 h-20 md:w-32 md:h-32 border border-dashed border-white/10 rounded-full">
+                    <div class="project-image-container">
+                        <img src="control_it/Subject2.png" alt="Control It" class="project-img">
                     </div>
-
-                    <h2
-                        class="text-[10px] md:text-xs text-orange-400 font-bold tracking-[0.4em] uppercase mb-4 md:mb-8 animate-pulse">
-                        My Favorite Projects
-                    </h2>
-                    <div class="relative z-10 text-center">
-                        <h2 class="text-[clamp(3rem,12vw,12rem)] font-serif leading-[0.8] text-white">
-                            Recent<br>
-                            <span class="italic text-white/50">Works</span>
-                        </h2>
-                    </div>
-                    <div
-                        class="mt-8 md:mt-12 flex items-center gap-4 md:gap-6 text-gray-500 text-[10px] md:text-sm tracking-widest uppercase">
-                        <span>Scroll to Explore</span>
-                        <div class="w-10 md:w-20 h-[1px] bg-white/20"></div>
-                        <span class="text-white">2023 — 2025</span>
-                    </div>
-                </div>
-
-                <div class="work-panel w-screen h-screen bg-dark border-r border-white/5 shrink-0">
-                    <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
-
-                        <div
-                            class="absolute top-4 left-4 md:top-0 md:left-20 text-[8rem] md:text-[20rem] project-number opacity-20 pointer-events-none select-none z-0 leading-none">
-                            01</div>
-
-                        <div
-                            class="w-full h-[45vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1">
-                            <div
-                                class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
-                                <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none"
-                                    style="background: transparent;"></iframe>
-                                <button onclick="openSimModal('control_it/iphoneSim.html')"
-                                    class="absolute bottom-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-md text-white p-2 rounded-full border border-white/10 transition-all duration-300 z-20 group">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
-                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div
-                            class="w-full h-auto md:h-full md:col-span-5 flex flex-col justify-center p-6 md:pr-20 relative z-10 bg-dark md:bg-transparent order-2">
-                            <div class="space-y-4 md:space-y-6">
-                                <div class="flex flex-wrap gap-2">
-                                    <span
-                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">iOS
-                                        / Swift</span>
-                                    <span
-                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Networking</span>
-                                </div>
-                                <h3 class="text-4xl md:text-7xl font-serif text-white leading-[0.9]">Control<br><span
-                                        class="italic text-orange-400">It.</span></h3>
-                                <p
-                                    class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-md line-clamp-3 md:line-clamp-none">
-                                    Network control, simplified. A unified interface for HTTP, OSC, TCP, and MIDI
-                                    devices. Full production control without being tethered to a desk.
-                                </p>
-                                <a href="control_it/index.html"
-                                    class="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-colors group hover-trigger mt-2 md:mt-4">
-                                    <span
-                                        class="uppercase tracking-widest text-xs md:text-sm font-bold border-b border-white/20 pb-1 group-hover:border-orange-400">
-                                        About Control-It</span>
-                                    <svg class="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                    </svg>
-                                </a>
-                            </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Control It.</h3>
+                        <p class="project-desc font-mono">Integrated mobile interface for precision remote control in
+                            high-stakes production.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">iOS</span>
+                            <span class="project-tag">WebSocket</span>
+                            <span class="project-tag">MIDI</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="work-panel w-screen h-screen bg-dark border-r border-white/5 shrink-0">
-                    <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
-
+                <!-- Item 2 -->
+                <div class="project-card span-5 hover-trigger" onclick="window.open('radiant/home.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container" style="background: #eee;">
                         <div
-                            class="absolute top-4 right-4 md:bottom-0 md:right-20 md:top-auto text-[8rem] md:text-[20rem] project-number opacity-20 pointer-events-none select-none z-0 leading-none">
-                            02</div>
-
-                        <div
-                            class="w-full h-[45vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1 md:order-2">
-                            <div
-                                class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10 opacity-50 group-hover:opacity-0 transition-opacity duration-500">
-                                </div>
-                                <img src="https://github.com/micah1crandell/websiteImages/blob/main/hero/29.jpg?raw=true"
-                                    onerror="this.src='https://images.unsplash.com/photo-1514525253440-b393452e3383?q=80&w=1974&auto=format&fit=crop'"
-                                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 duration-700"
-                                    alt="Radiant Production">
-                            </div>
-                        </div>
-
-                        <div
-                            class="w-full h-auto md:h-full md:col-span-5 flex flex-col justify-center p-6 md:pl-20 relative z-10 bg-dark md:bg-transparent order-2 md:order-1">
-                            <div class="space-y-4 md:space-y-6 md:text-right items-start md:items-end flex flex-col">
-                                <div class="flex flex-wrap gap-2 md:justify-end">
-                                    <span
-                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Production
-                                        Design</span>
-                                    <span
-                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Leadership</span>
-                                </div>
-                                <h3 class="text-4xl md:text-7xl font-serif text-white leading-[0.9]">Radiant<br><span
-                                        class="italic text-amber-400">Prod.</span></h3>
-                                <p
-                                    class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-md md:text-right line-clamp-3 md:line-clamp-none">
-                                    Creating immersive worship experiences. Blending lighting, video, and scenic design
-                                    to foster environments of engagement and inspiration.
-                                </p>
-                                <a href="radiant/home.html"
-                                    class="inline-flex items-center gap-3 text-white hover:text-amber-400 transition-colors group hover-trigger mt-2 md:mt-4">
-                                    <span
-                                        class="uppercase tracking-widest text-xs md:text-sm font-bold border-b border-white/20 pb-1 group-hover:border-amber-400">View
-                                        Project</span>
-                                    <svg class="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                    </svg>
-                                </a>
-                            </div>
+                            style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-size:4rem; font-weight:800; opacity:0.1;">
+                            R</div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Radiant</h3>
+                        <p class="project-desc font-mono">Immersive spatial engineering.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Production</span>
+                            <span class="project-tag">Media</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="work-panel w-screen h-screen bg-dark border-r border-white/5 shrink-0">
-                    <div class="w-full h-full flex flex-col md:grid md:grid-cols-12 items-center">
-
-                        <div
-                            class="absolute top-4 left-4 md:top-0 md:left-20 text-[8rem] md:text-[20rem] project-number opacity-20 pointer-events-none select-none z-0 leading-none">
-                            03</div>
-
-                        <div
-                            class="w-full h-[50vh] md:h-full md:col-span-7 p-4 md:p-16 flex items-center justify-center relative z-10 order-1">
-                            <div
-                                class="img-wrapper w-full h-full max-h-[80vh] relative group hover-trigger rounded-sm overflow-hidden">
-                                <iframe src="regex_dev_tool/iphoneSim.html" class="w-full h-full border-none"
-                                    style="background: transparent;"></iframe>
-                                <button onclick="openSimModal('regex_dev_tool/iphoneSim.html')"
-                                    class="absolute bottom-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-md text-white p-2 rounded-full border border-white/10 transition-all duration-300 z-20 group">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
-                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div
-                            class="w-full h-auto md:h-full md:col-span-5 flex flex-col justify-center p-6 md:pr-20 relative z-10 bg-dark md:bg-transparent order-2">
-                            <div class="space-y-4 md:space-y-6">
-                                <div class="flex flex-wrap gap-2">
-                                    <span
-                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">SwiftUI</span>
-                                    <span
-                                        class="px-2 py-1 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-widest uppercase border border-white/20 rounded-full text-white/70">Utility</span>
-                                </div>
-                                <h3 class="text-4xl md:text-7xl font-serif text-white leading-[0.9]">Regex<br><span
-                                        class="italic text-emerald-400">Dev.</span></h3>
-                                <p
-                                    class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-md line-clamp-3 md:line-clamp-none">
-                                    Powerful Regular Expression testing in your pocket. Real-time pattern matching,
-                                    library management, and cheat sheets for developers on the go.
-                                </p>
-                                <a href="regex_dev_tool/index.html"
-                                    class="inline-flex items-center gap-3 text-white hover:text-emerald-400 transition-colors group hover-trigger mt-2 md:mt-4">
-                                    <span
-                                        class="uppercase tracking-widest text-xs md:text-sm font-bold border-b border-white/20 pb-1 group-hover:border-emerald-400">View
-                                        Application</span>
-                                    <svg class="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                    </svg>
-                                </a>
-                            </div>
+                <!-- ROW 2 (4 + 4 + 4 = 12) -->
+                <!-- Item 3 -->
+                <div class="project-card span-4 hover-trigger"
+                    onclick="window.open('random/gambit_clash.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info" style="margin-top: auto;">
+                        <h3 class="project-title">Gambit Clash</h3>
+                        <p class="project-desc font-mono">Algorithmic auto-battler.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">React</span>
+                            <span class="project-tag">Game Logic</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="work-panel bg-black relative overflow-hidden">
-                    <div class="absolute inset-0 opacity-20 pointer-events-none"
-                        style="background-image: linear-gradient(0deg, transparent 24%, rgba(34, 197, 94, .1) 25%, rgba(34, 197, 94, .1) 26%, transparent 27%, transparent 74%, rgba(34, 197, 94, .1) 75%, rgba(34, 197, 94, .1) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(34, 197, 94, .1) 25%, rgba(34, 197, 94, .1) 26%, transparent 27%, transparent 74%, rgba(34, 197, 94, .1) 75%, rgba(34, 197, 94, .1) 76%, transparent 77%, transparent); background-size: 50px 50px;">
+                <!-- Item 4 -->
+                <div class="project-card span-4 hover-trigger" onclick="window.open('random/clock.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </div>
-
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 w-full max-w-7xl px-6 items-center gap-8 md:gap-12 relative z-10 h-full content-center">
-                        <div class="order-2 md:order-1">
-                            <div class="font-mono text-green-500 mb-4 md:mb-6 text-xs md:text-sm">
-                                > sudo initiate_sequence<br>
-                                > loading_modules...<br>
-                                > <span class="animate-pulse">status: experimental</span>
-                            </div>
-                            <h3 class="text-4xl md:text-7xl font-serif text-white mb-4 md:mb-6">The<br><span
-                                    class="text-green-500">Playground</span></h3>
-                            <p class="text-gray-400 max-w-md mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
-                                When I want to build for fun, try something new, or just mess around, I come here. These
-                                are a collection of random projects I've built.
-                            </p>
-                            <a href="random/random.html"
-                                class="text-green-400 border-b border-green-500/50 hover:border-green-400 pb-1 hover:text-green-300 transition-colors font-mono text-xs md:text-sm hover-trigger">
-                                > Enter_Terminal
-                            </a>
+                    <div class="project-image-container"
+                        style="display:flex; align-items:center; justify-content:center; background: #fafafa;">
+                        <span id="live-clock"
+                            style="font-family:'Space Mono'; font-size:2rem; font-weight:700;">00:00</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Sync Clock</h3>
+                        <p class="project-desc font-mono">Temporal infrastructure.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Utility</span>
+                            <span class="project-tag">Real-time</span>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="order-1 md:order-2 flex justify-center">
-                            <div
-                                class="w-full max-w-[250px] md:max-w-md aspect-square bg-black border border-green-900/50 p-2 rounded-lg shadow-[0_0_50px_rgba(34,197,94,0.1)] group hover-trigger relative overflow-hidden">
-                                <div
-                                    class="w-full h-full bg-gray-900/50 rounded flex flex-col font-mono text-[10px] md:text-xs p-4 text-green-600 overflow-hidden">
-                                    <div class="flex gap-2 mb-4 border-b border-green-900/30 pb-2">
-                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500/50"></div>
-                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-500/50"></div>
-                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500/50"></div>
-                                    </div>
-                                    <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                                        const random = () => {<br>
-                                        &nbsp;&nbsp;return creativity * chaos;<br>
-                                        }<br><br>
-                                        // Hover to execute<br>
-                                        console.log("Hello World");
-                                    </div>
-                                    <div
-                                        class="absolute bottom-4 right-4 w-8 h-8 md:w-12 md:h-12 border-r-2 border-b-2 border-green-500/50">
-                                    </div>
-                                    <div
-                                        class="absolute top-16 right-10 w-16 h-16 md:w-20 md:h-20 bg-green-500/10 blur-xl rounded-full animate-pulse">
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Item 5 -->
+                <div class="project-card span-4 hover-trigger" onclick="openModal('regex_dev_tool/iphoneSim.html')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info"
+                        style="display:flex; justify-content:space-between; align-items:flex-end; margin-top: auto;">
+                        <div>
+                            <h3 class="project-title">Regex Tool</h3>
+                            <p class="project-desc font-mono">Pattern engine.</p>
+                        </div>
+                        <div class="project-tags" style="display:none;"></div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <span class="project-tag">Swift</span>
+                        <span class="project-tag">Tooling</span>
+                    </div>
+                </div>
+
+                <!-- ROW 3 (3 + 6 + 3 = 12) -->
+                <!-- Item 6 (New) -->
+                <div class="project-card span-3 hover-trigger"
+                    onclick="window.open('random/terminal_ui.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="background:#fafafa; display:flex; flex-direction:column; gap:5px; padding:20px; justify-content:center;">
+                        <div style="height:4px; width:60%; background:black;"></div>
+                        <div style="height:4px; width:80%; background:black;"></div>
+                        <div style="height:4px; width:40%; background:black;"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Terminal UI</h3>
+                        <p class="project-desc font-mono">Command line art.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 7 (New) -->
+                <div class="project-card span-6 hover-trigger"
+                    onclick="window.open('random/audio_engine.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="background:#fafafa; display:flex; align-items:center; justify-content:center; gap:2px;">
+                        <div style="width:4px; height:20px; background:black;"></div>
+                        <div style="width:4px; height:40px; background:black;"></div>
+                        <div style="width:4px; height:60px; background:black;"></div>
+                        <div style="width:4px; height:30px; background:black;"></div>
+                        <div style="width:4px; height:50px; background:black;"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Audio Engine</h3>
+                        <p class="project-desc font-mono">Web Audio API visualization and synthesis.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Canvas</span>
+                            <span class="project-tag">Audio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 8 (New) -->
+                <div class="project-card span-3 hover-trigger"
+                    onclick="window.open('random/type_scale.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info" style="margin-top:auto;">
+                        <h3 class="project-title">Type Scale</h3>
+                        <p class="project-desc font-mono">Calculated harmony.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 4 (8 + 4 = 12) -->
+                <!-- Item 9 (New) -->
+                <div class="project-card span-8 hover-trigger"
+                    onclick="window.open('random/data_stream.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Data Stream</h3>
+                        <p class="project-desc font-mono">Real-time socket communication layer for multi-client
+                            synchronization.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Socket.io</span>
+                            <span class="project-tag">Backend</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 10 (New) -->
+                <div class="project-card span-4 hover-trigger">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="background:#000; display:flex; align-items:center; justify-content:center;">
+                        <span style="color:white; font-family:'Space Mono';">/archive</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Legacy</h3>
+                        <p class="project-desc font-mono">Vault of past works.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Misc</span>
                         </div>
                     </div>
                 </div>
 
             </div>
-        </div>
+        </section>
     </div>
 
-    <section id="contact" class="relative py-32 bg-black overflow-hidden">
-        <div class="absolute inset-0 z-0 opacity-30">
-            <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2072&auto=format&fit=crop"
-                class="w-full h-full object-cover grayscale">
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent z-0"></div>
-
-        <div class="container mx-auto px-6 relative z-10 text-center">
-            <p class="text-orange-400 font-bold tracking-widest uppercase mb-6">Philosophy</p>
-            <h2
-                class="text-[clamp(3rem,10vw,8rem)] font-serif leading-none mb-12 hover:text-orange-200 transition-colors cursor-pointer hover-trigger">
-                Open Source<br>& Free to Use.
-            </h2>
-
-            <div class="flex flex-col md:flex-row justify-center gap-8 mb-20">
-                <a href="mailto:micahcrandell.dev@gmail.com"
-                    class="group relative px-12 py-4 bg-transparent border border-white/20 rounded-full overflow-hidden hover-trigger">
-                    <span
-                        class="absolute inset-0 w-full h-full bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                    <span
-                        class="relative z-10 text-white group-hover:text-black font-bold uppercase tracking-wider transition-colors">Email
-                        Me</span>
-                </a>
-                <a href="https://github.com/micah1crandell" target="_blank"
-                    class="px-12 py-4 bg-white text-black border border-white rounded-full font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors hover-trigger">
-                    GitHub Profile
-                </a>
-            </div>
-
-            <div class="flex justify-between items-end border-t border-white/10 pt-12">
-                <div class="text-left">
-                    <span class="block text-xs text-gray-500 uppercase tracking-widest mb-2">Socials</span>
-                    <div class="flex gap-6">
-                        <a href="https://github.com/micah1crandell" target="_blank"
-                            class="text-gray-300 hover:text-white transition-colors hover-trigger">GitHub</a>
+    <section id="philosophy" class="philosophy-section">
+        <div class="container">
+            <div class="philosophy-grid">
+                <div>
+                    <span class="font-mono" style="opacity: 0.6; text-transform: uppercase;">( Methodology )</span>
+                </div>
+                <div class="philosophy-list">
+                    <div class="philosophy-item hover-trigger">
+                        <div class="philo-header">
+                            <div class="philo-num">1</div>
+                            <span data-scramble data-scramble-text="Structural Integrity">Structural Integrity</span>
+                        </div>
+                        <p class="font-mono" style="opacity: 0.8; max-width: 600px;">
+                            Code is architecture. Every project begins with a scalable logic map, ensuring the
+                            foundation supports rapid complexity without technical debt.
+                        </p>
+                    </div>
+                    <div class="philosophy-item hover-trigger">
+                        <div class="philo-header">
+                            <div class="philo-num">2</div>
+                            <span data-scramble data-scramble-text="Human-Centric UX">Human-Centric UX</span>
+                        </div>
+                        <p class="font-mono" style="opacity: 0.8; max-width: 600px;">
+                            Performance is irrelevant if the user is lost. I prioritize brutalist clarity and distinct
+                            micro-interactions to guide the user.
+                        </p>
+                    </div>
+                    <div class="philosophy-item hover-trigger">
+                        <div class="philo-header">
+                            <div class="philo-num">3</div>
+                            <span data-scramble data-scramble-text="Aesthetic Fidelity">Aesthetic Fidelity</span>
+                        </div>
+                        <p class="font-mono" style="opacity: 0.8; max-width: 600px;">
+                            Design is the language of functionality. I treat every pixel with the same rigor as every
+                            line of code.
+                        </p>
                     </div>
                 </div>
-                <p class="text-xs text-gray-600 uppercase tracking-widest">© 2025 Micah Crandell</p>
             </div>
         </div>
     </section>
+
+    <div class="container">
+        <section id="contact" class="contact-section">
+            <span class="font-mono" style="display:block; margin-bottom: 1rem;">( Get in touch )</span>
+            <div class="contact-large-text hover-trigger magnetic"
+                onclick="window.location.href='mailto:micahcrandell.dev@gmail.com'">
+                Let's Build<br>The Future
+            </div>
+
+            <div class="footer-row">
+                <div class="font-mono" style="font-size: 0.8rem;">
+                    &copy; 2025 Micah Crandell<br>
+                    Surprise, AZ
+                </div>
+                <div class="font-mono" style="text-align: right; font-size: 0.8rem;">
+                    <a href="https://github.com/micah1crandell" target="_blank"
+                        style="color:black; text-decoration:none; margin-right: 1rem;">GITHUB</a>
+                    <a href="#" style="color:black; text-decoration:none;">LINKEDIN</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <button class="modal-close hover-trigger magnetic" onclick="closeModal()">CLOSE [X]</button>
+        <div class="modal-iframe-container">
+            <iframe class="modal-iframe" id="modal-iframe" src=""></iframe>
+        </div>
+    </div>
 
     <script>
-        window.addEventListener("load", () => {
+        // --- Custom Cursor Logic ---
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
 
-            // --- GLOBAL VARS FOR SCROLL TRACKING ---
-            let horizontalPinStart = 0;
-            let horizontalPinEnd = 0;
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
 
-            // Disable Lenis for presentation mode
-            // let lenis;
-            // if (typeof Lenis !== 'undefined') {
-            //     lenis = new Lenis({
-            //         duration: 1.2,
-            //         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            //         direction: 'vertical',
-            //         gestureDirection: 'vertical',
-            //         smooth: true,
-            //         mouseMultiplier: 1,
-            //         smoothTouch: false,
-            //         touchMultiplier: 2,
-            //     });
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
 
-            //     lenis.on('scroll', ScrollTrigger.update);
-            //     gsap.ticker.add((time) => lenis.raf(time * 1000));
-            //     gsap.ticker.lagSmoothing(0);
-            // }
+            // Immediate update for dot
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
 
-            gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
+        // Smooth follow for circle
+        function animateCursor() {
+            let dx = mouseX - cursorX;
+            let dy = mouseY - cursorY;
 
-            // 2. Horizontal Scroll Section Setup
-            const section = document.getElementById('works-wrapper');
-            const container = document.getElementById('horizontal-scroll-container');
-            const track = document.getElementById('horizontal-track');
-            const panels = gsap.utils.toArray('.work-panel');
+            cursorX += dx * 0.1;
+            cursorY += dy * 0.1;
 
-            // Set width of track to hold all panels
-            track.style.width = `${panels.length * 100}%`;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
 
-            // --- PRESENTATION MODE LOGIC ---
-            let currentIndex = 0;
-            let isAnimating = false;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
 
-            // Define Slides
-            // 0: Hero
-            // 1: Approach
-            // 2: Works Panel 1
-            // ...
-            // Last: Contact
+        // Hover states
+        const triggers = document.querySelectorAll('.hover-trigger, a, button');
+        triggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            trigger.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
 
-            const verticalSections = [
-                document.getElementById('hero'),
-                document.getElementById('approach'),
-                document.getElementById('works-wrapper'), // This handles all horizontal panels
-                document.getElementById('contact')
+
+        // --- Canvas Grid Distortion Effect ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let points = [];
+        const gridSize = 40; // Size of grid cells
+        const distRadius = 150; // Radius of mouse influence
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initGrid();
+        }
+
+        function initGrid() {
+            points = [];
+            for (let x = 0; x <= width; x += gridSize) {
+                for (let y = 0; y <= height; y += gridSize) {
+                    points.push({
+                        x: x,
+                        y: y,
+                        originX: x,
+                        originY: y
+                    });
+                }
+            }
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw points
+            ctx.fillStyle = '#000';
+
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+
+                // Calculate distance to mouse
+                const dx = mouseX - p.originX;
+                const dy = mouseY - p.originY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Interaction logic: repel points
+                if (dist < distRadius) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (distRadius - dist) / distRadius;
+
+                    p.x = p.originX - Math.cos(angle) * force * 20; // 20px push
+                    p.y = p.originY - Math.sin(angle) * force * 20;
+                } else {
+                    // Return to origin
+                    p.x += (p.originX - p.x) * 0.1;
+                    p.y += (p.originY - p.y) * 0.1;
+                }
+
+                // Draw tiny dots
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(drawGrid);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        drawGrid();
+
+
+        // --- Matter.js Physics Engine for MICAH Blocks ---
+        (function () {
+            const Engine = Matter.Engine,
+                Render = Matter.Render,
+                Runner = Matter.Runner,
+                Bodies = Matter.Bodies,
+                Body = Matter.Body,
+                Composite = Matter.Composite,
+                Mouse = Matter.Mouse,
+                MouseConstraint = Matter.MouseConstraint,
+                Events = Matter.Events;
+
+            // Get hero section dimensions
+            const heroSection = document.querySelector('.hero');
+            const physicsCanvas = document.getElementById('physics-canvas');
+
+            let heroWidth = heroSection.offsetWidth;
+            let heroHeight = heroSection.offsetHeight;
+
+            // Create engine
+            const engine = Engine.create({
+                gravity: { x: 0, y: 0.5 } // Subtle gravity
+            });
+
+            // Create renderer
+            const render = Render.create({
+                canvas: physicsCanvas,
+                engine: engine,
+                options: {
+                    width: heroWidth,
+                    height: heroHeight,
+                    wireframes: false,
+                    background: 'transparent',
+                    pixelRatio: window.devicePixelRatio || 1
+                }
+            });
+
+            // Letter configuration
+            const letters = ['M', 'I', 'C', 'A', 'H'];
+            const blockWidth = Math.min(120, heroWidth / 6);
+            const blockHeight = blockWidth * 1.2;
+            const letterBodies = [];
+
+            // Create letter blocks
+            letters.forEach((letter, index) => {
+                const spacing = heroWidth / (letters.length + 1);
+                const x = spacing * (index + 1);
+                const y = heroHeight * 0.3 + (Math.random() - 0.5) * 100;
+                const angle = (Math.random() - 0.5) * 0.5;
+
+                const block = Bodies.rectangle(x, y, blockWidth, blockHeight, {
+                    restitution: 0.6, // Bounce
+                    friction: 0.3,
+                    frictionAir: 0.02,
+                    angle: angle,
+                    render: {
+                        fillStyle: '#ffffff',
+                        strokeStyle: '#050505',
+                        lineWidth: 2
+                    },
+                    label: letter
+                });
+
+                letterBodies.push(block);
+            });
+
+            // Create boundaries (invisible walls)
+            const wallThickness = 50;
+            const walls = [
+                // Bottom
+                Bodies.rectangle(heroWidth / 2, heroHeight + wallThickness / 2, heroWidth + 100, wallThickness, {
+                    isStatic: true,
+                    render: { visible: false }
+                }),
+                // Top
+                Bodies.rectangle(heroWidth / 2, -wallThickness / 2, heroWidth + 100, wallThickness, {
+                    isStatic: true,
+                    render: { visible: false }
+                }),
+                // Left
+                Bodies.rectangle(-wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100, {
+                    isStatic: true,
+                    render: { visible: false }
+                }),
+                // Right
+                Bodies.rectangle(heroWidth + wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100, {
+                    isStatic: true,
+                    render: { visible: false }
+                })
             ];
 
-            // Map global index to specific state
-            function getState(index) {
-                // 0 -> Hero
-                if (index === 0) return { type: 'vertical', target: verticalSections[0] };
-                // 1 -> Approach
-                if (index === 1) return { type: 'vertical', target: verticalSections[1] };
+            // Add bodies to the world
+            Composite.add(engine.world, [...letterBodies, ...walls]);
 
-                // Works Section Indices
-                // Base index for works is 2
-                const worksIndexStart = 2;
-                const worksIndexEnd = 2 + panels.length - 1;
+            // Mouse constraint for dragging
+            const mouse = Mouse.create(physicsCanvas);
 
-                if (index >= worksIndexStart && index <= worksIndexEnd) {
-                    const panelIndex = index - worksIndexStart;
-                    return {
-                        type: 'horizontal',
-                        target: verticalSections[2],
-                        panelIndex: panelIndex
-                    };
+            // CRITICAL: Remove Matter.js's wheel event listener to allow page scrolling
+            // Matter.js adds a wheel listener that prevents scroll - we need to remove it
+            mouse.element.removeEventListener('wheel', mouse.mousewheel);
+
+            // Set the correct offset for the mouse based on canvas position
+            Mouse.setOffset(mouse, { x: 0, y: 0 });
+
+            const mouseConstraint = MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    stiffness: 0.2,
+                    render: { visible: false }
                 }
-
-                // Contact
-                if (index === worksIndexEnd + 1) return { type: 'vertical', target: verticalSections[3] };
-
-                return null;
-            }
-
-            const totalSlides = 2 + panels.length + 1; // Hero + Approach + Panels + Contact
-
-            function gotoSlide(index) {
-                if (index < 0 || index >= totalSlides || isAnimating) return;
-
-                isAnimating = true;
-                const state = getState(index);
-                const prevState = getState(currentIndex);
-
-                // Determine animation
-                const tl = gsap.timeline({
-                    onComplete: () => {
-                        currentIndex = index;
-                        isAnimating = false;
-
-                        // Update firefly logic vars if needed, though they relied on ScrollTrigger
-                        // We might need to manually update them or let them drift
-                    }
-                });
-
-                if (state.type === 'vertical') {
-                    // Scroll to vertical section
-                    tl.to(window, {
-                        scrollTo: { y: state.target, autoKill: false },
-                        duration: 1,
-                        ease: "power2.inOut"
-                    });
-
-                    // If we are leaving horizontal or entering it, ensure track is reset or set?
-                    // If we go to Works Wrapper (index 2), we want track at 0
-                    if (index === 2) { // First panel
-                        tl.to(track, { xPercent: 0, duration: 1, ease: "power2.inOut" }, "<");
-                    }
-                } else if (state.type === 'horizontal') {
-                    // We are in works wrapper
-                    // First ensure we are vertically at the works wrapper
-                    tl.to(window, {
-                        scrollTo: { y: state.target, autoKill: false },
-                        duration: 1,
-                        ease: "power2.inOut"
-                    });
-
-                    // Then animate track
-                    const xPercent = -100 * state.panelIndex; // 0, -100, -200...
-                    // Note: xPercent is relative to the element width. 
-                    // Since track width is panels.length * 100%, 
-                    // moving it by -100 / panels.length percent might be what we want if using xPercent on the track itself?
-                    // Wait, previous logic was: xPercent: -100 * (panels.length - 1) / panels.length
-                    // That was for the WHOLE scroll.
-                    // Here we want to show 1 panel (100vw).
-                    // Track is e.g. 300vw.
-                    // To show 2nd panel, we move track -100vw.
-                    // -100vw is -33.33% of 300vw.
-                    // So xPercent should be -100 * panelIndex / panels.length ?
-                    // Actually, let's use x: window.innerWidth * -panelIndex
-
-                    tl.to(track, {
-                        x: () => -window.innerWidth * state.panelIndex,
-                        duration: 1,
-                        ease: "power2.inOut"
-                    }, "<");
-                }
-            }
-
-            Observer.create({
-                target: window,
-                type: "wheel,touch,pointer",
-                onUp: () => !isAnimating && gotoSlide(currentIndex + 1),
-                onDown: () => !isAnimating && gotoSlide(currentIndex - 1),
-                tolerance: 10,
-                preventDefault: true
             });
 
-            // Initial set
-            // gotoSlide(0); // Browser handles refresh scroll position, but we might want to force top?
-            // Let's just let it be, or force top on load
-            window.scrollTo(0, 0);
+            Composite.add(engine.world, mouseConstraint);
 
+            // Keep the mouse in sync with rendering
+            render.mouse = mouse;
 
+            // Track if mouse is currently dragging a body
+            let isDraggingBody = false;
 
-            // 3. MULTI-DIRECTIONAL FIREFLIES
-            function initFireflies() {
-                const container = document.getElementById('fireflies');
-                const count = 50;
-                const fireflies = [];
+            Events.on(mouseConstraint, 'startdrag', () => {
+                isDraggingBody = true;
+                physicsCanvas.style.cursor = 'grabbing';
+            });
 
-                for (let i = 0; i < count; i++) {
-                    const div = document.createElement('div');
-                    div.classList.add('firefly');
-                    container.appendChild(div);
+            Events.on(mouseConstraint, 'enddrag', () => {
+                isDraggingBody = false;
+                // After drag ends, check if still over a body
+                checkMouseOverBody();
+            });
 
-                    const depth = Math.random() * 0.8 + 0.2; // 0.2 (far) to 1.0 (close)
-                    const size = (depth * 3) + 1;
-                    const startX = Math.random() * window.innerWidth;
-                    const startY = Math.random() * window.innerHeight;
+            // Function to check if mouse is over any physics body
+            function isMouseOverPhysicsBody(clientX, clientY) {
+                const rect = physicsCanvas.getBoundingClientRect();
+                const mouseX = clientX - rect.left;
+                const mouseY = clientY - rect.top;
 
-                    // Initial Position
-                    gsap.set(div, {
-                        x: startX,
-                        y: startY,
-                        opacity: 0,
-                        scale: size / 4
-                    });
-
-                    // Store physics data (using separate wander props to avoid tween conflicts)
-                    const f = {
-                        element: div,
-                        x: startX,
-                        y: startY,
-                        wanderX: 0,
-                        wanderY: 0,
-                        speed: depth * 0.5,
-                        depth: depth
-                    };
-                    fireflies.push(f);
-
-                    // Wandering Animation (Targets custom properties)
-                    gsap.to(f, {
-                        wanderX: Math.random() * 100 - 50,
-                        wanderY: Math.random() * 100 - 50,
-                        duration: Math.random() * 10 + 10,
-                        ease: "sine.inOut",
-                        repeat: -1,
-                        yoyo: true
-                    });
-
-                    // Flashing
-                    gsap.to(div, {
-                        opacity: Math.random() * 0.7 + 0.1,
-                        duration: Math.random() * 2 + 1,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "sine.inOut",
-                        delay: Math.random() * 2
-                    });
-                }
-
-                // MASTER PHYSICS LOOP
-                ScrollTrigger.create({
-                    trigger: "body",
-                    start: "top top",
-                    end: "bottom bottom",
-                    onUpdate: (self) => {
-                        const scroll = self.scroll();
-                        const width = window.innerWidth;
-                        const height = window.innerHeight;
-
-                        // Calculate Effective Scroll Vectors (Isolate Vertical vs Horizontal movement)
-                        let yScroll, xScroll;
-
-                        if (scroll < horizontalPinStart) {
-                            // Zone 1: Before Horizontal Section
-                            yScroll = scroll;
-                            xScroll = 0;
-                        } else if (scroll >= horizontalPinStart && scroll <= horizontalPinEnd) {
-                            // Zone 2: Inside Horizontal Section (Pinned)
-                            yScroll = horizontalPinStart; // Freeze Vertical Physics
-                            xScroll = scroll - horizontalPinStart; // Transfer to Horizontal Physics
-                        } else {
-                            // Zone 3: After Horizontal Section
-                            yScroll = scroll - (horizontalPinEnd - horizontalPinStart); // Resume Vertical, subtract pinned gap
-                            xScroll = horizontalPinEnd - horizontalPinStart; // Maintain acquired horizontal offset
+                for (const body of letterBodies) {
+                    if (Matter.Bounds.contains(body.bounds, { x: mouseX, y: mouseY })) {
+                        if (Matter.Vertices.contains(body.vertices, { x: mouseX, y: mouseY })) {
+                            return true;
                         }
-
-                        fireflies.forEach(f => {
-                            // 1. Calculate Movements
-                            // Vertical Move = Base Y + Wander - (Scrolled Y * Speed)
-                            // Horizontal Move = Base X + Wander - (Scrolled X * Speed)
-                            const movementY = yScroll * f.speed * 0.5;
-                            const movementX = xScroll * f.speed * 0.5;
-
-                            let finalY = f.y + f.wanderY - movementY;
-                            let finalX = f.x + f.wanderX - movementX;
-
-                            // 2. Infinite Wrapping (Seamless Field)
-                            // Wrap Y (-100px buffer)
-                            finalY = gsap.utils.wrap(-100, height + 100, finalY);
-                            // Wrap X (-100px buffer)
-                            finalX = gsap.utils.wrap(-100, width + 100, finalX);
-
-                            // 3. Render
-                            gsap.set(f.element, { x: finalX, y: finalY });
-                        });
-                    }
-                });
-            }
-
-            initFireflies();
-
-            // --- OTHER ANIMATIONS ---
-
-            const nav = document.querySelector('nav');
-            ScrollTrigger.create({
-                start: 'top top',
-                end: 99999,
-                onUpdate: (self) => {
-                    if (self.direction === -1) {
-                        gsap.to(nav, { yPercent: 0, duration: 0.5, ease: 'power3.out', overwrite: true });
-                    } else if (self.direction === 1 && self.scroll() > 100) {
-                        gsap.to(nav, { yPercent: -100, duration: 0.5, ease: 'power3.out', overwrite: true });
                     }
                 }
-            });
-
-            const cursor = document.getElementById('cursor');
-            const cursorDot = document.getElementById('cursor-dot');
-            const hoverTriggers = document.querySelectorAll('.hover-trigger');
-
-            document.addEventListener('mousemove', (e) => {
-                const x = e.clientX;
-                const y = e.clientY;
-                cursorDot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-                setTimeout(() => {
-                    cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-                }, 50);
-            });
-
-            // Use event delegation for dynamically added hover triggers if needed, 
-            // but here we just re-query or can stick to static binding for now.
-            // For best performance with static content:
-            document.querySelectorAll('.hover-trigger').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursor.style.width = '60px';
-                    cursor.style.height = '60px';
-                    cursor.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                    cursor.style.mixBlendMode = 'normal';
-                    cursor.style.borderColor = 'transparent';
-                });
-                el.addEventListener('mouseleave', () => {
-                    cursor.style.width = '20px';
-                    cursor.style.height = '20px';
-                    cursor.style.backgroundColor = 'transparent';
-                    cursor.style.mixBlendMode = 'difference';
-                    cursor.style.borderColor = 'rgba(255,255,255,0.5)';
-                });
-            });
-
-            const tl = gsap.timeline();
-            tl.to('.reveal-text span', {
-                y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'power3.out', delay: 0.2
-            })
-
-                .to('.hero-desc', { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=0.8')
-                .to('.hero-btn', { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=0.8');
-
-            gsap.utils.toArray('.parallax-card').forEach(card => {
-                gsap.to(card, {
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top bottom',
-                        end: 'bottom top',
-                        scrub: 1.5
-                    },
-                    y: -80,
-                    ease: 'none'
-                });
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX / window.innerWidth;
-                const mouseY = e.clientY / window.innerHeight;
-                document.querySelectorAll('.aurora-blob').forEach(blob => {
-                    const speed = parseFloat(blob.getAttribute('data-speed'));
-                    const x = (window.innerWidth - mouseX * 100) * speed;
-                    const y = (window.innerHeight - mouseY * 100) * speed;
-                    gsap.to(blob, { x: x, y: y, duration: 3, ease: 'power2.out' });
-                });
-            });
-
-            // --- GITHUB STATS FETCH & ANIMATE ---
-            function fetchGitHubStats() {
-                fetch('https://api.github.com/users/micah1crandell')
-                    .then(response => {
-                        if (!response.ok) throw new Error('GitHub API failed');
-                        return response.json();
-                    })
-                    .then(data => {
-                        const repos = data.public_repos || 0;
-
-                        // Calculate years active
-                        const createdDate = new Date(data.created_at);
-                        const currentDate = new Date();
-                        const years = currentDate.getFullYear() - createdDate.getFullYear();
-
-                        animateCounter('#stat-repos', repos);
-                        animateCounter('#stat-years', years);
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        // Fallback values if fetch fails
-                        animateCounter('#stat-repos', 50);
-                        animateCounter('#stat-years', 5);
-                    });
+                return false;
             }
 
-            function animateCounter(selector, value) {
-                const element = document.querySelector(selector);
-                if (element) {
-                    gsap.to(element, {
-                        textContent: value,
-                        duration: 2,
-                        ease: "power2.out",
-                        snap: { textContent: 1 },
-                        scrollTrigger: {
-                            trigger: element,
-                            start: "top 85%",
-                            once: true
-                        }
-                    });
+            // Track last known mouse position
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+
+            function checkMouseOverBody() {
+                const overBody = isMouseOverPhysicsBody(lastMouseX, lastMouseY);
+                if (overBody && !isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'auto';
+                    physicsCanvas.style.cursor = 'grab';
+                } else if (!isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'none';
+                    physicsCanvas.style.cursor = '';
                 }
             }
 
-            fetchGitHubStats();
-            // --- LOGIC & ART CAROUSEL ---
-            const carouselContainer = document.getElementById('logic-art-carousel');
-            if (carouselContainer) {
-                // USER: Add your image URLs here
-                const carouselImageUrls = [
-                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/micboard.png?raw=true?q=80&w=2070&auto=format&fit=crop",
-                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/launchScreenImage.PNG?raw=true?q=80&w=2070&auto=format&fit=crop",
-                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/IMG_3402.png?raw=true?q=80&w=2070&auto=format&fit=crop",
-                    "https://github.com/micah1crandell/websiteImages/blob/main/misc/IMG_3633.PNG?raw=true?q=80&w=2070&auto=format&fit=crop"
-                ];
+            // Listen on the hero section for mouse movement to detect when over blocks
+            // This works even when canvas pointer-events are disabled
+            heroSection.addEventListener('mousemove', (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
 
-                // Create and append images
-                carouselImageUrls.forEach((url, index) => {
-                    const img = document.createElement('img');
-                    img.src = url;
-                    // First image is visible (opacity-100), others hidden (opacity-0)
-                    // Added 'absolute inset-0 w-full h-full object-cover' to ensure they stack and fill
-                    img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
-                    img.alt = "Logic and Art Fusion";
-                    carouselContainer.appendChild(img);
-                });
+                if (!isDraggingBody) {
+                    checkMouseOverBody();
+                }
+            }, { passive: true });
 
-                let currentCarouselIndex = 0;
+            // When mouse leaves the hero section, disable canvas pointer events
+            heroSection.addEventListener('mouseleave', () => {
+                if (!isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'none';
+                    physicsCanvas.style.cursor = '';
+                }
+            }, { passive: true });
 
-                // Switch images every 4 seconds
-                setInterval(() => {
-                    const images = carouselContainer.querySelectorAll('img');
-                    if (images.length > 1) {
-                        // Fade out current
-                        images[currentCarouselIndex].classList.remove('opacity-100');
-                        images[currentCarouselIndex].classList.add('opacity-0');
+            // Update cursor when moving over the canvas (when pointer-events are enabled)
+            physicsCanvas.addEventListener('mousemove', (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
 
-                        // Move to next index
-                        currentCarouselIndex = (currentCarouselIndex + 1) % images.length;
-
-                        // Fade in next
-                        images[currentCarouselIndex].classList.remove('opacity-0');
-                        images[currentCarouselIndex].classList.add('opacity-100');
+                if (!isDraggingBody) {
+                    const overBody = isMouseOverPhysicsBody(e.clientX, e.clientY);
+                    if (overBody) {
+                        physicsCanvas.style.cursor = 'grab';
+                    } else {
+                        // Mouse moved off the body, disable pointer events
+                        physicsCanvas.style.pointerEvents = 'none';
+                        physicsCanvas.style.cursor = '';
                     }
-                }, 4000);
+                }
+            }, { passive: true });
+
+            // Only prevent scrolling when actively dragging a physics body
+            physicsCanvas.addEventListener('touchmove', (e) => {
+                if (isDraggingBody) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Handle touch interactions
+            heroSection.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    if (isMouseOverPhysicsBody(touch.clientX, touch.clientY)) {
+                        physicsCanvas.style.pointerEvents = 'auto';
+                    }
+                }
+            }, { passive: true });
+
+            heroSection.addEventListener('touchend', () => {
+                if (!isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'none';
+                }
+            }, { passive: true });
+
+            // Custom afterRender to draw letters on blocks
+            Events.on(render, 'afterRender', function () {
+                const context = render.context;
+
+                letterBodies.forEach((body) => {
+                    const pos = body.position;
+                    const angle = body.angle;
+
+                    context.save();
+                    context.translate(pos.x, pos.y);
+                    context.rotate(angle);
+
+                    // Draw letter
+                    context.font = `bold ${blockWidth * 0.6}px 'Syne', sans-serif`;
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+                    context.fillStyle = '#050505';
+                    context.fillText(body.label, 0, 0);
+
+                    context.restore();
+                });
+            });
+
+            // Run the engine and renderer
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+            Render.run(render);
+
+            // Handle resize
+            function handleResize() {
+                heroWidth = heroSection.offsetWidth;
+                heroHeight = heroSection.offsetHeight;
+
+                render.canvas.width = heroWidth;
+                render.canvas.height = heroHeight;
+                render.options.width = heroWidth;
+                render.options.height = heroHeight;
+
+                // Update wall positions
+                Body.setPosition(walls[0], { x: heroWidth / 2, y: heroHeight + wallThickness / 2 });
+                Body.setPosition(walls[1], { x: heroWidth / 2, y: -wallThickness / 2 });
+                Body.setPosition(walls[2], { x: -wallThickness / 2, y: heroHeight / 2 });
+                Body.setPosition(walls[3], { x: heroWidth + wallThickness / 2, y: heroHeight / 2 });
+
+                // Update wall sizes
+                Body.setVertices(walls[0], Bodies.rectangle(heroWidth / 2, heroHeight + wallThickness / 2, heroWidth + 100, wallThickness).vertices);
+                Body.setVertices(walls[1], Bodies.rectangle(heroWidth / 2, -wallThickness / 2, heroWidth + 100, wallThickness).vertices);
+                Body.setVertices(walls[2], Bodies.rectangle(-wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100).vertices);
+                Body.setVertices(walls[3], Bodies.rectangle(heroWidth + wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100).vertices);
+
+                // Update pixel ratio for mouse
+                mouse.pixelRatio = window.devicePixelRatio || 1;
+
+                Render.setPixelRatio(render, window.devicePixelRatio || 1);
             }
+
+            window.addEventListener('resize', handleResize);
+
+            // Add some initial velocity for a playful entrance
+            setTimeout(() => {
+                letterBodies.forEach((body, index) => {
+                    Body.setVelocity(body, {
+                        x: (Math.random() - 0.5) * 5,
+                        y: Math.random() * 3 + 2
+                    });
+                    Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
+                });
+            }, 500);
+        })();
+
+
+        // --- GSAP Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Reveal
+        gsap.from(".hero-title", {
+            y: 100,
+            opacity: 0,
+            duration: 1.5,
+            ease: "power4.out",
+            skewY: 7
         });
-    </script>
-    <!-- Simulator Modal -->
-    <dialog id="simModal"
-        class="bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-sm w-full h-full max-w-none max-h-none m-0 fixed inset-0 z-[100] open:flex items-center justify-center">
-        <div class="relative w-full h-full flex items-center justify-center"
-            onclick="if(event.target === this) closeSimModal()">
-            <button onclick="closeSimModal()"
-                class="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 z-50">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                </svg>
-            </button>
-            <div id="sim-container" class="origin-center transition-transform duration-300 ease-out"
-                style="width: 430px; height: 862px;">
-                <iframe src="control_it/iphoneSim.html" class="w-full h-full border-none rounded-[55px]"
-                    style="background: transparent;"></iframe>
-            </div>
-        </div>
-    </dialog>
 
-    <script>
-        const simContainer = document.getElementById('sim-container');
+        // Project Cards Stagger
+        gsap.utils.toArray('.project-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+        });
 
-        function resizeSimulator() {
-            if (!simModal.open) return;
+        // Philosophy Lines
+        gsap.utils.toArray('.philosophy-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 90%"
+                },
+                x: -50,
+                opacity: 0,
+                duration: 0.6,
+                delay: i * 0.1
+            });
+        });
 
-            const padding = 40; // Safety padding
-            const baseWidth = 430;
-            const baseHeight = 862;
+        // --- Magnetic Effect ---
+        // Pulls elements toward cursor, creating a heavy/physical feel
+        const magneticElements = document.querySelectorAll('.magnetic');
+        const magneticStrength = 0.35; // How strongly the element pulls toward cursor (0-1)
+        const magneticRadius = 100; // Radius of magnetic influence in pixels
 
-            const availableWidth = window.innerWidth - padding;
-            const availableHeight = window.innerHeight - padding;
+        magneticElements.forEach(el => {
+            let rect = el.getBoundingClientRect();
+            let isHovering = false;
 
-            const scaleX = availableWidth / baseWidth;
-            const scaleY = availableHeight / baseHeight;
+            // Update rect on scroll/resize
+            const updateRect = () => {
+                rect = el.getBoundingClientRect();
+            };
 
-            // Use the smaller scale factor to ensure it fits both dimensions
-            const scale = Math.min(scaleX, scaleY, 1); // Max scale 1 to prevent pixelation if screen is huge
+            el.addEventListener('mouseenter', () => {
+                isHovering = true;
+                updateRect();
+            });
 
-            simContainer.style.transform = `scale(${scale})`;
+            el.addEventListener('mouseleave', () => {
+                isHovering = false;
+                // Animate back to original position
+                gsap.to(el, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+            });
+
+            el.addEventListener('mousemove', (e) => {
+                if (!isHovering) return;
+
+                updateRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                // Calculate distance from center of element
+                const deltaX = e.clientX - centerX;
+                const deltaY = e.clientY - centerY;
+
+                // Apply magnetic pull toward cursor
+                gsap.to(el, {
+                    x: deltaX * magneticStrength,
+                    y: deltaY * magneticStrength,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+
+            // Update rect on scroll and resize
+            window.addEventListener('scroll', updateRect, { passive: true });
+            window.addEventListener('resize', updateRect, { passive: true });
+        });
+
+        // --- Clock Utility ---
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) clockEl.innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Modal ---
+        function openModal(url) {
+            const modal = document.getElementById('modal');
+            const iframe = document.getElementById('modal-iframe');
+            iframe.src = url;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
-        function openSimModal(url) {
-            const iframe = simModal.querySelector('iframe');
-            if (iframe && url) {
-                iframe.src = url;
-            }
-            simModal.showModal();
-            document.body.style.overflow = 'hidden'; // Lock scroll
-            if (typeof lenis !== 'undefined') {
-                lenis.stop();
-            }
-
-            // Calculate scale immediately
-            resizeSimulator();
-            // Add resize listener
-            window.addEventListener('resize', resizeSimulator);
-        }
-
-        function closeSimModal() {
-            simModal.close();
-            document.body.style.overflow = ''; // Unlock scroll
-            if (typeof lenis !== 'undefined') {
-                lenis.start();
-            }
-            window.removeEventListener('resize', resizeSimulator);
-        }
-
-        // Close on Escape key
-        simModal.addEventListener('cancel', () => {
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const iframe = document.getElementById('modal-iframe');
+            modal.classList.remove('active');
             document.body.style.overflow = '';
-            if (typeof lenis !== 'undefined') {
-                lenis.start();
-            }
-            window.removeEventListener('resize', resizeSimulator);
+            setTimeout(() => { iframe.src = ''; }, 300);
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeModal();
         });
+
+        // --- Text Scramble Effect ---
+        class TextScrambler {
+            constructor(el) {
+                this.el = el;
+                // Characters that evoke the engineering/terminal aesthetic
+                this.chars = '!<>-_\\/[]{}—=+*^?#________ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                this.frameRequest = null;
+                this.frame = 0;
+                this.queue = [];
+                this.resolve = null;
+            }
+
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise(resolve => this.resolve = resolve);
+                this.queue = [];
+
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 20); // Stagger start
+                    const end = start + Math.floor(Math.random() * 20) + 15; // Duration varies
+                    this.queue.push({ from, to, start, end });
+                }
+
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+
+            update() {
+                let output = '';
+                let complete = 0;
+
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="scramble-char">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+
+                this.el.innerHTML = output;
+
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(() => this.update());
+                    this.frame++;
+                }
+            }
+
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        // Initialize scramble effects with IntersectionObserver
+        function initScrambleEffects() {
+            const scrambleElements = document.querySelectorAll('[data-scramble-text]');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.dataset.scrambled) {
+                        entry.target.dataset.scrambled = 'true';
+                        const scrambler = new TextScrambler(entry.target);
+                        const targetText = entry.target.dataset.scrambleText;
+
+                        // Small delay for stagger effect
+                        const delay = parseInt(entry.target.dataset.scrambleDelay) || 0;
+                        setTimeout(() => {
+                            scrambler.setText(targetText);
+                        }, delay);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            scrambleElements.forEach((el, index) => {
+                // Clear initial text so it scrambles from nothing (optional: keep for scramble-in-place)
+                el.innerText = '';
+                el.dataset.scrambleDelay = index * 100; // Stagger multiple elements
+                observer.observe(el);
+            });
+        }
+
+        // Trigger hero scramble on load (immediate), others on scroll
+        window.addEventListener('load', () => {
+            // Hero elements scramble immediately
+            const heroElements = document.querySelectorAll('.hero-title [data-scramble-text]');
+            heroElements.forEach((el, index) => {
+                el.dataset.scrambled = 'true';
+                const scrambler = new TextScrambler(el);
+                const targetText = el.dataset.scrambleText;
+                el.innerText = '';
+
+                setTimeout(() => {
+                    scrambler.setText(targetText);
+                }, 300 + (index * 150)); // Stagger "Creative" then "Engineer"
+            });
+
+            // Other elements use intersection observer
+            const otherElements = document.querySelectorAll('[data-scramble-text]:not(.hero-title [data-scramble-text])');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.dataset.scrambled) {
+                        entry.target.dataset.scrambled = 'true';
+                        const scrambler = new TextScrambler(entry.target);
+                        const targetText = entry.target.dataset.scrambleText;
+                        scrambler.setText(targetText);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            otherElements.forEach(el => {
+                el.innerText = ''; // Start empty for scramble-in effect
+                observer.observe(el);
+            });
+        });
+
     </script>
 </body>
 

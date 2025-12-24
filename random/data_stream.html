@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Stream — Micah Crandell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050508;
+            --surface: #0c0c12;
+            --surface-alt: #111118;
+            --border: #1a1a25;
+            --text: #e8e8ed;
+            --text-dim: #5a5a6e;
+            --accent: #22c55e;
+            --accent-dim: rgba(34, 197, 94, 0.1);
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --blue: #3b82f6;
+            --purple: #a855f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 1.5rem;
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value.accent {
+            color: var(--accent);
+        }
+
+        .metric-value.blue {
+            color: var(--blue);
+        }
+
+        .metric-value.purple {
+            color: var(--purple);
+        }
+
+        .metric-value.warning {
+            color: var(--warning);
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+        }
+
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+
+        #mainChart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .channel-card {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .channel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .channel-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .channel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .channel-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .channel-bar-bg {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .channel-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .event-log {
+            flex: 1;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .event-time {
+            font-family: 'Space Mono', monospace;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        .event-type {
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .event-type.data {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .event-type.connect {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--blue);
+        }
+
+        .event-type.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .event-type.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .event-message {
+            color: var(--text-dim);
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .stat-item {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .channels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>Data Stream</h1>
+                <div class="connection-status">
+                    <span class="status-dot"></span>
+                    <span>Live • ws://localhost:8080</span>
+                </div>
+            </div>
+            <a href="../index.html" class="back-link">← Back to Portfolio</a>
+        </header>
+
+        <div class="dashboard">
+            <div class="main-panel">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value accent" id="metricThroughput">0</div>
+                        <div class="metric-label">Msg/s</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value blue" id="metricLatency">0ms</div>
+                        <div class="metric-label">Latency</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value purple" id="metricTotal">0</div>
+                        <div class="metric-label">Total Msgs</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" id="metricUptime">00:00</div>
+                        <div class="metric-label">Uptime</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Real-time Data Flow</span>
+                        <span class="card-title" id="chartRate">60 samples/s</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Active Channels</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="channels-grid">
+                            <div class="channel-card">
+                                <div class="channel-header">
+                                    <span class="channel-name">
+                                        <span class="channel-dot" style="background: #22c55e;"></span>
+                                        Sensor Alpha
+                                    </span>
+                                    <span class="channel-value" id="channelAlpha">0</span>
+                                </div>
+                                <div class="channel-bar-bg">
+                                    <div class="channel-bar" id="barAlpha" style="background: #22c55e; width: 0%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="channel-card">
+                                <div class="channel-header">
+                                    <span class="channel-name">
+                                        <span class="channel-dot" style="background: #3b82f6;"></span>
+                                        Sensor Beta
+                                    </span>
+                                    <span class="channel-value" id="channelBeta">0</span>
+                                </div>
+                                <div class="channel-bar-bg">
+                                    <div class="channel-bar" id="barBeta" style="background: #3b82f6; width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div class="channel-card">
+                                <div class="channel-header">
+                                    <span class="channel-name">
+                                        <span class="channel-dot" style="background: #a855f7;"></span>
+                                        Sensor Gamma
+                                    </span>
+                                    <span class="channel-value" id="channelGamma">0</span>
+                                </div>
+                                <div class="channel-bar-bg">
+                                    <div class="channel-bar" id="barGamma" style="background: #a855f7; width: 0%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="channel-card">
+                                <div class="channel-header">
+                                    <span class="channel-name">
+                                        <span class="channel-dot" style="background: #f59e0b;"></span>
+                                        Sensor Delta
+                                    </span>
+                                    <span class="channel-value" id="channelDelta">0</span>
+                                </div>
+                                <div class="channel-bar-bg">
+                                    <div class="channel-bar" id="barDelta" style="background: #f59e0b; width: 0%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Connection Stats</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-label">Bytes In</div>
+                                <div class="stat-value" id="statBytesIn">0 KB</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Bytes Out</div>
+                                <div class="stat-value" id="statBytesOut">0 KB</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Errors</div>
+                                <div class="stat-value" id="statErrors">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Reconnects</div>
+                                <div class="stat-value" id="statReconnects">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="card-header">
+                        <span class="card-title">Event Log</span>
+                    </div>
+                    <div class="card-body event-log" id="eventLog">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('mainChart');
+        const ctx = canvas.getContext('2d');
+
+        // Data state
+        const MAX_POINTS = 100;
+        const dataStreams = {
+            alpha: { data: [], color: '#22c55e', value: 50 },
+            beta: { data: [], color: '#3b82f6', value: 50 },
+            gamma: { data: [], color: '#a855f7', value: 50 },
+            delta: { data: [], color: '#f59e0b', value: 50 }
+        };
+
+        let totalMessages = 0;
+        let messagesThisSecond = 0;
+        let bytesIn = 0;
+        let bytesOut = 0;
+        let startTime = Date.now();
+        let lastSecond = Date.now();
+
+        // Events
+        const events = [];
+        const MAX_EVENTS = 50;
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        function addEvent(type, message) {
+            const now = new Date();
+            const time = now.toTimeString().split(' ')[0];
+            events.unshift({ time, type, message });
+            if (events.length > MAX_EVENTS) events.pop();
+            renderEvents();
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventLog');
+            container.innerHTML = events.map(e => `
+                <div class="event-item">
+                    <span class="event-time">${e.time}</span>
+                    <span class="event-type ${e.type}">${e.type}</span>
+                    <span class="event-message">${e.message}</span>
+                </div>
+            `).join('');
+        }
+
+        function generateData() {
+            Object.keys(dataStreams).forEach(key => {
+                const stream = dataStreams[key];
+                // Random walk with mean reversion
+                const change = (Math.random() - 0.5) * 10 + (50 - stream.value) * 0.1;
+                stream.value = Math.max(0, Math.min(100, stream.value + change));
+                stream.data.push(stream.value);
+                if (stream.data.length > MAX_POINTS) stream.data.shift();
+            });
+
+            totalMessages += 4;
+            messagesThisSecond += 4;
+            bytesIn += Math.floor(Math.random() * 100 + 50);
+            bytesOut += Math.floor(Math.random() * 20 + 10);
+
+            // Random events
+            if (Math.random() < 0.02) {
+                const types = ['data', 'connect', 'warning'];
+                const messages = [
+                    'Received batch update from sensor cluster',
+                    'Client heartbeat acknowledged',
+                    'High latency detected on channel gamma',
+                    'Data synchronized with primary node',
+                    'Buffer flush completed successfully'
+                ];
+                addEvent(types[Math.floor(Math.random() * types.length)],
+                    messages[Math.floor(Math.random() * messages.length)]);
+            }
+        }
+
+        function drawChart() {
+            const width = canvas.width / window.devicePixelRatio;
+            const height = canvas.height / window.devicePixelRatio;
+
+            // Clear
+            ctx.fillStyle = '#0c0c12';
+            ctx.fillRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#1a1a25';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = (height / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Draw each stream
+            Object.values(dataStreams).forEach(stream => {
+                if (stream.data.length < 2) return;
+
+                ctx.strokeStyle = stream.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                const stepX = width / (MAX_POINTS - 1);
+                stream.data.forEach((value, i) => {
+                    const x = i * stepX;
+                    const y = height - (value / 100) * height;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+
+                ctx.stroke();
+
+                // Gradient fill
+                ctx.globalAlpha = 0.1;
+                ctx.fillStyle = stream.color;
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.closePath();
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            });
+        }
+
+        function updateMetrics() {
+            // Throughput
+            const now = Date.now();
+            if (now - lastSecond >= 1000) {
+                document.getElementById('metricThroughput').textContent = messagesThisSecond;
+                messagesThisSecond = 0;
+                lastSecond = now;
+            }
+
+            // Latency (simulated)
+            const latency = Math.floor(Math.random() * 10 + 5);
+            document.getElementById('metricLatency').textContent = latency + 'ms';
+
+            // Total
+            document.getElementById('metricTotal').textContent = totalMessages.toLocaleString();
+
+            // Uptime
+            const uptime = Math.floor((now - startTime) / 1000);
+            const mins = Math.floor(uptime / 60);
+            const secs = uptime % 60;
+            document.getElementById('metricUptime').textContent =
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+            // Channels
+            Object.keys(dataStreams).forEach(key => {
+                const stream = dataStreams[key];
+                const capKey = key.charAt(0).toUpperCase() + key.slice(1);
+                document.getElementById('channel' + capKey).textContent = stream.value.toFixed(1);
+                document.getElementById('bar' + capKey).style.width = stream.value + '%';
+            });
+
+            // Stats
+            document.getElementById('statBytesIn').textContent = (bytesIn / 1024).toFixed(1) + ' KB';
+            document.getElementById('statBytesOut').textContent = (bytesOut / 1024).toFixed(1) + ' KB';
+        }
+
+        function loop() {
+            generateData();
+            drawChart();
+            updateMetrics();
+            requestAnimationFrame(loop);
+        }
+
+        // Init
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Initial events
+        addEvent('connect', 'WebSocket connection established');
+        addEvent('data', 'Subscribed to 4 sensor channels');
+
+        // Start
+        loop();
+    </script>
+</body>
+
+</html>
