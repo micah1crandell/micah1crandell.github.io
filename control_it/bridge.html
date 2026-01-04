@@ -516,11 +516,24 @@
                     <path
                         d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
                 </svg>
-                Configuration
+                Target Configuration
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 1rem;">
+                Commands received from your iPhone will be forwarded to this address.
+            </p>
+            <div class="config-row">
+                <span class="config-label">Target Host / IP</span>
+                <input type="text" class="config-input" id="hostInput" value="localhost" placeholder="localhost"
+                    style="width: 160px; text-align: left;">
             </div>
             <div class="config-row">
-                <span class="config-label">Localhost Port</span>
+                <span class="config-label">Port</span>
                 <input type="number" class="config-input" id="portInput" value="8080" min="1" max="65535">
+            </div>
+            <div class="config-row" style="border-bottom: none;">
+                <span class="config-label">Preview URL</span>
+                <span class="config-preview" id="urlPreview"
+                    style="font-size: 0.85rem; color: var(--accent-purple); font-family: 'SF Mono', monospace;">http://localhost:8080/</span>
             </div>
         </div>
 
@@ -530,8 +543,9 @@
                 <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
             </svg>
             <div class="warning-text">
-                <strong>Note:</strong> Commands are sent to <code>localhost</code> using "fire and forget" mode. Due to
-                browser security, you won't see response data, but the request will be sent.
+                <strong>Note:</strong> Commands are sent using "fire and forget" mode (<code>no-cors</code>). Due to
+                browser security, you won't see response data, but the HTTP request will be sent to the configured
+                target.
             </div>
         </div>
 
@@ -593,7 +607,9 @@
         const uptimeEl = document.getElementById('uptime');
         const logContainer = document.getElementById('logContainer');
         const emptyLog = document.getElementById('emptyLog');
+        const hostInput = document.getElementById('hostInput');
         const portInput = document.getElementById('portInput');
+        const urlPreview = document.getElementById('urlPreview');
 
         // Check for Web Bluetooth support
         if (!navigator.bluetooth) {
@@ -601,6 +617,41 @@
             connectBtn.disabled = true;
             connectBtnText.textContent = 'Browser Not Supported';
         }
+
+        // ============================================
+        // Configuration Updates
+        // ============================================
+
+        function updateUrlPreview() {
+            const host = hostInput.value || 'localhost';
+            const port = portInput.value || '8080';
+            urlPreview.textContent = `http://${host}:${port}/`;
+        }
+
+        // Add event listeners for live URL preview
+        hostInput.addEventListener('input', updateUrlPreview);
+        portInput.addEventListener('input', updateUrlPreview);
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('controlItBridge_host', hostInput.value);
+            localStorage.setItem('controlItBridge_port', portInput.value);
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedHost = localStorage.getItem('controlItBridge_host');
+            const savedPort = localStorage.getItem('controlItBridge_port');
+
+            if (savedHost) hostInput.value = savedHost;
+            if (savedPort) portInput.value = savedPort;
+
+            updateUrlPreview();
+        }
+
+        // Save on change
+        hostInput.addEventListener('change', saveSettings);
+        portInput.addEventListener('change', saveSettings);
 
         // ============================================
         // Connection Management
@@ -723,17 +774,19 @@
 
                 log(`Received: ${command.action} → ${command.endpoint}`, 'info');
 
-                // Forward to localhost
-                sendToLocalhost(command);
+                // Forward to configured target
+                sendToTarget(command);
 
             } catch (error) {
                 log(`Failed to parse command: ${error.message}`, 'error');
             }
         }
 
-        function sendToLocalhost(command) {
-            const port = portInput.value || 8080;
-            const url = `http://localhost:${command.port || port}/${command.endpoint}`;
+        function sendToTarget(command) {
+            // Use custom host/port from configuration, with command values as fallback
+            const host = hostInput.value || 'localhost';
+            const port = portInput.value || command.port || 8080;
+            const url = `http://${host}:${port}/${command.endpoint}`;
             const method = command.method || 'GET';
 
             log(`Forwarding: ${method} ${url}`, 'info');
@@ -823,6 +876,9 @@
         // ============================================
         // Initialization
         // ============================================
+
+        // Load saved settings
+        loadSettings();
 
         log('Web Bridge initialized. Click "Connect to iPhone" to begin.', 'info');
     </script>
