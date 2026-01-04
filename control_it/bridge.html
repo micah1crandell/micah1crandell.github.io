@@ -783,20 +783,34 @@
         }
 
         function sendToTarget(command) {
-            // Use custom host/port from configuration, with command values as fallback
-            const host = hostInput.value || 'localhost';
-            const port = portInput.value || command.port || 8080;
+            // Use the host from the command (original intended target)
+            // Fall back to configured host only if command doesn't specify one
+            const host = command.host || hostInput.value || 'localhost';
+            const port = command.port || portInput.value || 8080;
             const url = `http://${host}:${port}/${command.endpoint}`;
             const method = command.method || 'GET';
 
-            log(`Forwarding: ${method} ${url}`, 'info');
-
-            // Use no-cors mode for fire-and-forget
-            fetch(url, {
+            // Build fetch options
+            const fetchOptions = {
                 method: method,
                 mode: 'no-cors',
                 cache: 'no-cache'
-            })
+            };
+
+            // Add headers if present
+            if (command.headers && Object.keys(command.headers).length > 0) {
+                fetchOptions.headers = command.headers;
+            }
+
+            // Add body for non-GET requests
+            if (command.body && method !== 'GET') {
+                fetchOptions.body = command.body;
+            }
+
+            log(`Forwarding: ${method} ${url}${command.body ? ' (with body)' : ''}`, 'info');
+
+            // Use no-cors mode for fire-and-forget
+            fetch(url, fetchOptions)
                 .then(() => {
                     log(`Sent: ${method} ${url}`, 'success');
                 })
