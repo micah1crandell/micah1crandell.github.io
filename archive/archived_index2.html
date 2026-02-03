@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micah Crandell — Creative Engineer</title>
+    <meta name="description" content="Creative Engineer crafting digital experiences with precision.">
+
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+    <!-- Fonts: Syne (Unorthodox) + Space Mono (Technical) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --text-primary: #050505;
+            --text-secondary: #555555;
+            --accent: #2a2a2a;
+            --grid-color: rgba(0, 0, 0, 0.08);
+            --border-color: #050505;
+            --card-hover: #f4f4f0;
+            --highlight: #0000ff;
+            /* International Klein Blue for subtle tech accents */
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            /* Custom cursor */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+        }
+
+        /* --- Custom Cursor --- */
+        .cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10000;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border-color: transparent;
+        }
+
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10001;
+            transition: background 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        /* --- Canvas Background --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.6;
+        }
+
+        /* --- Typography Classes --- */
+        .font-display {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+        }
+
+        .font-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid var(--grid-color);
+        }
+
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--text-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 5rem;
+            position: relative;
+        }
+
+        /* --- Physics Canvas --- */
+        #physics-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            /* Pointer events disabled by default to allow page scrolling */
+            /* Enabled dynamically via JS only when hovering over draggable blocks */
+            pointer-events: none;
+        }
+
+        .hero-main,
+        .hero .scroll-note,
+        .hero .hero-role {
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-main *,
+        .hero .scroll-note *,
+        .hero .hero-role * {
+            pointer-events: none;
+        }
+
+        .hero-main {
+            border-top: 1px solid var(--text-primary);
+            border-bottom: 1px solid var(--text-primary);
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 10vw, 8rem);
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .hero-role {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .role-tag {
+            font-size: clamp(0.8rem, 2vw, 1.5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .scroll-note {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Marquee --- */
+        .marquee-container {
+            border-bottom: 1px solid var(--text-primary);
+            padding: 1.5rem 0;
+            overflow: hidden;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 4rem;
+            width: fit-content;
+            animation: marquee 20s linear infinite;
+        }
+
+        .marquee-item {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* --- Projects Grid --- */
+        .work-section {
+            padding: 8rem 0;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--text-primary);
+            padding-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            letter-spacing: -0.03em;
+            margin: 0;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            /* Gap creates the border effect */
+            background: var(--text-primary);
+            /* Background color becomes borders */
+            border: 1px solid var(--text-primary);
+        }
+
+        .project-card {
+            background: var(--bg-primary);
+            min-height: 280px;
+            position: relative;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .project-card:hover .project-tag {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .project-card:hover .project-arrow svg {
+            stroke: #fff;
+            transform: translate(5px, -5px);
+        }
+
+        /* Grid Spans */
+        .span-12 {
+            grid-column: span 12;
+        }
+
+        .span-8 {
+            grid-column: span 8;
+        }
+
+        .span-7 {
+            grid-column: span 7;
+        }
+
+        .span-6 {
+            grid-column: span 6;
+        }
+
+        .span-5 {
+            grid-column: span 5;
+        }
+
+        .span-4 {
+            grid-column: span 4;
+        }
+
+        .span-3 {
+            grid-column: span 3;
+        }
+
+        .project-image-container {
+            width: 100%;
+            max-height: 150px;
+            flex: 1 1 auto;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+            filter: grayscale(100%);
+            transition: filter 0.4s ease;
+        }
+
+        .project-card:hover .project-image-container {
+            filter: grayscale(0%);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-card:hover .project-img {
+            transform: scale(1.05);
+        }
+
+        .project-info {
+            z-index: 2;
+        }
+
+        .project-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            max-width: 90%;
+            margin-bottom: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .project-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--text-primary);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .project-arrow {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
+
+        .project-arrow svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            transition: all 0.3s;
+        }
+
+        /* --- Philosophy --- */
+        .philosophy-section {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+        }
+
+        .big-statement {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .philosophy-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .philosophy-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            transition: padding-left 0.3s ease;
+        }
+
+        .philosophy-item:hover {
+            padding-left: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .philo-header {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .philo-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            border: 1px solid #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Contact --- */
+        .contact-section {
+            padding: 8rem 0;
+            border-top: 1px solid var(--text-primary);
+        }
+
+        .contact-large-text {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 0.9;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .contact-large-text:hover {
+            -webkit-text-stroke: 2px var(--text-primary);
+            color: transparent;
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 4rem;
+        }
+
+        /* --- Modal (Minimalist) --- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .modal-iframe-container {
+            width: 375px;
+            height: 812px;
+            border: 3px solid #000;
+            border-radius: 40px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1200px) {
+            .project-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .span-12 {
+                grid-column: span 6;
+            }
+
+            .span-8,
+            .span-7 {
+                grid-column: span 6;
+            }
+
+            .span-6,
+            .span-5,
+            .span-4 {
+                grid-column: span 3;
+            }
+
+            .span-3 {
+                grid-column: span 3;
+            }
+
+            .project-card {
+                min-height: 240px;
+                padding: 1.25rem;
+            }
+
+            .project-title {
+                font-size: 1.5rem;
+            }
+
+            .project-image-container {
+                max-height: 120px;
+            }
+
+            .philosophy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero-main {
+                padding: 2rem 0;
+            }
+
+            .hero-role {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .role-tag {
+                font-size: 0.75rem;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .span-8,
+            .span-7,
+            .span-6,
+            .span-5,
+            .span-4,
+            .span-3,
+            .span-12 {
+                grid-column: span 1;
+            }
+
+            .project-card {
+                min-height: 200px;
+                padding: 1rem;
+            }
+
+            .project-title {
+                font-size: 1.25rem;
+            }
+
+            .project-desc {
+                font-size: 0.8rem;
+            }
+
+            .project-image-container {
+                max-height: 100px;
+            }
+
+            .work-section {
+                padding: 4rem 0;
+            }
+
+            .section-header {
+                margin-bottom: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .philosophy-section {
+                padding: 4rem 0;
+            }
+
+            .contact-section {
+                padding: 4rem 0;
+            }
+
+            .contact-large-text {
+                font-size: clamp(2rem, 8vw, 4rem);
+            }
+
+            .marquee-item {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                gap: 0.75rem;
+            }
+
+            .nav-link {
+                font-size: 0.75rem;
+            }
+
+            .project-card {
+                min-height: 180px;
+            }
+
+            .project-image-container {
+                max-height: 80px;
+            }
+        }
+
+        /* --- Text Scramble Effect --- */
+        .scramble-char {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Canvas for Distortion Effect -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <nav>
+        <a href="#" class="nav-logo hover-trigger">Micah Crandell</a>
+        <div class="nav-links">
+            <a href="#work" class="nav-link hover-trigger magnetic">Work</a>
+            <a href="#philosophy" class="nav-link hover-trigger magnetic">Philosophy</a>
+            <a href="#contact" class="nav-link hover-trigger magnetic">Contact</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <canvas id="physics-canvas"></canvas>
+            <div class="hero-main">
+                <h1 class="hero-title font-display" data-scramble>
+                    <span data-scramble-text="Creative">Creative</span><br><span
+                        data-scramble-text="Engineer">Engineer</span>
+                </h1>
+                <div class="hero-role">
+                    <span class="role-tag font-mono">[ Full Stack ]</span>
+                    <span class="role-tag font-mono">[ UI/UX ]</span>
+                    <span class="role-tag font-mono">[ Swift ]</span>
+                </div>
+            </div>
+            <div style="text-align: right; width: 100%; position: relative; z-index: 2;">
+                <span class="scroll-note font-mono">
+                    ( Scroll for implementations )
+                </span>
+            </div>
+        </section>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span class="marquee-item">System Architecture — Creative Development — Swift — React Native — WebGL —
+                Interaction Design — </span>
+            <span class="marquee-item">System Architecture — Creative Development — Swift — React Native — WebGL —
+                Interaction Design — </span>
+        </div>
+    </div>
+
+    <div class="container">
+        <section id="work" class="work-section">
+            <div class="section-header">
+                <h2 class="section-title font-display" data-scramble data-scramble-text="Selected Work">Selected Work
+                </h2>
+                <span class="font-mono">2023 — 2025</span>
+            </div>
+
+            <div class="project-grid">
+
+                <!-- ROW 1 (7 + 5 = 12) -->
+                <!-- Item 1 -->
+                <div class="project-card span-7 hover-trigger" onclick="openModal('control_it/iphoneSim.html')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container">
+                        <img src="control_it/Subject2.png" alt="Control It" class="project-img">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Control It.</h3>
+                        <p class="project-desc font-mono">Integrated mobile interface for precision remote control in
+                            high-stakes production.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">iOS</span>
+                            <span class="project-tag">WebSocket</span>
+                            <span class="project-tag">MIDI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="project-card span-5 hover-trigger" onclick="window.open('radiant/home.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container" style="background: #eee;">
+                        <div
+                            style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Syne'; font-size:4rem; font-weight:800; opacity:0.1;">
+                            R</div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Radiant</h3>
+                        <p class="project-desc font-mono">Immersive spatial engineering.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Production</span>
+                            <span class="project-tag">Media</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 2 (4 + 4 + 4 = 12) -->
+                <!-- Item 3 -->
+                <div class="project-card span-4 hover-trigger"
+                    onclick="window.open('random/gambit_clash.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info" style="margin-top: auto;">
+                        <h3 class="project-title">Gambit Clash</h3>
+                        <p class="project-desc font-mono">Algorithmic auto-battler.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">React</span>
+                            <span class="project-tag">Game Logic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="project-card span-4 hover-trigger" onclick="window.open('random/clock.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="display:flex; align-items:center; justify-content:center; background: #fafafa;">
+                        <span id="live-clock"
+                            style="font-family:'Space Mono'; font-size:2rem; font-weight:700;">00:00</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Sync Clock</h3>
+                        <p class="project-desc font-mono">Temporal infrastructure.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Utility</span>
+                            <span class="project-tag">Real-time</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="project-card span-4 hover-trigger" onclick="openModal('regex_dev_tool/iphoneSim.html')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info"
+                        style="display:flex; justify-content:space-between; align-items:flex-end; margin-top: auto;">
+                        <div>
+                            <h3 class="project-title">Regex Tool</h3>
+                            <p class="project-desc font-mono">Pattern engine.</p>
+                        </div>
+                        <div class="project-tags" style="display:none;"></div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <span class="project-tag">Swift</span>
+                        <span class="project-tag">Tooling</span>
+                    </div>
+                </div>
+
+                <!-- ROW 3 (3 + 6 + 3 = 12) -->
+                <!-- Item 6 (New) -->
+                <div class="project-card span-3 hover-trigger"
+                    onclick="window.open('random/terminal_ui.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="background:#fafafa; display:flex; flex-direction:column; gap:5px; padding:20px; justify-content:center;">
+                        <div style="height:4px; width:60%; background:black;"></div>
+                        <div style="height:4px; width:80%; background:black;"></div>
+                        <div style="height:4px; width:40%; background:black;"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Terminal UI</h3>
+                        <p class="project-desc font-mono">Command line art.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 7 (New) -->
+                <div class="project-card span-6 hover-trigger"
+                    onclick="window.open('random/audio_engine.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="background:#fafafa; display:flex; align-items:center; justify-content:center; gap:2px;">
+                        <div style="width:4px; height:20px; background:black;"></div>
+                        <div style="width:4px; height:40px; background:black;"></div>
+                        <div style="width:4px; height:60px; background:black;"></div>
+                        <div style="width:4px; height:30px; background:black;"></div>
+                        <div style="width:4px; height:50px; background:black;"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Audio Engine</h3>
+                        <p class="project-desc font-mono">Web Audio API visualization and synthesis.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Canvas</span>
+                            <span class="project-tag">Audio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 8 (New) -->
+                <div class="project-card span-3 hover-trigger"
+                    onclick="window.open('random/type_scale.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info" style="margin-top:auto;">
+                        <h3 class="project-title">Type Scale</h3>
+                        <p class="project-desc font-mono">Calculated harmony.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 4 (8 + 4 = 12) -->
+                <!-- Item 9 (New) -->
+                <div class="project-card span-8 hover-trigger"
+                    onclick="window.open('random/data_stream.html', '_blank')">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Data Stream</h3>
+                        <p class="project-desc font-mono">Real-time socket communication layer for multi-client
+                            synchronization.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Socket.io</span>
+                            <span class="project-tag">Backend</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 10 (New) -->
+                <div class="project-card span-4 hover-trigger">
+                    <div class="project-arrow">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="project-image-container"
+                        style="background:#000; display:flex; align-items:center; justify-content:center;">
+                        <span style="color:white; font-family:'Space Mono';">/archive</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Legacy</h3>
+                        <p class="project-desc font-mono">Vault of past works.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Misc</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <section id="philosophy" class="philosophy-section">
+        <div class="container">
+            <div class="philosophy-grid">
+                <div>
+                    <span class="font-mono" style="opacity: 0.6; text-transform: uppercase;">( Methodology )</span>
+                </div>
+                <div class="philosophy-list">
+                    <div class="philosophy-item hover-trigger">
+                        <div class="philo-header">
+                            <div class="philo-num">1</div>
+                            <span data-scramble data-scramble-text="Structural Integrity">Structural Integrity</span>
+                        </div>
+                        <p class="font-mono" style="opacity: 0.8; max-width: 600px;">
+                            Code is architecture. Every project begins with a scalable logic map, ensuring the
+                            foundation supports rapid complexity without technical debt.
+                        </p>
+                    </div>
+                    <div class="philosophy-item hover-trigger">
+                        <div class="philo-header">
+                            <div class="philo-num">2</div>
+                            <span data-scramble data-scramble-text="Human-Centric UX">Human-Centric UX</span>
+                        </div>
+                        <p class="font-mono" style="opacity: 0.8; max-width: 600px;">
+                            Performance is irrelevant if the user is lost. I prioritize brutalist clarity and distinct
+                            micro-interactions to guide the user.
+                        </p>
+                    </div>
+                    <div class="philosophy-item hover-trigger">
+                        <div class="philo-header">
+                            <div class="philo-num">3</div>
+                            <span data-scramble data-scramble-text="Aesthetic Fidelity">Aesthetic Fidelity</span>
+                        </div>
+                        <p class="font-mono" style="opacity: 0.8; max-width: 600px;">
+                            Design is the language of functionality. I treat every pixel with the same rigor as every
+                            line of code.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <section id="contact" class="contact-section">
+            <span class="font-mono" style="display:block; margin-bottom: 1rem;">( Get in touch )</span>
+            <div class="contact-large-text hover-trigger magnetic"
+                onclick="window.location.href='mailto:micahcrandell.dev@gmail.com'">
+                Let's Build<br>The Future
+            </div>
+
+            <div class="footer-row">
+                <div class="font-mono" style="font-size: 0.8rem;">
+                    &copy; 2025 Micah Crandell<br>
+                    Surprise, AZ
+                </div>
+                <div class="font-mono" style="text-align: right; font-size: 0.8rem;">
+                    <a href="https://github.com/micah1crandell" target="_blank"
+                        style="color:black; text-decoration:none; margin-right: 1rem;">GITHUB</a>
+                    <a href="#" style="color:black; text-decoration:none;">LINKEDIN</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <button class="modal-close hover-trigger magnetic" onclick="closeModal()">CLOSE [X]</button>
+        <div class="modal-iframe-container">
+            <iframe class="modal-iframe" id="modal-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        // --- Custom Cursor Logic ---
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Immediate update for dot
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+
+        // Smooth follow for circle
+        function animateCursor() {
+            let dx = mouseX - cursorX;
+            let dy = mouseY - cursorY;
+
+            cursorX += dx * 0.1;
+            cursorY += dy * 0.1;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover states
+        const triggers = document.querySelectorAll('.hover-trigger, a, button');
+        triggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            trigger.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+
+        // --- Canvas Grid Distortion Effect ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let points = [];
+        const gridSize = 40; // Size of grid cells
+        const distRadius = 150; // Radius of mouse influence
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initGrid();
+        }
+
+        function initGrid() {
+            points = [];
+            for (let x = 0; x <= width; x += gridSize) {
+                for (let y = 0; y <= height; y += gridSize) {
+                    points.push({
+                        x: x,
+                        y: y,
+                        originX: x,
+                        originY: y
+                    });
+                }
+            }
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw points
+            ctx.fillStyle = '#000';
+
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+
+                // Calculate distance to mouse
+                const dx = mouseX - p.originX;
+                const dy = mouseY - p.originY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Interaction logic: repel points
+                if (dist < distRadius) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (distRadius - dist) / distRadius;
+
+                    p.x = p.originX - Math.cos(angle) * force * 20; // 20px push
+                    p.y = p.originY - Math.sin(angle) * force * 20;
+                } else {
+                    // Return to origin
+                    p.x += (p.originX - p.x) * 0.1;
+                    p.y += (p.originY - p.y) * 0.1;
+                }
+
+                // Draw tiny dots
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(drawGrid);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        drawGrid();
+
+
+        // --- Matter.js Physics Engine for MICAH Blocks ---
+        (function () {
+            const Engine = Matter.Engine,
+                Render = Matter.Render,
+                Runner = Matter.Runner,
+                Bodies = Matter.Bodies,
+                Body = Matter.Body,
+                Composite = Matter.Composite,
+                Mouse = Matter.Mouse,
+                MouseConstraint = Matter.MouseConstraint,
+                Events = Matter.Events;
+
+            // Get hero section dimensions
+            const heroSection = document.querySelector('.hero');
+            const physicsCanvas = document.getElementById('physics-canvas');
+
+            let heroWidth = heroSection.offsetWidth;
+            let heroHeight = heroSection.offsetHeight;
+
+            // Create engine
+            const engine = Engine.create({
+                gravity: { x: 0, y: 0.5 } // Subtle gravity
+            });
+
+            // Create renderer
+            const render = Render.create({
+                canvas: physicsCanvas,
+                engine: engine,
+                options: {
+                    width: heroWidth,
+                    height: heroHeight,
+                    wireframes: false,
+                    background: 'transparent',
+                    pixelRatio: window.devicePixelRatio || 1
+                }
+            });
+
+            // Letter configuration
+            const letters = ['M', 'I', 'C', 'A', 'H'];
+            const blockWidth = Math.min(120, heroWidth / 6);
+            const blockHeight = blockWidth * 1.2;
+            const letterBodies = [];
+
+            // Create letter blocks
+            letters.forEach((letter, index) => {
+                const spacing = heroWidth / (letters.length + 1);
+                const x = spacing * (index + 1);
+                const y = heroHeight * 0.3 + (Math.random() - 0.5) * 100;
+                const angle = (Math.random() - 0.5) * 0.5;
+
+                const block = Bodies.rectangle(x, y, blockWidth, blockHeight, {
+                    restitution: 0.6, // Bounce
+                    friction: 0.3,
+                    frictionAir: 0.02,
+                    angle: angle,
+                    render: {
+                        fillStyle: '#ffffff',
+                        strokeStyle: '#050505',
+                        lineWidth: 2
+                    },
+                    label: letter
+                });
+
+                letterBodies.push(block);
+            });
+
+            // Create boundaries (invisible walls)
+            const wallThickness = 50;
+            const walls = [
+                // Bottom
+                Bodies.rectangle(heroWidth / 2, heroHeight + wallThickness / 2, heroWidth + 100, wallThickness, {
+                    isStatic: true,
+                    render: { visible: false }
+                }),
+                // Top
+                Bodies.rectangle(heroWidth / 2, -wallThickness / 2, heroWidth + 100, wallThickness, {
+                    isStatic: true,
+                    render: { visible: false }
+                }),
+                // Left
+                Bodies.rectangle(-wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100, {
+                    isStatic: true,
+                    render: { visible: false }
+                }),
+                // Right
+                Bodies.rectangle(heroWidth + wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100, {
+                    isStatic: true,
+                    render: { visible: false }
+                })
+            ];
+
+            // Add bodies to the world
+            Composite.add(engine.world, [...letterBodies, ...walls]);
+
+            // Mouse constraint for dragging
+            const mouse = Mouse.create(physicsCanvas);
+
+            // CRITICAL: Remove Matter.js's wheel event listener to allow page scrolling
+            // Matter.js adds a wheel listener that prevents scroll - we need to remove it
+            mouse.element.removeEventListener('wheel', mouse.mousewheel);
+
+            // Set the correct offset for the mouse based on canvas position
+            Mouse.setOffset(mouse, { x: 0, y: 0 });
+
+            const mouseConstraint = MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    stiffness: 0.2,
+                    render: { visible: false }
+                }
+            });
+
+            Composite.add(engine.world, mouseConstraint);
+
+            // Keep the mouse in sync with rendering
+            render.mouse = mouse;
+
+            // Track if mouse is currently dragging a body
+            let isDraggingBody = false;
+
+            Events.on(mouseConstraint, 'startdrag', () => {
+                isDraggingBody = true;
+                physicsCanvas.style.cursor = 'grabbing';
+            });
+
+            Events.on(mouseConstraint, 'enddrag', () => {
+                isDraggingBody = false;
+                // After drag ends, check if still over a body
+                checkMouseOverBody();
+            });
+
+            // Function to check if mouse is over any physics body
+            function isMouseOverPhysicsBody(clientX, clientY) {
+                const rect = physicsCanvas.getBoundingClientRect();
+                const mouseX = clientX - rect.left;
+                const mouseY = clientY - rect.top;
+
+                for (const body of letterBodies) {
+                    if (Matter.Bounds.contains(body.bounds, { x: mouseX, y: mouseY })) {
+                        if (Matter.Vertices.contains(body.vertices, { x: mouseX, y: mouseY })) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // Track last known mouse position
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+
+            function checkMouseOverBody() {
+                const overBody = isMouseOverPhysicsBody(lastMouseX, lastMouseY);
+                if (overBody && !isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'auto';
+                    physicsCanvas.style.cursor = 'grab';
+                } else if (!isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'none';
+                    physicsCanvas.style.cursor = '';
+                }
+            }
+
+            // Listen on the hero section for mouse movement to detect when over blocks
+            // This works even when canvas pointer-events are disabled
+            heroSection.addEventListener('mousemove', (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+
+                if (!isDraggingBody) {
+                    checkMouseOverBody();
+                }
+            }, { passive: true });
+
+            // When mouse leaves the hero section, disable canvas pointer events
+            heroSection.addEventListener('mouseleave', () => {
+                if (!isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'none';
+                    physicsCanvas.style.cursor = '';
+                }
+            }, { passive: true });
+
+            // Update cursor when moving over the canvas (when pointer-events are enabled)
+            physicsCanvas.addEventListener('mousemove', (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+
+                if (!isDraggingBody) {
+                    const overBody = isMouseOverPhysicsBody(e.clientX, e.clientY);
+                    if (overBody) {
+                        physicsCanvas.style.cursor = 'grab';
+                    } else {
+                        // Mouse moved off the body, disable pointer events
+                        physicsCanvas.style.pointerEvents = 'none';
+                        physicsCanvas.style.cursor = '';
+                    }
+                }
+            }, { passive: true });
+
+            // Only prevent scrolling when actively dragging a physics body
+            physicsCanvas.addEventListener('touchmove', (e) => {
+                if (isDraggingBody) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Handle touch interactions
+            heroSection.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    if (isMouseOverPhysicsBody(touch.clientX, touch.clientY)) {
+                        physicsCanvas.style.pointerEvents = 'auto';
+                    }
+                }
+            }, { passive: true });
+
+            heroSection.addEventListener('touchend', () => {
+                if (!isDraggingBody) {
+                    physicsCanvas.style.pointerEvents = 'none';
+                }
+            }, { passive: true });
+
+            // Custom afterRender to draw letters on blocks
+            Events.on(render, 'afterRender', function () {
+                const context = render.context;
+
+                letterBodies.forEach((body) => {
+                    const pos = body.position;
+                    const angle = body.angle;
+
+                    context.save();
+                    context.translate(pos.x, pos.y);
+                    context.rotate(angle);
+
+                    // Draw letter
+                    context.font = `bold ${blockWidth * 0.6}px 'Syne', sans-serif`;
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+                    context.fillStyle = '#050505';
+                    context.fillText(body.label, 0, 0);
+
+                    context.restore();
+                });
+            });
+
+            // Run the engine and renderer
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+            Render.run(render);
+
+            // Handle resize
+            function handleResize() {
+                heroWidth = heroSection.offsetWidth;
+                heroHeight = heroSection.offsetHeight;
+
+                render.canvas.width = heroWidth;
+                render.canvas.height = heroHeight;
+                render.options.width = heroWidth;
+                render.options.height = heroHeight;
+
+                // Update wall positions
+                Body.setPosition(walls[0], { x: heroWidth / 2, y: heroHeight + wallThickness / 2 });
+                Body.setPosition(walls[1], { x: heroWidth / 2, y: -wallThickness / 2 });
+                Body.setPosition(walls[2], { x: -wallThickness / 2, y: heroHeight / 2 });
+                Body.setPosition(walls[3], { x: heroWidth + wallThickness / 2, y: heroHeight / 2 });
+
+                // Update wall sizes
+                Body.setVertices(walls[0], Bodies.rectangle(heroWidth / 2, heroHeight + wallThickness / 2, heroWidth + 100, wallThickness).vertices);
+                Body.setVertices(walls[1], Bodies.rectangle(heroWidth / 2, -wallThickness / 2, heroWidth + 100, wallThickness).vertices);
+                Body.setVertices(walls[2], Bodies.rectangle(-wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100).vertices);
+                Body.setVertices(walls[3], Bodies.rectangle(heroWidth + wallThickness / 2, heroHeight / 2, wallThickness, heroHeight + 100).vertices);
+
+                // Update pixel ratio for mouse
+                mouse.pixelRatio = window.devicePixelRatio || 1;
+
+                Render.setPixelRatio(render, window.devicePixelRatio || 1);
+            }
+
+            window.addEventListener('resize', handleResize);
+
+            // Add some initial velocity for a playful entrance
+            setTimeout(() => {
+                letterBodies.forEach((body, index) => {
+                    Body.setVelocity(body, {
+                        x: (Math.random() - 0.5) * 5,
+                        y: Math.random() * 3 + 2
+                    });
+                    Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
+                });
+            }, 500);
+        })();
+
+
+        // --- GSAP Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Reveal
+        gsap.from(".hero-title", {
+            y: 100,
+            opacity: 0,
+            duration: 1.5,
+            ease: "power4.out",
+            skewY: 7
+        });
+
+        // Project Cards Stagger
+        gsap.utils.toArray('.project-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+        });
+
+        // Philosophy Lines
+        gsap.utils.toArray('.philosophy-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 90%"
+                },
+                x: -50,
+                opacity: 0,
+                duration: 0.6,
+                delay: i * 0.1
+            });
+        });
+
+        // --- Magnetic Effect ---
+        // Pulls elements toward cursor, creating a heavy/physical feel
+        const magneticElements = document.querySelectorAll('.magnetic');
+        const magneticStrength = 0.35; // How strongly the element pulls toward cursor (0-1)
+        const magneticRadius = 100; // Radius of magnetic influence in pixels
+
+        magneticElements.forEach(el => {
+            let rect = el.getBoundingClientRect();
+            let isHovering = false;
+
+            // Update rect on scroll/resize
+            const updateRect = () => {
+                rect = el.getBoundingClientRect();
+            };
+
+            el.addEventListener('mouseenter', () => {
+                isHovering = true;
+                updateRect();
+            });
+
+            el.addEventListener('mouseleave', () => {
+                isHovering = false;
+                // Animate back to original position
+                gsap.to(el, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+            });
+
+            el.addEventListener('mousemove', (e) => {
+                if (!isHovering) return;
+
+                updateRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                // Calculate distance from center of element
+                const deltaX = e.clientX - centerX;
+                const deltaY = e.clientY - centerY;
+
+                // Apply magnetic pull toward cursor
+                gsap.to(el, {
+                    x: deltaX * magneticStrength,
+                    y: deltaY * magneticStrength,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+
+            // Update rect on scroll and resize
+            window.addEventListener('scroll', updateRect, { passive: true });
+            window.addEventListener('resize', updateRect, { passive: true });
+        });
+
+        // --- Clock Utility ---
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) clockEl.innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Modal ---
+        function openModal(url) {
+            const modal = document.getElementById('modal');
+            const iframe = document.getElementById('modal-iframe');
+            iframe.src = url;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const iframe = document.getElementById('modal-iframe');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => { iframe.src = ''; }, 300);
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeModal();
+        });
+
+        // --- Text Scramble Effect ---
+        class TextScrambler {
+            constructor(el) {
+                this.el = el;
+                // Characters that evoke the engineering/terminal aesthetic
+                this.chars = '!<>-_\\/[]{}—=+*^?#________ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                this.frameRequest = null;
+                this.frame = 0;
+                this.queue = [];
+                this.resolve = null;
+            }
+
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise(resolve => this.resolve = resolve);
+                this.queue = [];
+
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 20); // Stagger start
+                    const end = start + Math.floor(Math.random() * 20) + 15; // Duration varies
+                    this.queue.push({ from, to, start, end });
+                }
+
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+
+            update() {
+                let output = '';
+                let complete = 0;
+
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="scramble-char">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+
+                this.el.innerHTML = output;
+
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(() => this.update());
+                    this.frame++;
+                }
+            }
+
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        // Initialize scramble effects with IntersectionObserver
+        function initScrambleEffects() {
+            const scrambleElements = document.querySelectorAll('[data-scramble-text]');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.dataset.scrambled) {
+                        entry.target.dataset.scrambled = 'true';
+                        const scrambler = new TextScrambler(entry.target);
+                        const targetText = entry.target.dataset.scrambleText;
+
+                        // Small delay for stagger effect
+                        const delay = parseInt(entry.target.dataset.scrambleDelay) || 0;
+                        setTimeout(() => {
+                            scrambler.setText(targetText);
+                        }, delay);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            scrambleElements.forEach((el, index) => {
+                // Clear initial text so it scrambles from nothing (optional: keep for scramble-in-place)
+                el.innerText = '';
+                el.dataset.scrambleDelay = index * 100; // Stagger multiple elements
+                observer.observe(el);
+            });
+        }
+
+        // Trigger hero scramble on load (immediate), others on scroll
+        window.addEventListener('load', () => {
+            // Hero elements scramble immediately
+            const heroElements = document.querySelectorAll('.hero-title [data-scramble-text]');
+            heroElements.forEach((el, index) => {
+                el.dataset.scrambled = 'true';
+                const scrambler = new TextScrambler(el);
+                const targetText = el.dataset.scrambleText;
+                el.innerText = '';
+
+                setTimeout(() => {
+                    scrambler.setText(targetText);
+                }, 300 + (index * 150)); // Stagger "Creative" then "Engineer"
+            });
+
+            // Other elements use intersection observer
+            const otherElements = document.querySelectorAll('[data-scramble-text]:not(.hero-title [data-scramble-text])');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.dataset.scrambled) {
+                        entry.target.dataset.scrambled = 'true';
+                        const scrambler = new TextScrambler(entry.target);
+                        const targetText = entry.target.dataset.scrambleText;
+                        scrambler.setText(targetText);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            otherElements.forEach(el => {
+                el.innerText = ''; // Start empty for scramble-in effect
+                observer.observe(el);
+            });
+        });
+
+    </script>
+</body>
+
+</html>
