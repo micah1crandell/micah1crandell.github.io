@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Server Engine - Control It Docs</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>HTTP Trigger Server</h1>
+        <p>The HTTP Trigger Server turns your iOS device into a lightweight web server, allowing external devices (like
+            Stream Deck, Companion, or custom scripts) to trigger actions within Control It.</p>
+
+        <h2>Configuration</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>Port</h3>
+                <p>Default: <code>8080</code>. You can change this if it conflicts with other services, but avoid ports
+                    under 1024.</p>
+            </div>
+            <div class="card">
+                <h3>Modes</h3>
+                <ul>
+                    <li><strong>Auto:</strong> Binds to WiFi IP if available, falls back to Localhost.</li>
+                    <li><strong>Local Only:</strong> Binds only to 127.0.0.1 (Loopback). Secure, but no external access.
+                    </li>
+                    <li><strong>Network Only:</strong> Forces binding to the external network interface.</li>
+                    </tr>
+            </div>
+        </div>
+
+        <h2>API Reference</h2>
+        <p>The server does not have a fixed API. Instead, you define <strong>Custom Endpoints</strong> (Triggers) mapped
+            to specific actions.</p>
+
+        <h3>Request Format</h3>
+        <pre><code>GET /&lt;your-custom-endpoint&gt;</code></pre>
+        <p>You can also use POST, PUT, DELETE, etc., as configured in the trigger.</p>
+
+        <h3>Responses</h3>
+        <ul>
+            <li><code>200 OK</code>: Action found and triggered successfully.</li>
+            <li><code>404 Not Found</code>: No trigger matches the requested method and path.</li>
+            <li><code>401 Unauthorized</code>: Authentication failed (if enabled).</li>
+        </ul>
+
+        <h2>Security</h2>
+        <ul>
+            <li><strong>Authentication:</strong> You can enable Bearer Token authentication for individual triggers.
+                Requests must include the header: <code>Authorization: Bearer &lt;token&gt;</code>.</li>
+            <li><strong>Local Network Only:</strong> The server is not accessible from the internet unless you manually
+                port-forward your router (NOT RECOMMENDED).</li>
+            <li><strong>Background Access:</strong> iOS will suspend the server when the app is in the background unless
+                <strong>"Background Audio"</strong> is enabled in settings.</li>
+        </ul>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

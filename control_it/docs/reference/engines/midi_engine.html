@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Engine - Control It Docs</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>MIDI Engine</h1>
+        <p>The MIDI Engine separates Control It from basic MIDI apps. It allows the app to process incoming MIDI
+            commands and execute complex workflows entirely in the background, without any UI interaction.</p>
+
+        <h2>Hardware Routing</h2>
+        <p>The engine listens to all connected CoreMIDI sources by default.</p>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <strong>USB MIDI</strong>
+                <p>Plug & Play via the Camera Connection Kit. No driver configuration needed.</p>
+            </div>
+            <div class="feature-item">
+                <strong>Bluetooth MIDI</strong>
+                <p>Low latency wireless connection. Supports "Central" mode to connect to peripheral devices (like
+                    Yamaha wireless adapters).</p>
+            </div>
+            <div class="feature-item">
+                <strong>Network MIDI</strong>
+                <p>RTP-MIDI over WiFi. Requires a stable 5GHz network for low jitter.</p>
+            </div>
+        </div>
+
+        <h2>Trigger Logic</h2>
+
+        <h3>Value Ranges</h3>
+        <p>You can configure triggers to fire only when a value falls within a specific range. This is useful for:</p>
+        <ul>
+            <li><strong>Fader Zones:</strong> Split a single fader into multiple commands (e.g., Value 0-10 triggers
+                "Low", 11-127 triggers "High").</li>
+            <li><strong>Velocity Sensitive:</strong> Trigger different actions based on how hard you hit a drum pad.
+            </li>
+        </ul>
+
+        <h3>Modes</h3>
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Mode</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>On Press</strong></td>
+                    <td>Fires when value > 0 (Note On). Standard behavior.</td>
+                </tr>
+                <tr>
+                    <td><strong>On Release</strong></td>
+                    <td>Fires when value = 0 (Note Off). useful for "momentary" effects.</td>
+                </tr>
+                <tr>
+                    <td><strong>Continuous</strong></td>
+                    <td>Passes the raw value (0-127) directly to a variable (e.g., controlling a Hue brightness slider).
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Background Audio & Keep-Alive</h2>
+        <div class="callout warning">
+            <strong>Critical:</strong> iOS aggressively suspends background apps to save battery. To ensure the MIDI
+            Engine runs reliably while your phone is locked:
+        </div>
+        <ol>
+            <li>Go to <strong>Settings</strong> in Control It.</li>
+            <li>Enable <strong>"Background Audio"</strong>.</li>
+            <li>The app will play a silent audio track. This flags the app as a "Media Playback" app to the OS, granting
+                it indefinite background runtime.</li>
+        </ol>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

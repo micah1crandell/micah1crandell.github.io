@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering HTTP Actions - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Mastering HTTP Actions</h1>
+        <p>HTTP actions are the workhorse of modern automation. They allow Control It to talk to virtually any smart
+            device, web service, or API-enabled software.</p>
+
+        <h2>Example: Controlling Philips Hue</h2>
+        <p>In this tutorial, we will create a button that toggles a Philips Hue light.</p>
+
+        <h3>1. Get your Bridge IP and API Key</h3>
+        <p>Before starting, you need the IP address of your Hue Bridge (e.g., <code>192.168.1.50</code>) and a valid
+            username/API key.</p>
+
+        <h3>2. Create the Action</h3>
+        <ol>
+            <li>Create a new action and select <strong>HTTP</strong>.</li>
+            <li><strong>Host:</strong> Enter your bridge IP (e.g., <code>192.168.1.50</code>).</li>
+            <li><strong>Port:</strong> <code>80</code> (Default for Hue).</li>
+            <li><strong>Path:</strong> <code>/api/<your-username>/lights/1/state</code></li>
+            <li><strong>Method:</strong> Select <code>PUT</code>.</li>
+        </ol>
+
+        <h3>3. Define the Body</h3>
+        <p>Hue expects a JSON body to tell it what to do. In the body field, enter:</p>
+        <pre><code>{"on": true, "bri": 254}</code></pre>
+        <p>This command turns the light ON at full brightness.</p>
+
+        <div class="callout tip">
+            <strong>Pro Tip:</strong> To create a toggle, you'll need two actions (one for On, one for Off) or use
+            <strong>Multistep Actions</strong> with logic, which is covered in the Advanced Logic tutorial.
+        </div>
+
+        <h2>Authentication</h2>
+        <p>Many APIs require authentication. Control It supports standard headers.</p>
+
+        <h3>Bearer Tokens</h3>
+        <p>If an API requires a Bearer token, add a <strong>Header</strong>:</p>
+        <ul>
+            <li><strong>Key:</strong> <code>Authorization</code></li>
+            <li><strong>Value:</strong> <code>Bearer YOUR_TOKEN_HERE</code></li>
+        </ul>
+
+        <h3>Basic Auth</h3>
+        <p>For Basic Auth, you need to base64 encode your <code>username:password</code>. You can do this online or in
+            terminal:</p>
+        <pre><code>echo -n "user:pass" | base64</code></pre>
+        <p>Then add the header:</p>
+        <ul>
+            <li><strong>Key:</strong> <code>Authorization</code></li>
+            <li><strong>Value:</strong> <code>Basic dXNlcjpwYXNz</code></li>
+        </ul>
+
+        <h2>Troubleshooting</h2>
+        <div class="callout warning">
+            <strong>"The Internet connection appears to be offline"</strong>
+            <br>
+            This usually means the app is blocked from the Local Network. Check iOS Settings > Privacy > Local Network >
+            Control It.
+        </div>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

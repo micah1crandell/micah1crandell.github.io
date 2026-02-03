@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSC Protocol Reference - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Open Sound Control (OSC)</h1>
+        <p>Control It supports the robust OSC protocol for low-latency communication with media servers, audio software,
+            and creative coding environments.</p>
+
+        <h2>Anatomy of a Message</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <strong>Address Pattern</strong>
+                <p>The routing path for the message. Must start with `/`.</p>
+                <p><em>Example:</em> <code>/layer/1/opacity</code></p>
+            </div>
+            <div class="feature-item">
+                <strong>Type Tag</strong>
+                <p>A string telling the receiver what data types follow.</p>
+                <p><em>Example:</em> <code>,if</code> (Integer, Float)</p>
+            </div>
+            <div class="feature-item">
+                <strong>Arguments</strong>
+                <p>The actual data payload values.</p>
+                <p><em>Example:</em> <code>1</code>, <code>0.5</code></p>
+            </div>
+        </div>
+
+        <h2>Argument Types</h2>
+        <p>Control It automatically infers the OSC type based on your input format:</p>
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Input Format</th>
+                    <th>OSC Type</th>
+                    <th>Tag</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Integer</td>
+                    <td>Int32</td>
+                    <td><code>i</code></td>
+                    <td><code>42</code>, <code>-100</code></td>
+                </tr>
+                <tr>
+                    <td>Decimal</td>
+                    <td>Float32</td>
+                    <td><code>f</code></td>
+                    <td><code>0.5</code>, <code>3.14159</code></td>
+                </tr>
+                <tr>
+                    <td>Keyword</td>
+                    <td>Boolean</td>
+                    <td><code>T</code>/<code>F</code></td>
+                    <td><code>true</code>, <code>false</code></td>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>String</td>
+                    <td><code>s</code></td>
+                    <td><code>"Hello"</code>, <code>clip_1</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Advanced Features</h2>
+
+        <h3>Wildcards</h3>
+        <p>Control It fully supports standard OSC pattern matching:</p>
+        <ul>
+            <li><code>*</code> matches any sequence of characters (e.g., `/layer/*/opacity`)</li>
+            <li><code>?</code> matches any single character</li>
+            <li><code>[1-5]</code> matches a range of numbers</li>
+            <li><code>{foo,bar}</code> matches a specific list (e.g., `/layer/{1,2}/opacity`)</li>
+        </ul>
+
+        <h2>Auto-Release Logic</h2>
+        <p>For momentary buttons, Control It can automatically send a "release" message (0) shortly after the press
+            message.</p>
+        <p><strong>Trigger Condition:</strong> The action sends an Integer <code>1</code> or Boolean <code>true</code>
+            as the <em>first argument</em>.</p>
+        <p><strong>Release Action:</strong> After ~100ms, the app sends the same address with value <code>0</code> or
+            <code>false</code>.
+        </p>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

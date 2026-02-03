@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCP & UDP Protocol Reference - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>TCP & UDP Protocols</h1>
+        <p>For raw communication with hardware like matrix switchers, projectors, and industrial controllers, Control It
+            offers direct TCP and UDP socket support.</p>
+
+        <h2>Protocol Selection</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <strong>TCP (Transmission Control Protocol)</strong>
+                <p>Reliable, connection-oriented. Guarantees delivery and order. Best for projectors and matrix
+                    switchers.</p>
+            </div>
+            <div class="feature-item">
+                <strong>UDP (User Datagram Protocol)</strong>
+                <p>Fast, simpler, connectionless. No guarantee of delivery. Best for "fire and forget" commands or
+                    high-speed telemetry.</p>
+            </div>
+        </div>
+
+        <h2>Terminators</h2>
+        <p>Many hardware devices require a specific "End of Line" (EOL) character to know when a command is finished.
+            Control It appends these automatically based on your selection:</p>
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Terminator</th>
+                    <th>Hex</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>None</strong></td>
+                    <td>--</td>
+                    <td>Sends the raw string exactly as typed.</td>
+                </tr>
+                <tr>
+                    <td><strong>\r (CR)</strong></td>
+                    <td><code>0x0D</code></td>
+                    <td>Carriage Return. Common for projectors and older serial devices.</td>
+                </tr>
+                <tr>
+                    <td><strong>\n (LF)</strong></td>
+                    <td><code>0x0A</code></td>
+                    <td>Line Feed. Common for Linux/Unix systems.</td>
+                </tr>
+                <tr>
+                    <td><strong>\r\n (CRLF)</strong></td>
+                    <td><code>0x0D0A</code></td>
+                    <td>Carriage Return + Line Feed. The standard network terminator (e.g., HTTP).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Connection Pooling (TCP)</h2>
+        <p>Establishing a TCP connection takes time (handshake). To improve performance, Control It uses
+            <strong>Connection Pooling</strong>.</p>
+        <ul>
+            <li><strong>Keep-Alive:</strong> The app attempts to keep the connection open for a short period after
+                sending a command.</li>
+            <li><strong>Reuse:</strong> If you press a button again within this window, it reuses the existing socket
+                instead of opening a new one.</li>
+            <li><strong>Auto-Reconnect:</strong> If the connection drops or times out, the app will automatically
+                attempt to reconnect on the next button press.</li>
+        </ul>
+
+        <h2>Binary Data</h2>
+        <p>You can send binary data (hex codes) by using standard escape sequences in your string:</p>
+        <p>Use format: <code>\xHH</code></p>
+        <p><em>Example:</em> To send the byte sequence <code>02 00 00 03</code>, enter: <code>\x02\x00\x00\x03</code>
+        </p>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

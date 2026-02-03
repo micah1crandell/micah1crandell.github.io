@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced OSC Control - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Advanced OSC Control</h1>
+        <p>Open Sound Control (OSC) is the industry standard for real-time control of audiovisual software. It's faster
+            than HTTP and more flexible than MIDI.</p>
+
+        <h2>Example: Resolume Arena</h2>
+        <p>Controlling VJ software like Resolume is a perfect use case for OSC.</p>
+
+        <h3>1. Configure Output</h3>
+        <p>In Control It settings, ensure your OSC Output is set to the computer running Resolume (e.g.,
+            <code>192.168.1.100</code>) and the correct port (default <code>7000</code>).
+        </p>
+
+        <h3>2. Trigger a Clip</h3>
+        <p>Resolume uses specific addresses to trigger clips.</p>
+        <ol>
+            <li>Create an OSC Action.</li>
+            <li><strong>Path:</strong> <code>/composition/layers/1/clips/1/connect</code></li>
+            <li><strong>Value:</strong> Enter <code>1</code>.</li>
+        </ol>
+
+        <h3>3. Control a Fader</h3>
+        <p>For smooth control of opacity or effects, use a Slider component in Control It.</p>
+        <ol>
+            <li>Create a Slider Action.</li>
+            <li><strong>Path:</strong> <code>/composition/layers/1/video/opacity</code></li>
+            <li><strong>Value:</strong> The slider will automatically send float values between <code>0.0</code> and
+                <code>1.0</code>.</li>
+        </ol>
+
+        <h2>Wildcards</h2>
+        <p>You can use standard OSC wildcards in your addresses if the receiving software supports them. For example,
+            sending <code>/layer/*/opacity</code> with value <code>0.0</code> might blackout all layers simultaneously,
+            depending on the target application's implementation.</p>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

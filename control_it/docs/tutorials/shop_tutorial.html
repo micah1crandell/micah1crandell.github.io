@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publishing to The Shop - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Publishing to The Shop</h1>
+        <p>The Shop is a community marketplace where users can share their custom grids. Published grids are available
+            for anyone to download and use.</p>
+
+        <h2>Before you Publish</h2>
+        <div class="callout warning">
+            <strong>Check your IP Addresses:</strong> Remember that your actions likely contain local IP addresses
+            (e.g., 192.168.1.50). Users who download your grid will need to update these. Consider adding a "README"
+            action or clear labels.
+        </div>
+        <div class="callout tip">
+            <strong>Sanitize Secrets:</strong> Ensure you aren't accidentally sharing API keys or passwords in the
+            headers or body of your actions. The app <strong>does not</strong> automatically strip these values.
+        </div>
+
+        <h2>Step-by-Step Guide</h2>
+
+        <h3>1. Prepare your Grid</h3>
+        <p>Ensure your grid has a clear <strong>Name</strong>. You can edit this in the Grid Settings.</p>
+
+        <h3>2. Upload to Shop</h3>
+        <ol>
+            <li>Go to the <strong>Shop</strong> tab in the main app.</li>
+            <li>Tap the <strong>Upload</strong> button (or "Publish Grid").</li>
+            <li>Select the grid you wish to publish from the list.</li>
+            <li>Fill in a <strong>Title</strong>, <strong>Description</strong> (Markdown supported), and select a
+                <strong>Category</strong>.</li>
+            <li>Tap <strong>Upload Grid</strong>.</li>
+        </ol>
+
+        <h3>3. Success</h3>
+        <p>Once uploaded, your grid is immediately available in the Shop for other users to discover.</p>
+
+        <h2>Updating a Grid</h2>
+        <p>To update a grid you've already published, simply upload it again. The system detects if you are the creator
+            and may create a new version or overwrite the existing one depending on the changes.</p>
+
+        <h2>Removing a Grid</h2>
+        <p>Currently, grids cannot be deleted manually from the app to prevent accidental data loss. If you need a grid
+            removed, please contact support.</p>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

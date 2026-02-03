@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Protocol Reference - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>HTTP Protocol Reference</h1>
+        <p>The Hypertext Transfer Protocol (HTTP) is the foundation of data communication for the World Wide Web and is
+            the primary way Control It interacts with IoT devices, web services, and APIs.</p>
+
+        <h2>Supported Features</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <strong>Methods</strong>
+                <p>GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS</p>
+            </div>
+            <div class="feature-item">
+                <strong>Security</strong>
+                <p>HTTP and HTTPS (SSL/TLS) with self-signed cert support</p>
+            </div>
+            <div class="feature-item">
+                <strong>Auth</strong>
+                <p>Basic, Bearer Token, API Key (Header/Query)</p>
+            </div>
+            <div class="feature-item">
+                <strong>Network</strong>
+                <p>IPv4, IPv6, Local Network (Bonjour/mDNS resolving)</p>
+            </div>
+        </div>
+
+        <h2>Authentication Standards</h2>
+
+        <h3>Basic Authentication</h3>
+        <p>Basic Auth encodes a username and password into a Base64 string. Use this format in the
+            <strong>Headers</strong> section:</p>
+        <div class="code-block">
+            <code>Authorization: Basic &lt;Base64-Encoded-Credentials&gt;</code>
+        </div>
+        <p><em>Example:</em> To authenticate user `admin` with password `1234`, you would encode `admin:1234` to
+            `YWRtaW46MTIzNA==`.</p>
+
+        <h3>Bearer Token (OAuth 2.0)</h3>
+        <p>Common for modern APIs. The token is sent in the Authorization header:</p>
+        <div class="code-block">
+            <code>Authorization: Bearer &lt;Your-Access-Token&gt;</code>
+        </div>
+
+        <h3>API Keys</h3>
+        <p>API keys can be passed in two ways, depending on the service:</p>
+        <ul>
+            <li><strong>Header:</strong> `x-api-key: 12345abcdef`</li>
+            <li><strong>Query Parameter:</strong> `http://api.example.com/data?key=12345abcdef`</li>
+        </ul>
+
+        <h2>Content & Body</h2>
+        <p>When sending data (POST/PUT), you must specify the <code>Content-Type</code> header so the receiver knows how
+            to parse it. Control It defaults to `application/json` if not specified.</p>
+
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Content-Type</th>
+                    <th>Usage</th>
+                    <th>Example Body</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>application/json</code></td>
+                    <td>Modern APIs, IoT</td>
+                    <td><code>{"on":true, "bri":255}</code></td>
+                </tr>
+                <tr>
+                    <td><code>application/x-www-form-urlencoded</code></td>
+                    <td>Web Forms, Older APIs</td>
+                    <td><code>state=on&brightness=100</code></td>
+                </tr>
+                <tr>
+                    <td><code>text/plain</code></td>
+                    <td>Simple commands</td>
+                    <td><code>POWER ON</code></td>
+                </tr>
+                <tr>
+                    <td><code>application/xml</code></td>
+                    <td>Legacy SOAP/XML services</td>
+                    <td><code>&lt;command&gt;on&lt;/command&gt;</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Status Codes</h2>
+        <p>Control It uses status codes to determine if a request was successful.</p>
+        <ul>
+            <li><span class="badge success">2xx</span> <strong>Success:</strong> The action completed (e.g., 200 OK, 201
+                Created).</li>
+            <li><span class="badge warning">3xx</span> <strong>Redirection:</strong> The client must take additional
+                action.</li>
+            <li><span class="badge error">4xx</span> <strong>Client Error:</strong> You made a mistake (e.g., 400 Bad
+                Request, 401 Unauthorized, 404 Not Found).</li>
+            <li><span class="badge error">5xx</span> <strong>Server Error:</strong> The server failed (e.g., 500
+                Internal Server Error, 503 Service Unavailable).</li>
+        </ul>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

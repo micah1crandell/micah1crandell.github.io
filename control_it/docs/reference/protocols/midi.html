@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Protocol Reference - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>MIDI Protocol Reference</h1>
+        <p>Control It is a fully compliant CoreMIDI device. It supports sending and receiving MIDI messages over USB,
+            Bluetooth, and Network (RTP-MIDI).</p>
+
+        <h2>Supported Message Types</h2>
+        <p>All standard voice messages are supported on all 16 channels:</p>
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Hex Status</th>
+                    <th>Data 1</th>
+                    <th>Data 2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Note Off</strong></td>
+                    <td><code>8x</code></td>
+                    <td>Note No. (0-127)</td>
+                    <td>Velocity (0-127)</td>
+                </tr>
+                <tr>
+                    <td><strong>Note On</strong></td>
+                    <td><code>9x</code></td>
+                    <td>Note No. (0-127)</td>
+                    <td>Velocity (0-127)</td>
+                </tr>
+                <tr>
+                    <td><strong>Poly Aftertouch</strong></td>
+                    <td><code>Ax</code></td>
+                    <td>Note No. (0-127)</td>
+                    <td>Pressure (0-127)</td>
+                </tr>
+                <tr>
+                    <td><strong>Control Change (CC)</strong></td>
+                    <td><code>Bx</code></td>
+                    <td>Controller (0-127)</td>
+                    <td>Value (0-127)</td>
+                </tr>
+                <tr>
+                    <td><strong>Program Change</strong></td>
+                    <td><code>Cx</code></td>
+                    <td>Program (0-127)</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <td><strong>Channel Aftertouch</strong></td>
+                    <td><code>Dx</code></td>
+                    <td>Pressure (0-127)</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <td><strong>Pitch Bend</strong></td>
+                    <td><code>Ex</code></td>
+                    <td>LSB (0-127)</td>
+                    <td>MSB (0-127)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>System Messages</h2>
+        <p>Control It can also send global system messages, which are independent of channel.</p>
+        <ul>
+            <li><strong>Sysex:</strong> Not currently customizable via the UI.</li>
+            <li><strong>MMC (MIDI Machine Control):</strong> Supported commands include Play, Stop, Record, Rewind, Fast
+                Forward (7F 7F 06 xx).</li>
+            <li><strong>Real-Time:</strong> Start, Stop, Continue, and Clock messages are handled by the MIDI Clock
+                Engine.</li>
+        </ul>
+
+        <h2>RPN and NRPN</h2>
+        <p>Registered (RPN) and Non-Registered Parameter Numbers (NRPN) are complex messages typically used for detailed
+            synth control (like envelope attack or filter resonance) that require 14-bit resolution.</p>
+        <p>Since RPN/NRPN are actually a sequence of multiple CC messages (CC 98/99/6/38), you must currently construct
+            these using a <strong>Multistep Action</strong>:</p>
+        <ol>
+            <li>CC 99 (NRPN MSB)</li>
+            <li>CC 98 (NRPN LSB)</li>
+            <li>CC 6 (Data Entry MSB)</li>
+            <li>CC 38 (Data Entry LSB) - Optional for fine control</li>
+        </ol>
+
+        <h2>Network MIDI (RTP-MIDI)</h2>
+        <p>Control It fully supports Apple's RTP-MIDI protocol over WiFi.</p>
+        <ul>
+            <li><strong>Latency:</strong> Typically 1-4ms on a good 5GHz WiFi network.</li>
+            <li><strong>Jitter:</strong> The app timestamps all outgoing packets to ensure accurate timing
+                reconstruction by the receiver (especially important for jitter-sensitive applications like Clock).</li>
+        </ul>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

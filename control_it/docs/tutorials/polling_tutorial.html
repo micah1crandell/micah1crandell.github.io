@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Dive: Polling & JSON - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Deep Dive: Polling & JSON</h1>
+        <p>Static buttons are boring. Use <strong>Polling</strong> to make your interface come alive by fetching data
+            from your devices and updating your buttons in real-time.</p>
+
+        <h2>How it works</h2>
+        <p>When you enable dynamic titles on an action, Control It sends the request repeatedly at a set interval (e.g.,
+            every
+            2 seconds). It then parses the response to extract a value.</p>
+
+        <h3>Basic Parsing Modes</h3>
+        <ul>
+            <li><strong>Status Code:</strong> Use the HTTP status code (e.g., 200 = Green, 500 = Red).</li>
+            <li><strong>Full Response:</strong> Display the entire body text on the button.</li>
+            <li><strong>JSON Key:</strong> Extract a specific value from a JSON response.</li>
+            <li><strong>JSON Path:</strong> Use complex queries to find data deep within the response.</li>
+        </ul>
+
+        <h2>Mastering JSON Paths</h2>
+        <p>Most modern APIs (Hue, WLED, Home Assistant) return JSON. Control It supports standard dot-notation and array
+            indexing.</p>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Simple Key</h3>
+                <p>JSON: <code>{"brightness": 128}</code></p>
+                <p>Path: <code>jsonKey=brightness</code></p>
+                <p>Result: <strong>128</strong></p>
+            </div>
+            <div class="card">
+                <h3>Nested Object</h3>
+                <p>JSON: <code>{"state": {"on": true}}</code></p>
+                <p>Path: <code>jsonPath=state.on</code></p>
+                <p>Result: <strong>true</strong></p>
+            </div>
+            <div class="card">
+                <h3>Arrays</h3>
+                <p>JSON: <code>{"lights": ["Red", "Blue"]}</code></p>
+                <p>Path: <code>jsonPath=lights[0]</code></p>
+                <p>Result: <strong>Red</strong></p>
+            </div>
+        </div>
+
+        <h2>Dynamic Styling</h2>
+        <p>You can change the button's background color based on the parsed value.</p>
+
+        <h3>Logic Rules</h3>
+        <ul>
+            <li><strong>Numeric:</strong> <code>> 50</code>, <code>< 10</code>, <code>== 100</code></li>
+            <li><strong>Text:</strong> <code>== "Running"</code>, <code>contains "Error"</code></li>
+            <li><strong>Boolean:</strong> <code>true</code> / <code>false</code></li>
+        </ul>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

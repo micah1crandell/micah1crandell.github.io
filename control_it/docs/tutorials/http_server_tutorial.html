@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Server (Stream Deck) - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Using the HTTP Server</h1>
+        <p>Turn your iPhone or iPad into a web server! This allows external devices, scripts, or apps (like Stream Deck)
+            to
+            trigger actions inside Control It by simply loading a URL.</p>
+
+        <h2>Enabling the Server</h2>
+        <ol>
+            <li>Go to <strong>Settings > Engines > HTTP Trigger Server</strong>.</li>
+            <li>Tap <strong>Start Server</strong>.</li>
+            <li>Note the <strong>Server URL</strong> (e.g., <code>http://192.168.1.50:8080</code>).</li>
+        </ol>
+
+        <h2>Creating a Trigger</h2>
+        <p>Instead of a fixed API, you define your own custom endpoints.</p>
+        <ol>
+            <li>Go to the <strong>Triggers</strong> tab in the Server settings.</li>
+            <li>Tap <strong>+</strong> to create a new trigger.</li>
+            <li><strong>Name:</strong> A friendly name (e.g. "Scene 1").</li>
+            <li><strong>Endpoint:</strong> The URL path (e.g. <code>/actions/scene1</code>).</li>
+            <li><strong>Method:</strong> GET (or POST/PUT).</li>
+            <li><strong>Action:</strong> Link it to the grid action you want to fire.</li>
+        </ol>
+
+        <h2>Triggering Actions</h2>
+        <p>Once created, you can trigger the action by sending a request to the full URL:</p>
+        <pre><code>http://&lt;Your-IP&gt;:8080/actions/scene1</code></pre>
+        <p>If successful, the server will respond with <code>200 OK</code>.</p>
+
+        <h2>Security</h2>
+        <p>You can optionally enable <strong>Bearer Token Authentication</strong> for each trigger if you need to secure
+            your endpoints.</p>
+
+        <h2>Example: Stream Deck Integration</h2>
+        <p>You can use a Stream Deck to fire Control It actions.</p>
+        <ol>
+            <li>In the Elgato Stream Deck software, drag in a <strong>Website</strong> action.</li>
+            <li>Set the URL to your trigger link (e.g. <code>http://192.168.1.50:8080/actions/scene1</code>).</li>
+            <li>Check "GET request in background".</li>
+        </ol>
+        <p>Now, pushing the physical button on your Stream Deck will instantly fire the associated action in Control It!
+        </p>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

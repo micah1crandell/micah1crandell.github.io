@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polling & JSONPath Reference - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Polling & Response Parsing</h1>
+        <p>Control It can periodically query any HTTP endpoint and update button states (Title, Color, On/Off) based on
+            the response.</p>
+        <p><strong>Performance Note:</strong> Polling runs on a background thread. While efficient, setting very short
+            intervals (e.g., &lt; 500ms) for many buttons simultaneously can impact battery life and network
+            performance.</p>
+
+        <h2>Parsing Strategy</h2>
+        <p>The app attempts to parse responses in the following order of precedence:</p>
+        <ol>
+            <li><strong>JSONPath:</strong> If the response is valid JSON and a JSONPath is provided.</li>
+            <li><strong>JSON Key:</strong> If a simple top-level key is provided.</li>
+            <li><strong>Status Code:</strong> Checks if the HTTP status code matches the rule (e.g., "200").</li>
+            <li><strong>Full Body:</strong> Checks if the raw response body exactly matches a string.</li>
+        </ol>
+
+        <h2>JSONPath Cheat Sheet</h2>
+        <p>Control It uses a standard implementation of JSONPath. Below are common patterns for extracting data:</p>
+        <div class="example-box">
+            <p><strong>Example JSON:</strong></p>
+            <pre><code class="language-json">{
+  "store": {
+    "book": [ 
+      { "category": "fiction", "price": 8.95 }, 
+      { "category": "science", "price": 12.99 }
+    ],
+    "isOpen": true
+  }
+}</code></pre>
+        </div>
+
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Expression</th>
+                    <th>Result</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>$.store.isOpen</code></td>
+                    <td><code>true</code></td>
+                    <td>Direct object access.</td>
+                </tr>
+                <tr>
+                    <td><code>$.store.book[0].price</code></td>
+                    <td><code>8.95</code></td>
+                    <td>First item in an array.</td>
+                </tr>
+                <tr>
+                    <td><code>$.store.book[-1].category</code></td>
+                    <td><code>"science"</code></td>
+                    <td>Last item in an array.</td>
+                </tr>
+                <tr>
+                    <td><code>$..price</code></td>
+                    <td><code>[8.95, 12.99]</code></td>
+                    <td>Recursive descent (find all prices).</td>
+                </tr>
+                <tr>
+                    <td><code>$.store.book[?(@.price < 10)].category</code></td>
+                    <td><code>"fiction"</code></td>
+                    <td>Filter expression.</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

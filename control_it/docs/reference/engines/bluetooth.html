@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetooth Bridge Engine - Control It Docs</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Bluetooth Web Bridge</h1>
+        <p>The Bluetooth Web Bridge is a specialized engine that allows the iPhone to broadcast actions to a connected
+            web browser or other BLE central device.</p>
+
+        <h2>Use Cases</h2>
+        <p><strong>Relaying Actions:</strong> Use a laptop or desktop computer to relay HTTP requests from your phone.
+            This is useful when the phone is on a cellular network but needs to control devices on the computer's local
+            network (LAN).</p>
+
+        <h2>How it works</h2>
+        <ol>
+            <li>The website (or central) connects to the iPhone (Peripheral) via Bluetooth Low Energy.</li>
+            <li>When you fire an HTTP action on the iPhone, it broadcasts the details (Target IP, Path, Body) via a
+                Notification.</li>
+            <li>The connected website receives the data and can choose to execute the request locally.</li>
+        </ol>
+
+        <h2>Protocol Specifications</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <strong>Service UUID</strong>
+                <p><code>C0EECD00-1001-1001-1001-C0EECD000001</code></p>
+            </div>
+            <div class="feature-item">
+                <strong>Characteristic</strong>
+                <p><code>C0EECD00-1001-1001-1001-C0EECD000002</code> (Notify/Read)</p>
+            </div>
+            <div class="feature-item">
+                <strong>Payload Limit</strong>
+                <p>BLE MTU limits may require data fragmentation, though Control It attempts to fit payloads within
+                    standard limits. Large bodies may be truncated.</p>
+            </div>
+        </div>
+
+        <h2>Browser Support</h2>
+        <p>This feature relies on the <strong>Web Bluetooth API</strong>:</p>
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Browser</th>
+                    <th>Support</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Chrome (Desktop/Android)</strong></td>
+                    <td><span class="badge success">Yes</span></td>
+                    <td>Native support.</td>
+                </tr>
+                <tr>
+                    <td><strong>Edge (Desktop)</strong></td>
+                    <td><span class="badge success">Yes</span></td>
+                    <td>Native support.</td>
+                </tr>
+                <tr>
+                    <td><strong>Bluefy (iOS)</strong></td>
+                    <td><span class="badge success">Yes</span></td>
+                    <td>Specialized browser for iOS.</td>
+                </tr>
+                <tr>
+                    <td><strong>Safari</strong></td>
+                    <td><span class="badge error">No</span></td>
+                    <td>Not supported.</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

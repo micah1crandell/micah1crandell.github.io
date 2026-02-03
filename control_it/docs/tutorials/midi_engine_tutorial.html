@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering the MIDI Engine - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Mastering the MIDI Engine</h1>
+        <p>The MIDI Engine allows you to run Control It actions using physical hardware controllers (like a Korg
+            nanoKONTROL or MIDI footswitch), even while the app is in the background.</p>
+
+        <h2>Concept</h2>
+        <p>Unlike standard MIDI Mapping (which controls the UI), the MIDI Engine is a separate "layer" that listens for
+            incoming MIDI messages and fires actions directly. This means you can trigger an HTTP request or an OSC
+            command without ever touching the screen.</p>
+
+        <h2>How to Setup</h2>
+
+        <h3>1. Connect Hardware</h3>
+        <p>Connect your MIDI controller via USB (using the camera adapter) or Bluetooth MIDI.</p>
+
+        <h3>2. Create a Trigger</h3>
+        <p>Go to <strong>Settings > Engines > MIDI Engine</strong> and tap <strong>+</strong>.</p>
+
+        <h3>3. Use "Learn Mode"</h3>
+        <p>Instead of manually typing channels and note numbers:</p>
+        <ol>
+            <li>Tap the <strong>Learn</strong> button.</li>
+            <li>Press the physical button or key on your MIDI controller.</li>
+            <li>The app will automatically detect the Message Type, Channel, and Value.</li>
+        </ol>
+
+        <h3>4. Assign an Action</h3>
+        <p>Choose what happens when this trigger fires. You can select any existing Action from your grids.</p>
+
+        <h2>Background Audio</h2>
+        <div class="callout info">
+            <strong>Important:</strong> To keep the MIDI Engine running when you lock your phone or switch apps, ensure
+            <strong>Background Audio</strong> mode is enabled in Settings. This plays a silent audio track to keep the
+            operating system from suspending the app.
+        </div>
+
+        <h2>Advanced: Ranges</h2>
+        <p>Triggers can also work with ranges (e.g., faders). You can set a trigger to fire only when a CC value is
+            within a specific range (e.g., 100-127), allowing you to create "zones" on a single fader.</p>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

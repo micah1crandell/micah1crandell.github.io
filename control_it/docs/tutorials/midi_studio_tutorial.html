@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Studio Setup - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>MIDI Studio Integration</h1>
+        <p>Control It is a fully compliant CoreMIDI device, capable of sending note, CC, and program change data to any
+            hardware or software in your studio.</p>
+
+        <h2>Wireless Control with Network MIDI</h2>
+        <p>You can send MIDI over WiFi to your Mac or PC with near-zero latency using Apple's built-in Network MIDI
+            driver (RTP-MIDI).</p>
+
+        <h3>Step 1: Configure your Mac/PC</h3>
+        <ol>
+            <li><strong>Mac:</strong> Open <strong>Audio MIDI Setup</strong> > Window > Show MIDI Studio. Double-click
+                the <strong>Network</strong> icon (Globe).</li>
+            <li><strong>PC:</strong> Use <a href="https://www.tobias-erichsen.de/software/rtpmidi.html"
+                    target="_blank">rtpMIDI</a> (free driver).</li>
+            <li>Create a Session named "Macbook" (or similar).</li>
+            <li>Enable "Anyone" can connect to me.</li>
+        </ol>
+
+        <h3>Step 2: Connect Control It</h3>
+        <ol>
+            <li>Open Control It > Settings > MIDI.</li>
+            <li>Tap <strong>Network MIDI Browser</strong>.</li>
+            <li>You should see your computer listed. Tap it to connect.</li>
+            <li>The status dot should turn Green.</li>
+        </ol>
+
+        <h2>Example: Ableton Live Setup</h2>
+        <p>Now that you are connected, let's map a button to start a clip in Ableton.</p>
+
+        <h3>1. Enable Remote Control</h3>
+        <p>In Ableton > Preferences > MIDI:</p>
+        <ul>
+            <li>Find "Network Session 1" (Input).</li>
+            <li>Turn on <strong>Remote</strong>.</li>
+        </ul>
+
+        <h3>2. Create the MIDI Action</h3>
+        <ol>
+            <li>Create a new Action in Control It.</li>
+            <li>Select <strong>MIDI</strong>.</li>
+            <li><strong>Type:</strong> Note On.</li>
+            <li><strong>Channel:</strong> 1.</li>
+            <li><strong>Value:</strong> Note 60 (C3), Velocity 127.</li>
+        </ol>
+
+        <h3>3. Map it</h3>
+        <p>Click "MIDI" in the top-right of Ableton (everything turns blue). Select a clip slot, then press your button
+            in Control It. Ableton will learn the note!</p>
+
+        <h2>Wired Connections</h2>
+        <p>Control It also supports wired USB MIDI interfaces connected via the Lightning/USB-C adapter. No
+            configuration is needed; they will appear automatically in the MIDI settings if your phone detects them.</p>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Shop (Community) - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>The Shop (Community Marketplace)</h1>
+        <p>The Shop is a centralized repository where users can publish, discover, and download community-created grids.
+            It allows you to share your work or quickly bootstrap a new control surface.</p>
+
+        <h2>Search & Discovery</h2>
+        <p>The Shop uses CloudKit's query capabilities to help you find content.</p>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <strong>Cloud Search</strong>
+                <p>Search queries are sent to the server to find matching Titles. The search supports prefix matching
+                    (e.g. "Stream" matches "StreamDeck").</p>
+            </div>
+            <div class="feature-item">
+                <strong>Categories</strong>
+                <p>Grids are organized into manually selected categories like Home, Work, Audio, Video, Lighting, and
+                    MIDI.</p>
+            </div>
+        </div>
+
+        <h2>Grid Validation</h2>
+        <p>To ensure a healthy ecosystem, uploads are validated client-side:</p>
+        <ol>
+            <li><strong>Size Check:</strong> Grids must be under <strong>1MB</strong> in size. This limit ensures fast
+                downloads for everyone. Large embedded images are the most common cause of hitting this limit.</li>
+            <li><strong>Format:</strong> The grid must be a valid exportable entity (JSON structure).</li>
+        </ol>
+
+        <div class="callout warning">
+            <strong>Security Note:</strong> The app does <strong>not</strong> modify your grid data during upload. Any
+            API keys, passwords, or personal IPs included in your actions <strong>will be published</strong>. Always
+            review your grid before uploading.
+        </div>
+
+        <h2>Versioning</h2>
+        <p>The Shop infrastructure supports versioning, allowing creators to push updates to their grids without
+            breaking existing downloads.</p>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

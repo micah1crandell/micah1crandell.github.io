@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting - Control It Docs</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Troubleshooting</h1>
+
+        <h2>Connectivity Issues</h2>
+        <div class="faq-item">
+            <h3>App cannot find devices on my network</h3>
+            <p>Ensure you have granted <strong>Local Network Privacy</strong> permissions. Go to iOS Settings > Privacy
+                > Local Network and make sure "Control It" is toggled ON. Without this, the app cannot communicate with
+                other devices on your WiFi.</p>
+        </div>
+
+        <h2>HTTP Actions</h2>
+        <div class="faq-item">
+            <h3>"The Internet connection appears to be offline"</h3>
+            <p>This generic iOS error often means the app is blocked from the local network (see above) or the target IP
+                address is unreachable. Double-check your target IP and ensure your firewall isn't blocking port 80/443.
+            </p>
+        </div>
+
+        <h2>MIDI Issues</h2>
+        <div class="faq-item">
+            <h3>Triggers stop working when I lock my phone</h3>
+            <p>Go to Settings > MIDI Triggers and ensure <strong>Listening</strong> is enabled. This starts a background
+                audio session (silent track) to keep the app active. Note that this might pause other audio apps.</p>
+        </div>
+
+        <h2>Collaborative Grids</h2>
+        <div class="faq-item">
+            <h3>"Permission Failure" when joining a grid</h3>
+            <p>You must be signed into iCloud and have <strong>iCloud Drive</strong> enabled. The app uses your Apple ID
+                for secure authentication.</p>
+        </div>
+
+        <div class="callout warning">
+            <strong>Still stuck?</strong> Try force-quitting the app and restarting. If issues persist, check the
+            "Console" logs in the app diagnostics (if available) or contact support.
+        </div>
+
+    </main>
+
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

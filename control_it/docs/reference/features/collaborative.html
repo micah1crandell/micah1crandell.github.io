@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Grids Reference - Control It</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Collaborative Grids Architecture</h1>
+        <p>The Collaborative Grids feature is built on top of <strong>CloudKit</strong> and Apple's <strong>CloudKit
+                Sharing</strong> UI. This ensures secure, authenticated, and reliable synchronization across devices.
+        </p>
+
+        <h2>Network Architecture</h2>
+        <p>Unlike local peer-to-peer solutions, Control It uses a cloud-first approach:</p>
+        <ul>
+            <li><strong>Storage:</strong> Grids are stored in a custom `CollaborativeGridsZone` within your private
+                CloudKit database.</li>
+            <li><strong>Sharing:</strong> When shared, a `CKShare` record is created, granting access to invited
+                participants.</li>
+            <li><strong>Transport:</strong> All data transfer occurs over HTTPS to iCloud servers. No direct
+                device-to-device connection is required.</li>
+        </ul>
+
+        <h2>Sync Synchronization</h2>
+        <p>Changes are propagated using CloudKit Subscriptions:</p>
+        <ol>
+            <li><strong>Push:</strong> When you make a change, the app uploads the modified `CKRecord`.</li>
+            <li><strong>Notification:</strong> CloudKit sends a silent push notification to all other participants.</li>
+            <li><strong>Pull:</strong> Devices receive the notification and fetch the latest changes in the background.
+            </li>
+        </ol>
+
+        <h2>Conflict Resolution</h2>
+        <p>The system employs a <strong>Last Writer Wins (LWW)</strong> strategy for conflict resolution.</p>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Scenario</h3>
+                <p>User A and User B edit the same button simultaneously. User A saves first. User B saves milliseconds
+                    later.</p>
+            </div>
+            <div class="card">
+                <h3>Outcome</h3>
+                <p>User B's save operation will trigger a "Server Record Changed" error. The app automatically fetches
+                    the latest server version (User A's change), re-applies User B's changes on top, and attempts to
+                    save again. If the fields overlap, User B's value will persist.</p>
+            </div>
+        </div>
+
+        <h2>Permissions & Roles</h2>
+        <p>Permissions are managed via the standard CloudKit Share options:</p>
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Permission Level</th>
+                    <th>Capabilities</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Owner</strong></td>
+                    <td>Full access. Can add/remove users, stop sharing, and delete the grid.</td>
+                </tr>
+                <tr>
+                    <td><strong>Can Make Changes</strong></td>
+                    <td>Can edit, add, or remove actions. Can invite others if allowed by Owner.</td>
+                </tr>
+                <tr>
+                    <td><strong>View Only</strong></td>
+                    <td>Can use the grid (trigger actions) but cannot modify the layout or settings.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Requirement</h2>
+        <div class="callout warning">
+            <strong>iCloud Required:</strong> All participants must be signed into iCloud with iCloud Drive enabled to
+            join and sync shared grids.
+        </div>
+
+    </main>
+    <script src="../../js/main.js"></script>
+</body>
+
+</html>

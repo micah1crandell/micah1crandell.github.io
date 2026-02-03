@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Grids - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Collaborative Grids</h1>
+        <p>Control It allows you to transform any local grid into a <strong>shared workspace</strong> stored safely in
+            iCloud.
+            Collaborate in real-time with your team, whether you are in the same room or across the globe.</p>
+
+        <h2>Getting Started</h2>
+        <p>To verify a grid is collaborative, look for the "Collaboration" status in your dashboard or the distinctive
+            <strong>cloud icon</strong> on your grid tile.
+        </p>
+
+        <h2>Creating & Sharing</h2>
+        <h3>Making a Grid Collaborative</h3>
+        <ol>
+            <li>Open any local grid's settings.</li>
+            <li>Tap <strong>"Share Grid"</strong>.</li>
+            <li>This uploads your grid to iCloud and creates a secure link.</li>
+        </ol>
+
+        <h3>Inviting Others</h3>
+        <p>Once shared, you can invite people via Messages, Mail, or by copying the link. You manage permissions (View
+            Only vs. Can Make Changes) directly from the share sheet.</p>
+
+        <h2>Syncing & Conflicts</h2>
+
+        <h3>Auto-Sync (Recommended)</h3>
+        <p>By default, <strong>Auto Push</strong> and <strong>Auto Pull</strong> are enabled.</p>
+        <ul>
+            <li>Changes you make are automatically uploaded.</li>
+            <li>Updates from others are automatically downloaded.</li>
+        </ul>
+
+        <h3>Manual Sync</h3>
+        <p>If you prefer manual control, you can toggle these settings off in the Dashboard. Use the <strong>"Sync
+                Now"</strong> button to manually check for updates.</p>
+
+        <h3>Conflict Resolution</h3>
+        <p>If two people change the same action at the same time, the <strong>latest change wins</strong>. Control It
+            handles merging smartly, preserving unique changes to different parts of the grid.</p>
+
+        <h2>History & Tracking</h2>
+        <p>Tap <strong>"History"</strong> on the Dashboard to see a timeline of every change:</p>
+        <ul>
+            <li>Who made the change?</li>
+            <li>What exactly changed? (e.g., "Updated HTTP Endpoint")</li>
+            <li>When did it happen?</li>
+        </ul>
+        <p>This audit trail ensures you always know the state of your grid and can troubleshoot unexpected behavior.</p>
+
+        <h3>Restoring Versions</h3>
+        <p>If you need to revert to a previous state:</p>
+        <ol>
+            <li>Open the <strong>History</strong> view.</li>
+            <li>Tap on any commit to view its details.</li>
+            <li>Scroll to the bottom and tap <strong>"Restore this Version"</strong>.</li>
+        </ol>
+        <p>This will create a <em>new</em> commit that matches the state of the selected version, ensuring your history
+            remains linear and safe.</p>
+
+        <h2>Importing Grids</h2>
+        <p>To join a shared grid:</p>
+        <ol>
+            <li><strong>Copy the invitation link</strong> you received.</li>
+            <li>Tap the <strong>"+" button</strong> to create a new grid.</li>
+            <li>Scroll down to the <strong>"Join Existing"</strong> section.</li>
+            <li>Paste the link and tap the arrow to import.</li>
+        </ol>
+
+        <h2>Leaving & Deleting</h2>
+        <h3>Leaving a Grid</h3>
+        <p>You can leave a shared grid from the <strong>Settings</strong> menu. This removes it from your device but
+            keeps it alive for other members.</p>
+
+        <h3>Stopping Sharing (Owner Only)</h3>
+        <p>If you are the owner, you can "Stop Sharing" to remove access for everyone and revert the grid to a private
+            local copy.</p>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

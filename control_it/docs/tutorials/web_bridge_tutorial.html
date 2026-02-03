@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetooth Web Bridge - Control It</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Sidebar injected by ../js/main.js -->
+    </nav>
+
+    <main class="main-content">
+        <h1>Bluetooth Web Bridge</h1>
+        <p>The <strong>Bluetooth Web Bridge</strong> allows you to use a device on your local network (like a laptop or
+            another phone) as a relay node. This is particularly useful if your main controller (iPhone) is on a
+            different network (e.g., 5G/LTE) but you still want to control local devices.</p>
+
+        <h2>How it works</h2>
+        <p>Your iPhone broadcasts HTTP commands via <strong>Bluetooth Low Energy (BLE)</strong>. A web page running on a
+            local device receives these commands and executes the actual HTTP request on its local network.</p>
+        <pre>
+iPhone (5G/LTE) --[Bluetooth]--> Laptop/Bridge (WiFi) --[HTTP]--> Local Device
+        </pre>
+
+        <h2>Requirements</h2>
+        <ul>
+            <li><strong>Bridge Device:</strong> A computer (Chrome/Edge) or device running a Web Bluetooth capable
+                browser.</li>
+            <li><strong>Proximity:</strong> The iPhone must be within Bluetooth range of the bridge device.</li>
+        </ul>
+
+        <h2>Step-by-Step Guide</h2>
+
+        <h3>1. Enable the Bridge on iPhone</h3>
+        <p>Open Control It and go to <strong>Settings > Engines > Bluetooth Bridge</strong>. Tap <strong>Start
+                Advertising</strong>. The status should change to "Ready".</p>
+
+        <h3>2. Open the Bridge Page</h3>
+        <p>On your local device (connected to the target WiFi), navigate to the Web Bridge page (e.g.
+            <code>https://control-it-app.com/bridge</code>).</p>
+        <div class="callout warning">
+            <strong>Security:</strong> Ensure the bridge page is allowed to make local network requests. Modern browsers
+            may block requests from HTTPS to local HTTP IP addresses ("Mixed Content"). You may need to use a
+            specialized browser (like Bluefy on iOS) or adjust browser flags.
+        </div>
+
+        <h3>3. Connect</h3>
+        <ol>
+            <li>Click the <strong>Connect</strong> button on the website.</li>
+            <li>Select <strong>ControlIt-Bridge</strong> from the scanned device list.</li>
+            <li>Click <strong>Pair</strong>.</li>
+        </ol>
+
+        <h3>4. Control</h3>
+        <p>Once connected, any HTTP Action you trigger on your iPhone will be sent to the Bridge. The Bridge will then
+            attempt to fetch the URL. This allows you to control local smart home devices without your phone being
+            connected to WiFi.</p>
+
+        <div class="callout info">
+            <strong>Fallback:</strong> If the Bridge is not connected, the App will attempt to execute the HTTP request
+            directly from the phone in the background.
+        </div>
+
+    </main>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>
