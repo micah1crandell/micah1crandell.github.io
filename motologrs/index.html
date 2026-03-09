@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoLog RS | Dial In Your Ride</title>
+
+    <!-- Anti-Flash Inline Styles (Executes instantly) -->
+    <style>
+        html {
+            background-color: #121212;
+        }
+
+        body {
+            margin: 0;
+            background-color: #121212;
+        }
+
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background-color: #CE0000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: sans-serif;
+        }
+    </style>
+
+    <!-- Preload critical images to prevent lag -->
+    <link rel="preload" as="image"
+        href="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+    <link rel="preload" as="image"
+        href="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ducati: '#CE0000',
+                        ducatiDark: '#990000',
+                        accentYellow: '#FFEA00',
+                        surface: '#1E1E1E',
+                        darkBg: '#121212'
+                    },
+                    fontFamily: {
+                        heading: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Drama & Effects */
+        body {
+            color: #F4F4F5;
+            overflow-x: hidden;
+        }
+
+        /* Angular Slanted Buttons */
+        .clip-slant {
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+
+        .clip-slant-reverse {
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+        }
+
+        /* Glowing Red Effects */
+        .glow-red {
+            box-shadow: 0 0 30px rgba(206, 0, 0, 0.4);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .glow-red:hover {
+            box-shadow: 0 0 50px rgba(206, 0, 0, 0.8);
+        }
+
+        /* Float Animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(1deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch::before {
+            left: 3px;
+            text-shadow: -2px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -3px;
+            text-shadow: -2px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(32px, 9999px, 28px, 0);
+            }
+
+            20% {
+                clip: rect(13px, 9999px, 94px, 0);
+            }
+
+            40% {
+                clip: rect(102px, 9999px, 5px, 0);
+            }
+
+            60% {
+                clip: rect(45px, 9999px, 89px, 0);
+            }
+
+            80% {
+                clip: rect(76px, 9999px, 11px, 0);
+            }
+
+            100% {
+                clip: rect(2px, 9999px, 67px, 0);
+            }
+        }
+
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* UI Mockup Frame */
+        .phone-frame {
+            border: 8px solid #222;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 0 4px #000;
+            background: #000;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Intro Loader Animation */
+        #page-loader {
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        #page-loader.hide {
+            animation: raceAway 0.8s cubic-bezier(0.7, 0, 0.1, 1) forwards;
+        }
+
+        .loader-content {
+            /* Simulates a high-revving engine vibration */
+            animation: enginePulse 0.05s infinite alternate;
+        }
+
+        @keyframes enginePulse {
+            from {
+                transform: translate(0px, 0px);
+            }
+
+            to {
+                transform: translate(-2px, 1px);
+            }
+        }
+
+        @keyframes raceAway {
+            0% {
+                transform: translateX(0) skewX(0);
+            }
+
+            20% {
+                transform: translateX(-3%) skewX(4deg);
+            }
+
+            /* Revs back / squats */
+            100% {
+                transform: translateX(150%) skewX(-25deg);
+            }
+
+            /* Launches forward */
+        }
+    </style>
+</head>
+
+<body class="font-body antialiased selection:bg-ducati selection:text-white overflow-hidden">
+
+    <!-- Racing Intro Loader -->
+    <div id="page-loader">
+        <div class="loader-content flex items-center gap-3 text-white">
+            <i class="fa-solid fa-motorcycle text-5xl"></i>
+            <span class="font-heading font-bold text-5xl tracking-widest uppercase">Loading<span
+                    class="text-black">...</span></span>
+        </div>
+    </div>
+
+    <!-- Background Grid Effect -->
+    <div class="fixed inset-0 pointer-events-none z-0 opacity-20"
+        style="background-image: linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px); background-size: 50px 50px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);">
+    </div>
+    <div class="fixed inset-0 pointer-events-none z-0 bg-gradient-to-t from-darkBg via-transparent to-darkBg"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 bg-darkBg/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 sm:h-20">
+            <div class="flex-shrink-0 flex items-center gap-1 sm:gap-2">
+                <i class="fa-solid fa-motorcycle text-ducati text-xl sm:text-2xl"></i>
+                <span class="font-heading font-bold text-2xl sm:text-3xl tracking-widest text-white">MOTOLOG<span
+                        class="text-ducati">RS</span></span>
+            </div>
+            <div>
+                <a href="#download"
+                    class="bg-ducati text-white font-bold py-2 px-4 sm:px-6 text-sm sm:text-base hover:bg-white hover:text-ducati transition-colors duration-300 clip-slant uppercase tracking-wide">Download<span
+                        class="hidden sm:inline"> Free</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header
+        class="relative pt-28 pb-16 lg:pt-48 lg:pb-32 overflow-hidden z-10 flex flex-col justify-center min-h-screen">
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-ducati rounded-full blur-[150px] opacity-20 pointer-events-none">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+                <!-- Text -->
+                <div class="text-center lg:text-left z-20">
+                    <div
+                        class="inline-block px-4 py-1 mb-4 sm:mb-6 border border-ducati text-ducati font-heading font-bold tracking-widest uppercase text-lg bg-ducati/10 backdrop-blur-sm rounded-full">
+                        <i class="fa-solid fa-bolt mr-2"></i> Your Digital Garage
+                    </div>
+                    <h1
+                        class="font-heading font-bold text-6xl sm:text-8xl lg:text-[100px] leading-none tracking-normal mb-4 sm:mb-6 uppercase">
+                        LOG. TRACK. <br><span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-ducati to-red-500">MAINTAIN.</span>
+                    </h1>
+                    <p class="text-gray-400 text-base sm:text-xl mb-8 sm:mb-10 font-medium max-w-xl mx-auto lg:mx-0">
+                        Drop the notebook. MotoLog RS is the digital garage for riders who take their bike seriously.
+                        Log every ride, track every service interval, and always know what's coming next — so you can
+                        focus on riding, not remembering.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#download"
+                            class="bg-ducati text-white font-heading font-bold text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-10 clip-slant glow-red hover:bg-white hover:text-ducati transition-all flex items-center justify-center gap-3 uppercase tracking-wider">
+                            <i class="fa-brands fa-apple text-xl sm:text-2xl"></i> Get it on iOS
+                        </a>
+                        <a href="#features"
+                            class="bg-surface text-white border border-white/20 font-heading font-bold text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-10 clip-slant-reverse hover:bg-white/10 transition-all flex items-center justify-center uppercase tracking-wider">
+                            See The Tech
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Image / Phone -->
+                <div class="relative z-20 mx-auto w-full max-w-[320px] sm:max-w-[380px] perspective-1000">
+                    <div class="phone-frame animate-float transform rotate-y-[-10deg] rotate-x-[5deg]">
+                        <img src="images/IMG_5061.PNG" alt="MotoLog RS Garage Interface"
+                            class="w-full h-auto object-cover pointer-events-none">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 sm:py-24 relative z-10 bg-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 sm:mb-20 reveal">
+                <h2 class="text-ducati font-bold tracking-widest uppercase text-sm mb-2">The Specs</h2>
+                <h3 class="font-heading font-bold text-4xl sm:text-5xl uppercase">Intelligent Tracking.<br>Zero Fluff.
+                </h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center mb-16 md:mb-24 reveal-left">
+                <div class="order-2 md:order-1 phone-frame w-full max-w-[320px] mx-auto glow-red shadow-ducati/20">
+                    <img src="images/IMG_5065.PNG" alt="MotoLog RS Workshop Interface"
+                        class="w-full h-auto object-cover pointer-events-none">
+                </div>
+                <div class="order-1 md:order-2 text-center md:text-left">
+                    <div
+                        class="inline-flex items-center gap-2 text-accentYellow font-bold uppercase tracking-widest mb-4 bg-accentYellow/10 px-3 py-1 rounded-full text-xs border border-accentYellow/20">
+                        <i class="fa-solid fa-microchip"></i> Predictive Algorithms
+                    </div>
+                    <h3 class="font-heading font-bold text-4xl sm:text-5xl uppercase mb-4 sm:mb-6">Wrench Less.<br>Ride
+                        More.</h3>
+                    <p class="text-gray-400 text-base sm:text-lg mb-6">Your bike deserves better than arbitrary service
+                        dates. Our dynamic maintenance engine calculates component wear in real-time based on your
+                        actual mileage. Get alerts before your tires are cooked or your chain snaps. Maximize
+                        performance, minimize downtime.</p>
+                    <ul class="space-y-3 sm:space-y-4 font-bold text-gray-300 text-left inline-block md:block">
+                        <li class="flex items-center gap-3 text-sm sm:text-base"><i
+                                class="fa-solid fa-check text-ducati"></i> Smart mileage-based tracking</li>
+                        <li class="flex items-center gap-3 text-sm sm:text-base"><i
+                                class="fa-solid fa-check text-ducati"></i> Push-notification service alerts</li>
+                        <li class="flex items-center gap-3 text-sm sm:text-base"><i
+                                class="fa-solid fa-check text-ducati"></i> Customized component lifespans</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center mb-16 md:mb-24 reveal-right">
+                <div class="text-center md:text-left">
+                    <div
+                        class="inline-flex items-center gap-2 text-ducati font-bold uppercase tracking-widest mb-4 bg-ducati/10 px-3 py-1 rounded-full text-xs border border-ducati/20">
+                        <i class="fa-solid fa-map-location-dot"></i> High-Fidelity GPS
+                    </div>
+                    <h3 class="font-heading font-bold text-4xl sm:text-5xl uppercase mb-4 sm:mb-6">Your Ride.<br>Down To
+                        The Degree.</h3>
+                    <p class="text-gray-400 text-base sm:text-lg mb-6">Turn your phone into a high-performance dash. Our
+                        Ride Tracker maps your exact routes, logging your total distance, top speed, lean angle, and
+                        elevation shifts. Your complete riding history, saved and searchable forever.</p>
+                </div>
+                <div class="phone-frame w-full max-w-[320px] mx-auto border-gray-800">
+                    <img src="images/IMG_5064.PNG" alt="MotoLog RS Ride Tracker"
+                        class="w-full h-auto object-cover pointer-events-none">
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center reveal-left">
+                <div class="order-2 md:order-1 phone-frame w-full max-w-[320px] mx-auto border-gray-800">
+                    <img src="images/IMG_5063.PNG" alt="MotoLog RS Fuel Analytics"
+                        class="w-full h-auto object-cover pointer-events-none">
+                </div>
+                <div class="order-1 md:order-2 text-center md:text-left">
+                    <div
+                        class="inline-flex items-center gap-2 text-green-400 font-bold uppercase tracking-widest mb-4 bg-green-400/10 px-3 py-1 rounded-full text-xs border border-green-400/20">
+                        <i class="fa-solid fa-gas-pump"></i> Economic Analytics
+                    </div>
+                    <h3 class="font-heading font-bold text-4xl sm:text-5xl uppercase mb-4 sm:mb-6">Your Real
+                        MPG.<br>Learned Mile By Mile.</h3>
+                    <p class="text-gray-400 text-base sm:text-lg mb-6">Stop guessing your range. Log your fill-ups in
+                        seconds or let our Premium AI scan your gasoline receipts. MotoLog RS's adaptive algorithm
+                        learns your real-world
+                        MPG to give you a fuel range prediction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action -->
+    <section id="download"
+        class="py-20 sm:py-32 relative z-10 overflow-hidden text-center bg-darkBg border-t border-white/5">
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-ducati/5 to-transparent pointer-events-none">
+        </div>
+        <div class="max-w-3xl mx-auto px-4 relative z-20 reveal">
+            <h2 class="font-heading font-bold text-4xl sm:text-6xl uppercase mb-4 sm:mb-6">Dial In Your Ride.
+            </h2>
+            <p class="text-base sm:text-xl text-gray-400 mb-8 sm:mb-10">Join the riders already optimizing
+                their garage. Download MotoLog RS now and unlock the full potential of your maintenance, fuel tracking,
+                and rides.</p>
+            <a href="#"
+                class="inline-flex bg-ducati text-white font-heading font-bold text-xl sm:text-2xl py-4 sm:py-5 px-10 sm:px-16 clip-slant glow-red hover:bg-white hover:text-ducati transition-all uppercase tracking-widest mx-auto items-center justify-center">
+                <i class="fa-brands fa-apple mr-3"></i> Download Now
+            </a>
+            <p class="mt-6 text-xs sm:text-sm text-gray-600 font-medium">Free to download. Requires iOS 17.0 or later.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer & Legal Links -->
+    <footer class="bg-[#050505] border-t border-white/10 pt-12 sm:pt-16 pb-8 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 sm:mb-12">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-motorcycle text-ducati text-xl"></i>
+                    <span class="font-heading font-bold text-xl sm:text-2xl tracking-widest text-white">MOTOLOG<span
+                            class="text-ducati">RS</span></span>
+                </div>
+                <div
+                    class="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-bold uppercase tracking-wider">
+                    <button onclick="openModal('tos-modal')"
+                        class="text-gray-500 hover:text-white transition-colors">Terms of Service</button>
+                    <button onclick="openModal('privacy-modal')"
+                        class="text-gray-500 hover:text-white transition-colors">Privacy Policy</button>
+                    <a href="mailto:support@motologrs.com"
+                        class="text-gray-500 hover:text-white transition-colors">Support</a>
+                </div>
+            </div>
+            <div class="text-center text-gray-700 text-xs sm:text-sm">
+                &copy; 2026 MotoLog RS. All rights reserved. Built for the ride.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals for Legal Pages (App Store Requirement) -->
+
+    <!-- Terms of Service Modal -->
+    <div id="tos-modal"
+        class="modal fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm items-center justify-center p-4">
+        <div
+            class="bg-surface border border-white/10 rounded-2xl w-full max-w-[95%] sm:max-w-3xl max-h-[85vh] overflow-y-auto relative p-5 sm:p-8 shadow-2xl">
+            <button onclick="closeModal('tos-modal')"
+                class="absolute top-4 sm:top-6 right-4 sm:right-6 text-gray-500 hover:text-white text-xl sm:text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2
+                class="font-heading font-bold text-3xl sm:text-4xl uppercase mb-4 sm:mb-6 border-b border-white/10 pb-4">
+                Terms of Service</h2>
+            <div
+                class="prose prose-invert prose-p:text-gray-400 max-w-none font-body text-xs sm:text-sm leading-relaxed space-y-4">
+                <p><strong>Last Updated: March 1, 2026</strong></p>
+                <h3 class="text-white font-bold text-lg mt-6">1. ACCEPTANCE OF TERMS</h3>
+                <p>By downloading, installing, or using MotoLog RS ("the App"), you agree to be bound by these Terms of
+                    Service. If you do not agree to these terms, do not use the App.</p>
+                <h3 class="text-white font-bold text-lg mt-6">2. DESCRIPTION OF SERVICE</h3>
+                <p>MotoLog RS is a motorcycle tracking and maintenance application that allows you to:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Track motorcycle rides with GPS, including live speed, distance, elevation, lean angle, and
+                        drag-strip timing (0-60 and quarter mile)</li>
+                    <li>Log maintenance tasks and service schedules</li>
+                    <li>Manage multiple motorcycles in your garage</li>
+                    <li>Record fuel entries and expenses</li>
+                    <li>Store ride history and statistics</li>
+                    <li>Track installed components and parts with mileage or time-based replacement intervals</li>
+                    <li>Scan fuel receipts or gas pump screens automatically with AI-assisted OCR (Premium)</li>
+                    <li>Export your service logbook as PDF or CSV</li>
+                    <li>Store vehicle documents (insurance, registration, title) locally in the Workshop Wallet</li>
+                    <li>Generate shareable ride-stat graphics for social media</li>
+                    <li>Use Home Screen and Lock Screen widgets for quick-glance fuel range, maintenance status, and
+                        live telemetry (Premium)</li>
+                    <li>Invoke hands-free ride tracking and fuel logging via Siri shortcuts</li>
+                    <li>Sync data across your Apple devices via iCloud CloudKit (Premium)</li>
+                    <li>Customize the app's appearance with premium themes (Premium)</li>
+                </ul>
+                <h3 class="text-white font-bold text-lg mt-6">3. USER DATA AND PRIVACY</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Most data is stored locally on your device</li>
+                    <li>Optional sign-in uses Apple Sign In, authenticated via Google Firebase</li>
+                    <li>Premium iCloud sync transmits data to Apple's private CloudKit database</li>
+                    <li>The AI Smart Scanner (fuel receipts and gas pump screens) transmits a compressed image to
+                        Firebase Cloud Functions, which processes it with Google Gemini AI. If the cloud scan fails, the
+                        app automatically falls back to on-device OCR using Apple's Vision framework, which does not
+                        transmit any data externally.</li>
+                    <li>Precise GPS coordinates are shared with Open-Meteo (open-meteo.com) to fetch local weather</li>
+                    <li>Workshop Wallet documents — including insurance card images, registration images, vehicle title
+                        images, VIN, license plate, insurance carrier, and policy number — are stored exclusively on
+                        your device and are never transmitted to any server</li>
+                    <li>The app schedules local push notifications as advance reminders before free-tier data reaches
+                        the 30-day visibility limit. These notifications are generated and stored on-device only; no
+                        data is transmitted to any server. Notification permission can be managed in iOS Settings.</li>
+                    <li>Subscription status is stored in your device's Keychain for security</li>
+                    <li>Free-tier ride, fuel, and service data older than 30 days is subject to a Feature Limitation: it
+                        is hidden from the in-app interface but is NOT deleted. It remains stored on your device and
+                        becomes fully accessible again upon upgrading to Premium. This is an intentional design choice,
+                        not data loss.</li>
+                    <li>We use Google Firebase Analytics to collect anonymous, pseudonymous usage data (session
+                        duration, screens visited, purchase events) to improve the App. No personally identifiable
+                        information — including your name, email, ride data, or location — is sent to the analytics
+                        service. Analytics collection is enabled by default and can be disabled at any time in Settings
+                        → Privacy → Share Anonymous Analytics. We do not use this data for advertising or share it with
+                        third parties.</li>
+                    <li>We do not sell your data to third parties</li>
+                    <li>See our Privacy Policy for full details</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">4. USER RESPONSIBILITIES</h3>
+                <p>You agree to:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Use the App in compliance with all applicable laws and regulations, including all posted speed
+                        limits, traffic laws, and vehicle codes in your jurisdiction</li>
+                    <li>Never use the App, or any feature of the App, while actively operating a motorcycle or any other
+                        vehicle. In Arizona, A.R.S. § 28-914 prohibits using a handheld device while operating a motor
+                        vehicle. Regardless of your jurisdiction, you agree to comply with all applicable hands-free and
+                        distracted-driving laws. Configuring the App while stopped and parked is the only permitted
+                        method of in-vehicle interaction.</li>
+                    <li>The App is designed to be fully configured PRIOR to the start of any ride. Any interaction with
+                        the App's screen while the motorcycle is in motion is a violation of these Terms.</li>
+                    <li>Ride legally, responsibly, and safely at all times — the App neither requires nor encourages
+                        otherwise</li>
+                    <li>Be solely responsible for your own riding behavior, decisions, and speed</li>
+                    <li>Be responsible for the accuracy of data entered into the App</li>
+                    <li>Not use App data (including but not limited to top speed, lean angle, or ride statistics) as
+                        motivation, justification, or competition to ride beyond legal speed limits or in an unsafe
+                        manner</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">5. SPEED TRACKING — NO ENDORSEMENT OF SPEEDING</h3>
+                <p>MotoLog RS records certain ride telemetry including top speed, average speed, lean angle, and
+                    acceleration as informational data for personal review purposes only. <strong>THIS DATA IS RECORDED
+                        FOR LOGGING AND ANALYTICAL PURPOSES SOLELY. BY USING THESE FEATURES, YOU EXPRESSLY ACKNOWLEDGE
+                        AND AGREE THAT:</strong></p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>MotoLog RS does not encourage, promote, condone, or endorse riding at excessive speeds, illegal
+                        speeds, or in any manner that violates applicable traffic laws.</li>
+                    <li>The recording or display of top speed or any other performance metric within the App is in no
+                        way an invitation, challenge, incentive, or suggestion to achieve higher speeds or to ride
+                        beyond legal limits.</li>
+                    <li>You are solely and entirely responsible for the speed at which you operate your motorcycle at
+                        all times, regardless of what data the App displays or records.</li>
+                    <li>No feature, statistic, badge, achievement, or display within the App is intended to encourage
+                        speeding or unsafe riding. Any such data is provided strictly as a historical record of your
+                        ride, not as a goal to exceed.</li>
+                    <li>It is your responsibility to obey all posted speed limits, traffic signals, and applicable laws
+                        in the jurisdiction where you ride.</li>
+                    <li>MotoLog RS shall not be held liable, directly or indirectly, for any citation, fine, accident,
+                        injury, death, or property damage arising from your decision to ride at any particular speed,
+                        whether or not that speed was recorded by the App.</li>
+                    <li>You agree that you will not bring any claim, lawsuit, or legal action against MotoLog RS, its
+                        developers, owners, or affiliates based on the theory that the App, any of its features, or any
+                        data displayed within it encouraged, caused, or contributed to unsafe or illegal riding
+                        behavior.</li>
+                </ul>
+                <p><strong>PERFORMANCE METRICS — CLOSED-COURSE AND PERSONAL REVIEW USE ONLY:</strong> Performance data
+                    captured by the App — including but not limited to 0-60 MPH elapsed time, quarter-mile elapsed time,
+                    top speed, lean angle, and average speed — is provided exclusively as a historical personal record
+                    for private review and analysis. THIS DATA IS OF THE TYPE COMMONLY TRACKED IN CLOSED-COURSE
+                    MOTORSPORTS ENVIRONMENTS AND IS NOT INTENDED TO BE TARGETED, REPLICATED, OR PURSUED ON PUBLIC ROADS,
+                    IN TRAFFIC, OR IN ANY ENVIRONMENT GOVERNED BY APPLICABLE TRAFFIC LAW.</p>
+                <p>The existence of these metrics within the App does not constitute authorization, encouragement, or
+                    invitation to replicate any recorded performance value in any context. Any decision to use App data
+                    as motivation, benchmark, or goal — on a public road or otherwise — is made entirely at your own
+                    volition without any legal responsibility attaching to MotoLog RS. MotoLog RS expressly disclaims
+                    any intent that these features be used in a manner that violates any federal, state, or local
+                    traffic law, and shall bear no liability under any legal theory for any consequence arising from
+                    your decision to do so.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">6. DISCLAIMER OF WARRANTIES</h3>
+                <p>THE APP IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. WE DO NOT WARRANT
+                    THAT THE APP WILL BE UNINTERRUPTED OR ERROR-FREE. SPEED, DISTANCE, AND LOCATION DATA RECORDED BY THE
+                    APP DEPEND ON DEVICE GPS ACCURACY AND MAY NOT BE PRECISE. DO NOT RELY ON APP DATA FOR
+                    SAFETY-CRITICAL DECISIONS.</p>
+                <p><strong>AI SMART SCANNER — AI HALLUCINATION DISCLAIMER:</strong> The AI Smart Scanner uses Google
+                    Gemini AI to process fuel receipt and gas pump screen images to extract dollar amounts and gallon
+                    quantities. AI models are known to "hallucinate" — generating plausible-looking but factually
+                    incorrect output, including dollar amounts, quantities, dates, and merchant names. When the cloud
+                    scan is unavailable, the App falls back to on-device OCR using Apple's Vision framework; while this
+                    path does not transmit data, it may also produce inaccurate values. MOTOLOG RS MAKES NO WARRANTY
+                    THAT ANY SCANNED VALUE IS ACCURATE, WHETHER PRODUCED BY THE CLOUD-BASED AI OR THE ON-DEVICE OCR
+                    FALLBACK. You are solely and entirely responsible for independently verifying every figure produced
+                    by the scanner before using it for any financial, tax, insurance, bookkeeping, or legal purpose.
+                    MotoLog RS shall bear no liability for tax penalties, audit findings, financial losses, or any other
+                    consequence arising from errors in scanned receipt data, whether such errors result from image
+                    quality, AI model limitations, OCR limitations, network issues, or any other cause.</p>
+
+                <p><strong>AI SMART SCANNER — FINANCIAL AND TAX INDEMNIFICATION:</strong> NOTWITHSTANDING ANY OTHER
+                    PROVISION OF THESE TERMS, YOU EXPRESSLY AGREE THAT MOTOLOG RS SHALL NOT BE LIABLE — UNDER ANY THEORY
+                    OF LAW, INCLUDING CONTRACT, TORT, STRICT LIABILITY, NEGLIGENCE, OR STATUTE — FOR ANY FINANCIAL HARM,
+                    TAX UNDERPAYMENT, TAX PENALTY OR INTEREST, IRS OR STATE TAX AGENCY AUDIT ASSESSMENT OR FINDING,
+                    INSURANCE CLAIM ADJUSTMENT OR DENIAL, ACCOUNTING DISCREPANCY, BOOKKEEPING ERROR, OR ANY OTHER DIRECT
+                    OR INDIRECT ECONOMIC CONSEQUENCE ARISING FROM INACCURATE DATA PRODUCED BY THE AI SMART SCANNER OR
+                    ITS ON-DEVICE OCR FALLBACK. This limitation applies regardless of whether any inaccurate value
+                    resulted from AI hallucination, model error, image quality, image angle, lighting conditions,
+                    partial receipt visibility, pump display formatting, network latency, model version updates, or any
+                    other cause within or outside MotoLog RS's control. You bear sole and exclusive responsibility for
+                    verifying all scanned values against the original receipt or pump display before recording,
+                    submitting, reporting, filing, or relying upon any such data for any purpose.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">7. LIMITATION OF LIABILITY</h3>
+                <p>IN NO EVENT SHALL MOTOLOG RS, ITS DEVELOPERS, OWNERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT,
+                    INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF YOUR USE OF THE APP,
+                    INCLUDING BUT NOT LIMITED TO DAMAGES ARISING FROM TRAFFIC VIOLATIONS, ACCIDENTS, INJURIES, OR DEATH
+                    CAUSED BY YOUR RIDING BEHAVIOR REGARDLESS OF WHETHER THE APP WAS IN USE AT THE TIME.</p>
+                <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, MOTOLOG RS'S TOTAL LIABILITY TO YOU FOR ANY DIRECT
+                    DAMAGES SHALL NOT EXCEED THE GREATER OF (A) THE TOTAL AMOUNT YOU PAID FOR THE APP IN THE TWELVE
+                    MONTHS PRECEDING THE CLAIM, OR (B) TEN DOLLARS ($10.00).</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">8. INDEMNIFICATION</h3>
+                <p>You agree to indemnify, defend, and hold harmless MotoLog RS and its developer, officers, affiliates,
+                    and successors from and against any and all claims, damages, losses, costs, and expenses (including
+                    reasonable attorneys' fees) arising out of or relating to: (a) your use of the App; (b) your
+                    violation of these Terms; (c) your violation of any applicable law or regulation; (d) your riding
+                    behavior, including any accident, injury, citation, or property damage caused while using the App;
+                    or (e) any tax liability, penalty, interest, fine, audit cost, or financial loss arising from your
+                    use of data produced by the AI Smart Scanner or its on-device OCR fallback — including any amount
+                    you reported, filed, or relied upon without independently verifying the accuracy of the scanned
+                    value.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">9. INTELLECTUAL PROPERTY</h3>
+                <p>MotoLog RS, its name, logo, design, source code, and all related content are the exclusive property
+                    of its developer and are protected by applicable intellectual property laws. By using the App, you
+                    are granted a limited, non-exclusive, non-transferable, revocable license to use the App on your
+                    personal Apple device solely for your own personal, non-commercial purposes. You may not copy,
+                    modify, distribute, sell, reverse-engineer, or create derivative works based on the App or any of
+                    its content without prior written permission.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">10. TERMINATION</h3>
+                <p>We reserve the right, in our sole discretion, to immediately suspend or permanently terminate your
+                    access to the App, without notice or liability, if we determine that you have:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Used the App for any illegal purpose or in violation of any applicable law or regulation;</li>
+                    <li>Engaged in offensive, abusive, harassing, or harmful conduct in connection with the App;</li>
+                    <li>Attempted to reverse-engineer, tamper with, or otherwise compromise the integrity or security of
+                        the App or its data;</li>
+                    <li>Violated any provision of these Terms of Service.</li>
+                </ul>
+                <p>Upon termination, your license to use the App is immediately revoked. Provisions of these Terms that
+                    by their nature should survive termination — including but not limited to Sections 6 (Disclaimer of
+                    Warranties), 7 (Limitation of Liability), 8 (Indemnification), and 9 (Intellectual Property) — shall
+                    remain in full force and effect.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">11. SAFETY NOTICE</h3>
+                <p><strong>YOUR SAFETY AND THE SAFETY OF OTHERS IS YOUR RESPONSIBILITY.</strong> By using MotoLog RS you
+                    agree to the following at all times:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Obey all posted speed limits and traffic laws in your jurisdiction without exception.</li>
+                    <li>Never interact with, view, or operate the App while your motorcycle is in motion. Mount your
+                        device securely and configure ride tracking before you set off. The App is designed to be set up
+                        PRIOR to the ride — any interaction with the screen while the motorcycle is in motion is a
+                        violation of these Terms. Arizona residents: A.R.S. § 28-914 prohibits use of a handheld device
+                        while operating a motor vehicle. Users in all jurisdictions must comply with their applicable
+                        hands-free and distracted-driving laws.</li>
+                    <li>Ride within your skill level and within the law. No App feature, statistic, or leaderboard
+                        justifies exceeding legal speed limits or riding recklessly.</li>
+                    <li>Wear appropriate protective gear, including a helmet, on every ride.</li>
+                    <li>Never ride under the influence of alcohol, drugs, or any substance that impairs your judgment or
+                        reaction time.</li>
+                    <li>Ensure your motorcycle is roadworthy before every ride. The App's maintenance tracking is a
+                        reminder tool only and is not a substitute for inspection by a qualified mechanic.</li>
+                    <li>Be aware of road conditions, weather, traffic, and other riders at all times.</li>
+                </ul>
+                <p>MotoLog RS is a data-logging tool. It has no control over how you ride. All riding decisions —
+                    including speed — are yours alone.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">12. ASSUMPTION OF RISK</h3>
+                <p>BY USING THIS APP IN CONNECTION WITH OPERATING A MOTORCYCLE, YOU EXPRESSLY ACKNOWLEDGE AND AGREE TO
+                    THE FOLLOWING:</p>
+                <p><strong>a) Inherent Danger of Motorcycling</strong><br>Motorcycling is an inherently dangerous
+                    activity that carries a significant risk of serious bodily injury or death, even when operated
+                    legally, safely, and with full protective gear. These risks exist independent of and are not
+                    created, increased, or modified by your use of MotoLog RS.</p>
+                <p><strong>b) Voluntary Assumption of Risk</strong><br>You voluntarily and knowingly assume all risks
+                    associated with motorcycling, including but not limited to: collision with other vehicles, road
+                    hazards, adverse weather, mechanical failure, and the actions of third parties. You assume these
+                    risks regardless of whether the App was running, recording, or displaying any data at the time of
+                    any incident.</p>
+                <p><strong>c) App Does Not Affect Physical Risk</strong><br>MotoLog RS is a passive data-logging
+                    application. It does not control your motorcycle, alter your riding environment, provide real-time
+                    navigational guidance, or make any claim to enhance or reduce riding safety. Your physical risk on a
+                    motorcycle is entirely unaffected by this App.</p>
+                <p><strong>d) Release of Liability for Riding Injuries</strong><br>To the fullest extent permitted by
+                    applicable law, you release, waive, and discharge MotoLog RS and its developer from any and all
+                    claims, demands, or causes of action for personal injury, property damage, or death arising from
+                    your use of a motorcycle, whether or not the App was in use at the time. This release applies to
+                    claims based on negligence, product liability, or any other legal theory.</p>
+                <p><strong>e) Acknowledgment</strong><br>By using the App, you confirm that you understand the risks of
+                    motorcycling, that you are voluntarily assuming those risks, and that you have read and agree to
+                    this Assumption of Risk.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">13. MODIFICATIONS TO SERVICE</h3>
+                <p>We reserve the right to modify or discontinue the App at any time without notice.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">14. CHANGES TO TERMS</h3>
+                <p>We may update these Terms of Service from time to time. Continued use of the App constitutes
+                    acceptance of any changes.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">15. GOVERNING LAW AND VENUE</h3>
+                <p>These Terms, and any dispute, claim, or controversy arising out of or relating to them or your use of
+                    the App, are governed by and construed in accordance with the laws of the State of Arizona, United
+                    States — including the Arizona Revised Statutes (A.R.S.) — without regard to its conflict-of-laws
+                    rules or principles. The United Nations Convention on Contracts for the International Sale of Goods
+                    (CISG) does not apply.</p>
+                <p>For any claim or dispute that is not subject to the arbitration agreement in Section 16, or that
+                    survives a valid opt-out of arbitration, you and MotoLog RS each irrevocably consent to the
+                    exclusive personal jurisdiction and venue of the state and federal courts located in Maricopa
+                    County, Arizona. Each party waives any objection to venue in Maricopa County and any claim that
+                    Maricopa County is an inconvenient or improper forum.</p>
+                <p>Arizona residents: Consumer protection claims may be governed in part by the Arizona Consumer Fraud
+                    Act, A.R.S. § 44-1521 et seq. Nothing in these Terms limits any right you may have under applicable
+                    consumer protection statutes that cannot lawfully be waived by contract.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">16. BINDING ARBITRATION AND CLASS ACTION WAIVER</h3>
+                <p>PLEASE READ THIS SECTION CAREFULLY. IT AFFECTS YOUR LEGAL RIGHTS, INCLUDING YOUR RIGHT TO FILE A
+                    LAWSUIT IN COURT.</p>
+                <p><strong>a) Binding Arbitration</strong><br>Except for disputes that qualify for small claims court,
+                    you and MotoLog RS agree that any dispute, claim, or controversy arising out of or relating to these
+                    Terms or your use of the App — including questions about the existence, validity, interpretation,
+                    breach, or termination of these Terms — shall be resolved exclusively through final and binding
+                    individual arbitration, rather than in court. This agreement to arbitrate is intended to be broadly
+                    interpreted and includes claims based in contract, tort, statute, fraud, misrepresentation, or any
+                    other legal or equitable theory.</p>
+                <p>Arbitration shall be conducted by a single arbitrator under the rules of the American Arbitration
+                    Association (AAA) Consumer Arbitration Rules, which are available at adr.org. The arbitration will
+                    take place in Maricopa County, Arizona, or by remote hearing at either party's election. The
+                    arbitrator's decision shall be final and binding and may be entered as a judgment in any court of
+                    competent jurisdiction. To the extent not preempted by the Federal Arbitration Act (9 U.S.C. § 1 et
+                    seq.) or superseded by the AAA Rules, this arbitration agreement is governed by the Arizona Uniform
+                    Arbitration Act, A.R.S. § 12-1501 et seq.</p>
+                <p><strong>b) Class Action Waiver</strong><br>YOU AND MOTOLOG RS AGREE THAT EACH MAY ONLY BRING CLAIMS
+                    AGAINST THE OTHER IN AN INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED
+                    CLASS, COLLECTIVE, CONSOLIDATED, PRIVATE ATTORNEY GENERAL, OR REPRESENTATIVE PROCEEDING. The
+                    arbitrator may not consolidate more than one person's claims and may not preside over any form of
+                    class or representative proceeding. If this class action waiver is found unenforceable for any
+                    claim, then the entirety of the arbitration agreement in this section shall be null and void for
+                    that claim only, and such claim shall proceed in court.</p>
+                <p><strong>c) Jury Trial Waiver</strong><br>BY AGREEING TO ARBITRATION, YOU AND MOTOLOG RS ARE EACH
+                    WAIVING THE RIGHT TO A TRIAL BY JURY.</p>
+                <p><strong>d) Opt-Out Right</strong><br>You may opt out of this arbitration agreement within 30 days of
+                    first accepting these Terms by sending written notice to support@motolog.app with the subject line
+                    "Arbitration Opt-Out" and your name and the email associated with your account. Opting out does not
+                    affect any other provision of these Terms.</p>
+                <p><strong>e) Exceptions</strong><br>Notwithstanding the above, either party may seek emergency
+                    injunctive or equitable relief in a court of competent jurisdiction to prevent irreparable harm,
+                    including unauthorized use of intellectual property, pending resolution of an arbitration
+                    proceeding.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">17. SUBSCRIPTIONS AND PAYMENTS</h3>
+                <p>MotoLog RS offers optional auto-renewing subscriptions that unlock Premium features. By subscribing,
+                    you agree to the following:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Payment will be charged to your Apple ID account at the confirmation of purchase.</li>
+                    <li>Subscriptions automatically renew unless canceled at least 24 hours before the end of the
+                        current billing period.</li>
+                    <li>Your account will be charged for renewal within 24 hours prior to the end of the current period
+                        at the rate of your selected plan.</li>
+                    <li>You can manage and cancel your subscription at any time by going to your Apple ID account
+                        settings in the App Store. Cancellation takes effect at the end of the current paid period — you
+                        will not be charged again, but no refund is issued for the unused portion of the current period.
+                    </li>
+                    <li>Free trials, if offered, will convert to a paid subscription at the end of the trial period
+                        unless canceled beforehand. Canceling during the free trial period incurs no charge.</li>
+                    <li>Prices are subject to change. We will notify you of any price changes in accordance with
+                        applicable law and Apple's policies.</li>
+                    <li>All purchases are subject to Apple's standard End User License Agreement (EULA):
+                        apple.com/legal/internet-services/itunes/dev/stdeula</li>
+                    <li>Refund requests must be submitted directly to Apple through reportaproblem.apple.com. MotoLog RS
+                        has no ability to issue refunds directly.</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">18. WORKSHOP WALLET — DEVICE SECURITY DISCLAIMER</h3>
+                <p>The Workshop Wallet feature allows you to store sensitive vehicle-related documents on your device,
+                    including images of your insurance card, vehicle registration, vehicle title, and text fields
+                    containing your VIN, license plate number, insurance carrier name, and policy number.</p>
+                <p>MotoLog RS stores this data exclusively on your device (and optionally in your private iCloud account
+                    for Premium subscribers). WE DO NOT TRANSMIT, ACCESS, OR RETAIN THIS INFORMATION ON ANY SERVER.
+                    Because this data resides on your device, its security is entirely dependent on your device's own
+                    access controls.</p>
+                <p>MOTOLOG RS IS NOT RESPONSIBLE FOR, AND EXPRESSLY DISCLAIMS ALL LIABILITY ARISING FROM, ANY
+                    UNAUTHORIZED ACCESS TO, DISCLOSURE OF, OR MISUSE OF WORKSHOP WALLET DATA RESULTING FROM: (a) theft
+                    or loss of your physical device; (b) access by any person to your device while it is unlocked or
+                    while Face ID / Touch ID / passcode protection is disabled or bypassed; (c) your failure to enable
+                    or maintain device-level security features such as screen lock, passcode, Face ID, or Touch ID; (d)
+                    access by a family member, household member, or other individual with physical access to your
+                    device; or (e) any other circumstance involving unauthorized physical or software access to your
+                    device.</p>
+                <p>You are solely responsible for securing your device against unauthorized access. MotoLog RS strongly
+                    recommends enabling a device passcode, Face ID, or Touch ID, and keeping your device locked when not
+                    in use — particularly given the sensitive nature of documents that may be stored in Workshop Wallet.
+                    MotoLog RS shall bear no liability under any legal theory for any identity theft, insurance fraud,
+                    vehicle fraud, or other harm resulting from exposure of Workshop Wallet data due to lost, stolen, or
+                    unlocked device access.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">19. CONTACT</h3>
+                <p>For questions about these Terms, contact: support@motolog.app</p>
+                <p>© 2026 MotoLog RS. All rights reserved.</p>
+
+            </div>
+            <button onclick="closeModal('tos-modal')"
+                class="mt-6 sm:mt-8 bg-ducati text-white font-bold py-3 px-8 clip-slant hover:bg-white hover:text-ducati transition-colors uppercase tracking-wider w-full">I
+                Understand</button>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal"
+        class="modal fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm items-center justify-center p-4">
+        <div
+            class="bg-surface border border-white/10 rounded-2xl w-full max-w-[95%] sm:max-w-3xl max-h-[85vh] overflow-y-auto relative p-5 sm:p-8 shadow-2xl">
+            <button onclick="closeModal('privacy-modal')"
+                class="absolute top-4 sm:top-6 right-4 sm:right-6 text-gray-500 hover:text-white text-xl sm:text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2
+                class="font-heading font-bold text-3xl sm:text-4xl uppercase mb-4 sm:mb-6 border-b border-white/10 pb-4">
+                Privacy Policy</h2>
+            <div
+                class="prose prose-invert prose-p:text-gray-400 max-w-none font-body text-xs sm:text-sm leading-relaxed space-y-4">
+                <p><strong>Last Updated: March 1, 2026</strong></p>
+
+                <h3 class="text-white font-bold text-lg mt-6">1. INTRODUCTION</h3>
+                <p>MotoLog RS ("we," "our," or "the App") is committed to protecting your privacy. This Privacy Policy
+                    explains how we handle your information when you use our motorcycle tracking and maintenance
+                    application.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">2. DATA WE COLLECT AND HOW WE USE IT</h3>
+                <p>MotoLog RS collects the minimum data necessary to provide its features:</p>
+
+                <p><strong>a) Authentication (Optional)</strong><br>If you choose to sign in with Apple, your Apple ID
+                    authentication token is sent to Google Firebase Authentication to create and manage your account.
+                    Firebase stores an anonymous user ID and, if provided by Apple, your email address. See Google's
+                    Privacy Policy at firebase.google.com for details.</p>
+
+                <p><strong>b) Location Data</strong><br>Location data is used only when you actively start a ride
+                    session. GPS route data is stored locally on your device. When using the Dashboard, your precise GPS
+                    coordinates (latitude and longitude) are sent to Open-Meteo (open-meteo.com) to retrieve local
+                    weather conditions. No other identifying information is included in this request.</p>
+
+                <p><strong>c) Smart Scanner (Premium Feature)</strong><br>When you use the AI Smart Scanner to scan a
+                    fuel receipt or photograph a gas pump screen, a compressed image is securely transmitted to Google
+                    Firebase Cloud Functions, which processes it using Google Gemini AI (gemini-flash model). The image
+                    is passed through to the Gemini API for processing and is not stored by our Firebase servers. Only
+                    the extracted numeric values (total price and total gallons) are returned to the app. Your Firebase
+                    user ID is used for rate-limiting purposes only (scan count and last-scan timestamp are stored in
+                    Firebase Firestore under a date-keyed document). If the cloud-based scan fails for any reason —
+                    including network errors or service unavailability — the App automatically falls back to on-device
+                    OCR using Apple's Vision framework. This offline fallback processes the image entirely on your
+                    device and does not transmit any data. Both the cloud AI and the on-device OCR fallback may produce
+                    inaccurate results; always verify scanned values before use. The scanner is limited to 10 uses per
+                    day per account.</p>
+
+                <p><strong>d) iCloud Sync (Premium Feature)</strong><br>Premium subscribers may optionally sync their
+                    motorcycle data (rides, maintenance, fuel logs) across their Apple devices via iCloud CloudKit
+                    (Apple's private database). This data is accessible only to you through your Apple ID and is
+                    governed by Apple's Privacy Policy at apple.com/legal/privacy.</p>
+
+                <p><strong>e) Free-Tier Data Visibility — Feature Limitation</strong><br>For users on the free tier,
+                    rides, fuel entries, and service logs older than 30 days are subject to a Feature Limitation: they
+                    are hidden from the in-app interface but are NOT deleted. This is an intentional design choice. The
+                    data remains stored on your device and becomes fully accessible again if you upgrade to Premium.
+                    This behavior is not data loss.</p>
+
+                <p><strong>f) Siri Shortcuts (AppIntents)</strong><br>MotoLog RS integrates with Siri via Apple's
+                    AppIntents framework. When you invoke a Siri shortcut, your request is processed by Apple in
+                    accordance with Apple's Privacy Policy at apple.com/legal/privacy.</p>
+
+                <p><strong>g) Locally Stored Data</strong><br>All other data — motorcycle details, ride history,
+                    maintenance records, service logs, component/parts catalog, fuel entries, photos, adaptive MPG
+                    history, ride sharing configurations, app settings, and customization preferences — is stored
+                    locally on your device and is not transmitted to any server. Subscription status is stored in your
+                    device's Keychain. Adaptive MPG and maintenance predictions are calculated entirely on-device.</p>
+
+                <p><strong>h) Workshop Wallet Documents</strong><br>The Workshop Wallet section lets you store sensitive
+                    vehicle-related information locally, including: VIN, license plate number, insurance carrier name
+                    and policy number, and images of your insurance card, vehicle registration, and vehicle title. All
+                    of this data is stored exclusively on your device (and optionally in iCloud for Premium
+                    subscribers). None of this information is transmitted to any third-party server or used for any
+                    purpose other than display within the App.</p>
+
+                <p><strong>i) Local Push Notifications</strong><br>The App schedules local push notifications to alert
+                    free-tier users before their ride, fuel, and service data approaches the 30-day visibility limit
+                    (specifically at 7 days and 3 days before data becomes hidden). These notifications are scheduled
+                    entirely on-device using iOS's local notification system and do not involve transmitting any of your
+                    data to any server. Notification permission is managed in iOS Settings and can be revoked at any
+                    time.</p>
+
+                <p><strong>j) Analytics (Optional — you can opt out in Settings → Privacy)</strong><br>We use Google
+                    Firebase Analytics to understand how users interact with the App at an aggregate level. Analytics
+                    data helps us identify which features are most useful, diagnose issues, and improve the overall
+                    experience. Firebase Analytics assigns a pseudonymous installation ID to your device to distinguish
+                    individual sessions; it does not transmit your name, email address, ride data, or any other
+                    personally identifiable information to the analytics service. Collected data includes: session
+                    duration, screens visited, and specific in-app events such as app launches, paywall views, and
+                    completed purchases. This data is used solely for internal product improvement and is never shared
+                    with advertisers or used for targeted advertising. You can disable analytics collection at any time
+                    in Settings → Privacy → Share Anonymous Analytics. Disabling this toggle immediately stops all
+                    further data collection.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">3. DATA WE DO NOT COLLECT</h3>
+                <p>MotoLog RS does NOT:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Sell your data to third parties</li>
+                    <li>Track you across other apps or websites</li>
+                    <li>Display behaviorally targeted advertising</li>
+                    <li>Share your data with advertisers</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">4. LOCATION SERVICES</h3>
+                <p>Location data is:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Used only when you actively start a ride session or to fetch local weather</li>
+                    <li>Route data stored only on your device (and in iCloud for Premium subscribers)</li>
+                    <li>Under your complete control, deletable at any time</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">5. PHOTOS AND MEDIA</h3>
+                <p>Photos you add to motorcycles, service records, or component entries are stored locally on your
+                    device. Vehicle document images stored in the Workshop Wallet (insurance card, registration, title)
+                    are stored exclusively on your device and are never transmitted or processed externally. Photos used
+                    for fuel receipt or gas pump screen scanning are transmitted to Firebase Cloud Functions for a
+                    single AI-processing request and are not retained by our servers.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">6. DATA DELETION AND RETENTION</h3>
+                <p>You have complete control over your data:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Delete individual items (rides, motorcycles, etc.) at any time</li>
+                    <li>Use "Delete All Data" in Settings to remove all local data immediately</li>
+                    <li>Free-tier data older than 30 days is hidden from view but is NOT automatically deleted — this is
+                        a Feature Limitation, not data loss. The data remains on your device and is fully restored upon
+                        a Premium upgrade</li>
+                    <li>Firebase Authentication records (user ID, email if provided) are retained on Google's servers
+                        until you request account deletion. To delete your Firebase account and associated server-side
+                        records (rate-limit data, etc.), contact support@motolog.app</li>
+                    <li>iCloud CloudKit data (Premium) is retained until you delete it through the App or your iCloud
+                        account settings</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">7. THIRD-PARTY SERVICES</h3>
+                <p>The following third-party services may process data as described above:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Google Firebase Analytics (Anonymous usage analytics — can be disabled in Settings) —
+                        firebase.google.com/support/privacy</li>
+                    <li>Google Firebase (Authentication, Cloud Functions, Firestore rate-limit storage) —
+                        firebase.google.com/support/privacy</li>
+                    <li>Google Gemini AI (Receipt image processing via Firebase Cloud Functions) —
+                        ai.google.dev/gemini-api/terms</li>
+                    <li>Open-Meteo (Weather API — receives GPS coordinates to fetch local weather) —
+                        open-meteo.com/en/terms</li>
+                    <li>Apple iCloud CloudKit (Premium cross-device sync) — apple.com/legal/privacy</li>
+                    <li>Apple AppIntents / Siri (Shortcuts integration) — apple.com/legal/privacy</li>
+                    <li>Apple Vision (On-device OCR fallback for receipt scanning — no data leaves device) —
+                        apple.com/legal/privacy</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">8. CHILDREN'S PRIVACY</h3>
+                <p>MotoLog RS is not intended for users under 16 years of age. We do not knowingly collect information
+                    from children.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">9. DATA SECURITY</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Local data is protected by your device's security features</li>
+                    <li>Server communications use HTTPS encryption</li>
+                    <li>Firebase Authentication uses industry-standard token-based security</li>
+                    <li>We recommend using device passcodes and biometric authentication</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">10. CHANGES TO PRIVACY POLICY</h3>
+                <p>We may update this Privacy Policy. We will notify you of significant changes through the App or on
+                    our website.</p>
+
+                <h3 class="text-white font-bold text-lg mt-6">11. YOUR RIGHTS</h3>
+                <p>You have the right to:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Access all your local data within the App</li>
+                    <li>Delete your data at any time</li>
+                    <li>Request deletion of server-side records: support@motolog.app</li>
+                    <li>Opt out of analytics collection: Settings → Privacy → Share Anonymous Analytics</li>
+                    <li>Opt out of iCloud sync by disabling it in iOS Settings</li>
+                </ul>
+
+                <h3 class="text-white font-bold text-lg mt-6">12. CONTACT US</h3>
+                <p>Questions about this Privacy Policy: support@motolog.app</p>
+                <p>© 2026 MotoLog RS. All rights reserved.</p>
+
+            </div>
+            <button onclick="closeModal('privacy-modal')"
+                class="mt-6 sm:mt-8 bg-ducati text-white font-bold py-3 px-8 clip-slant hover:bg-white hover:text-ducati transition-colors uppercase tracking-wider w-full">Close
+                Policy</button>
+        </div>
+    </div>
+
+    <script>
+        // Scroll Reveal Animation Logic
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Trigger once on load
+        reveal();
+
+        // Modal Logic
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Image Preloader & Intro Animation Logic
+        const criticalImages = [
+            "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+        ];
+
+        function cacheImages(urls) {
+            return Promise.all(urls.map(url => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = url;
+                    img.onload = resolve;
+                    img.onerror = resolve; // Continue even if one fails
+                });
+            }));
+        }
+
+        window.addEventListener('load', async () => {
+            // Wait for images to fully download into the browser cache
+            await cacheImages(criticalImages);
+
+            // Add a brief delay so the "engine vibration" effect can be appreciated
+            setTimeout(() => {
+                const loader = document.getElementById('page-loader');
+                loader.classList.add('hide'); // Triggers the raceAway animation
+
+                // Re-enable scrolling
+                document.body.classList.remove('overflow-hidden');
+                document.body.style.overflow = 'auto';
+
+                // Initial scroll reveal trigger
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    reveal();
+                }, 800); // Wait for CSS animation to finish
+            }, 600);
+        });
+    </script>
+</body>
+
+</html>
