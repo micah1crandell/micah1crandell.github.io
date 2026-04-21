@@ -62,7 +62,7 @@
         <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-surface/95 border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/40">
                 <h1 class="font-heading font-bold text-5xl sm:text-6xl uppercase mb-4">Privacy Policy</h1>
-                <p class="text-sm sm:text-base text-gray-400 mb-8">Last Updated: March 1, 2026</p>
+                <p class="text-sm sm:text-base text-gray-400 mb-8">Last Updated: April 21, 2026</p>
 
                 <div class="prose prose-invert prose-p:text-gray-300 prose-li:text-gray-300 max-w-none text-sm sm:text-base leading-relaxed">
                     <h2 class="text-white font-bold text-xl mt-6">1. INTRODUCTION</h2>
@@ -73,38 +73,42 @@
                     <h2 class="text-white font-bold text-xl mt-6">2. DATA WE COLLECT AND HOW WE USE IT</h2>
                     <p>MotoLog RS collects the minimum data necessary to provide its features:</p>
 
-                    <p><strong>a) Authentication (Optional)</strong><br>If you choose to sign in with Apple, your Apple ID
-                        authentication token is sent to Google Firebase Authentication to create and manage your account.
-                        Firebase stores an anonymous user ID and, if provided by Apple, your email address. See Google's
-                        Privacy Policy at firebase.google.com for details.</p>
+                    <p><strong>a) Authentication (Optional)</strong><br>If you choose to sign in with Apple for
+                        account-based features, your Apple ID authentication token is sent to Google Firebase
+                        Authentication to create and manage your account. Firebase stores an anonymous user ID and, if
+                        provided by Apple, your email address. Sign-in is optional and is not required for purchases or
+                        iCloud sync. See Google's Privacy Policy at firebase.google.com for details.</p>
 
                     <p><strong>b) Location Data</strong><br>Location data is used only when you actively start a ride
                         session. GPS route data is stored locally on your device. When using the Dashboard, your precise GPS
                         coordinates (latitude and longitude) are sent to Open-Meteo (open-meteo.com) to retrieve local
                         weather conditions. No other identifying information is included in this request.</p>
 
-                    <p><strong>c) Smart Scanner (Premium Feature)</strong><br>When you use the AI Smart Scanner to scan a
-                        fuel receipt or photograph a gas pump screen, a compressed image is securely transmitted to Google
-                        Firebase Cloud Functions, which processes it using Google Gemini AI (gemini-flash model). The image
-                        is passed through to the Gemini API for processing and is not stored by our Firebase servers. Only
-                        the extracted numeric values (total price and total gallons) are returned to the app. Your Firebase
-                        user ID is used for rate-limiting purposes only (scan count and last-scan timestamp are stored in
-                        Firebase Firestore under a date-keyed document). If the cloud-based scan fails for any reason —
-                        including network errors or service unavailability — the App automatically falls back to on-device
-                        OCR using Apple's Vision framework. This offline fallback processes the image entirely on your
-                        device and does not transmit any data. Both the cloud AI and the on-device OCR fallback may produce
-                        inaccurate results; always verify scanned values before use. The scanner is limited to 10 uses per
-                        day per account.</p>
+                    <p><strong>c) Smart Scanner (Pro+ Feature)</strong><br>When a signed-in Pro+ user uses the AI Smart
+                        Scanner to scan a fuel receipt or photograph a gas pump screen, a compressed image is securely
+                        transmitted to Google Firebase Cloud Functions, which processes it using Google Gemini AI
+                        (gemini-flash model). The image is passed through to the Gemini API for processing and is not
+                        stored by our Firebase servers. Only the extracted numeric values (total price and total gallons)
+                        are returned to the app. Your Firebase user ID is used for rate-limiting, and when you are signed
+                        in your current entitlement tier may be mirrored to Firebase Firestore to enforce scanner access
+                        securely. Firestore stores the daily scan count, last-scan timestamp, and entitlement tier metadata
+                        needed for access control. If the cloud-based scan fails for any reason — including network errors
+                        or service unavailability — the App automatically falls back to on-device OCR using Apple's Vision
+                        framework. This offline fallback processes the image entirely on your device and does not transmit
+                        any data. Both the cloud AI and the on-device OCR fallback may produce inaccurate results; always
+                        verify scanned values before use. The scanner is limited to 10 uses per day per signed-in account.</p>
 
-                    <p><strong>d) iCloud Sync (Premium Feature)</strong><br>Premium subscribers may optionally sync their
-                        motorcycle data (rides, maintenance, fuel logs) across their Apple devices via iCloud CloudKit
-                        (Apple's private database). This data is accessible only to you through your Apple ID and is
+                    <p><strong>d) iCloud Sync (When iCloud Is Available)</strong><br>MotoLog RS can sync your motorcycle
+                        data across your Apple devices via iCloud CloudKit (Apple's private database) when iCloud is
+                        available and enabled on your device. Synced data can include rides, maintenance, fuel logs, bikes,
+                        and workshop-related data. This data is accessible only to you through your Apple ID and is
                         governed by Apple's Privacy Policy at apple.com/legal/privacy.</p>
 
                     <p><strong>e) Free-Tier Data Visibility — Feature Limitation</strong><br>For users on the free tier,
-                        rides, fuel entries, and service logs older than 30 days are subject to a Feature Limitation: they
+                        rides, fuel entries, and service logs older than 90 days are subject to a Feature Limitation: they
                         are hidden from the in-app interface but are NOT deleted. This is an intentional design choice. The
-                        data remains stored on your device and becomes fully accessible again if you upgrade to Premium.
+                        data remains stored on your device and becomes fully accessible again if you upgrade to Pro or
+                        Pro+.
                         This behavior is not data loss.</p>
 
                     <p><strong>f) Siri Shortcuts (AppIntents)</strong><br>MotoLog RS integrates with Siri via Apple's
@@ -114,22 +118,24 @@
                     <p><strong>g) Locally Stored Data</strong><br>All other data — motorcycle details, ride history,
                         maintenance records, service logs, component/parts catalog, fuel entries, photos, adaptive MPG
                         history, ride sharing configurations, app settings, and customization preferences — is stored
-                        locally on your device and is not transmitted to any server. Subscription status is stored in your
-                        device's Keychain. Adaptive MPG and maintenance predictions are calculated entirely on-device.</p>
+                        locally on your device and, if iCloud sync is available and enabled, in your private iCloud
+                        account. Subscription tier status is stored in your device's Keychain, and signed-in users may
+                        have entitlement metadata mirrored to Firebase Firestore strictly for secure access control for
+                        account-based Pro+ features. Adaptive MPG and maintenance predictions are calculated entirely
+                        on-device.</p>
 
                     <p><strong>h) Workshop Wallet Documents</strong><br>The Workshop Wallet section lets you store sensitive
                         vehicle-related information locally, including: VIN, license plate number, insurance carrier name
                         and policy number, and images of your insurance card, vehicle registration, and vehicle title. All
-                        of this data is stored exclusively on your device (and optionally in iCloud for Premium
-                        subscribers). None of this information is transmitted to any third-party server or used for any
-                        purpose other than display within the App.</p>
+                        of this data is stored on your device and, if iCloud sync is enabled, in your private iCloud
+                        account. None of this information is transmitted to any MotoLog-operated server or used for any
+                        purpose other than display and synchronization within the App.</p>
 
                     <p><strong>i) Local Push Notifications</strong><br>The App schedules local push notifications to alert
-                        free-tier users before their ride, fuel, and service data approaches the 30-day visibility limit
-                        (specifically at 7 days and 3 days before data becomes hidden). These notifications are scheduled
-                        entirely on-device using iOS's local notification system and do not involve transmitting any of your
-                        data to any server. Notification permission is managed in iOS Settings and can be revoked at any
-                        time.</p>
+                        free-tier users before older ride, fuel, and service data becomes hidden under the free-tier
+                        history limit. These notifications are scheduled entirely on-device using iOS's local notification
+                        system and do not involve transmitting any of your data to any server. Notification permission is
+                        managed in iOS Settings and can be revoked at any time.</p>
 
                     <p><strong>j) Analytics (Optional — you can opt out in Settings → Privacy)</strong><br>We use Google
                         Firebase Analytics to understand how users interact with the App at an aggregate level. Analytics
@@ -156,7 +162,7 @@
                     <p>Location data is:</p>
                     <ul>
                         <li>Used only when you actively start a ride session or to fetch local weather</li>
-                        <li>Route data stored only on your device (and in iCloud for Premium subscribers)</li>
+                        <li>Route data stored on your device and, if iCloud sync is enabled, in your private iCloud account</li>
                         <li>Under your complete control, deletable at any time</li>
                     </ul>
 
@@ -172,13 +178,13 @@
                     <ul>
                         <li>Delete individual items (rides, motorcycles, etc.) at any time</li>
                         <li>Use "Delete All Data" in Settings to remove all local data immediately</li>
-                        <li>Free-tier data older than 30 days is hidden from view but is NOT automatically deleted — this is
+                        <li>Free-tier data older than 90 days is hidden from view but is NOT automatically deleted — this is
                             a Feature Limitation, not data loss. The data remains on your device and is fully restored upon
-                            a Premium upgrade</li>
+                            a Pro or Pro+ upgrade</li>
                         <li>Firebase Authentication records (user ID, email if provided) are retained on Google's servers
                             until you request account deletion. To delete your Firebase account and associated server-side
                             records (rate-limit data, etc.), contact support@motolog.app</li>
-                        <li>iCloud CloudKit data (Premium) is retained until you delete it through the App or your iCloud
+                        <li>iCloud CloudKit data is retained until you delete it through the App or your iCloud
                             account settings</li>
                     </ul>
 
@@ -193,7 +199,7 @@
                             ai.google.dev/gemini-api/terms</li>
                         <li>Open-Meteo (Weather API — receives GPS coordinates to fetch local weather) —
                             open-meteo.com/en/terms</li>
-                        <li>Apple iCloud CloudKit (Premium cross-device sync) — apple.com/legal/privacy</li>
+                        <li>Apple iCloud CloudKit (private cross-device sync when enabled) — apple.com/legal/privacy</li>
                         <li>Apple AppIntents / Siri (Shortcuts integration) — apple.com/legal/privacy</li>
                         <li>Apple Vision (On-device OCR fallback for receipt scanning — no data leaves device) —
                             apple.com/legal/privacy</li>

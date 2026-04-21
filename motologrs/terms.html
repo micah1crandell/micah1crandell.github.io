@@ -62,7 +62,7 @@
         <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-surface/95 border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/40">
                 <h1 class="font-heading font-bold text-5xl sm:text-6xl uppercase mb-4">Terms of Service</h1>
-                <p class="text-sm sm:text-base text-gray-400 mb-8">Last Updated: March 1, 2026</p>
+                <p class="text-sm sm:text-base text-gray-400 mb-8">Last Updated: April 21, 2026</p>
 
                 <div class="prose prose-invert prose-p:text-gray-300 prose-li:text-gray-300 max-w-none text-sm sm:text-base leading-relaxed">
                     <h2 class="text-white font-bold text-xl mt-6">1. ACCEPTANCE OF TERMS</h2>
@@ -78,36 +78,39 @@
                         <li>Record fuel entries and expenses</li>
                         <li>Store ride history and statistics</li>
                         <li>Track installed components and parts with mileage or time-based replacement intervals</li>
-                        <li>Scan fuel receipts or gas pump screens automatically with AI-assisted OCR (Premium)</li>
-                        <li>Export your service logbook as PDF or CSV</li>
+                        <li>Scan fuel receipts or gas pump screens automatically with AI-assisted OCR (Pro+; sign-in required for cloud scanning)</li>
+                        <li>Export your service logbook as PDF or CSV (Pro and Pro+)</li>
                         <li>Store vehicle documents (insurance, registration, title) locally in the Workshop Wallet</li>
                         <li>Generate shareable ride-stat graphics for social media</li>
                         <li>Use Home Screen and Lock Screen widgets for quick-glance fuel range, maintenance status, and
-                            live telemetry (Premium)</li>
+                            live telemetry (Pro and Pro+)</li>
                         <li>Invoke hands-free ride tracking and fuel logging via Siri shortcuts</li>
-                        <li>Sync data across your Apple devices via iCloud CloudKit (Premium)</li>
-                        <li>Customize the app's appearance with premium themes (Premium)</li>
+                        <li>Sync data across your Apple devices via iCloud CloudKit when iCloud is available (all tiers)</li>
+                        <li>Customize the app's appearance with all themes (Pro and Pro+)</li>
                     </ul>
                     <h2 class="text-white font-bold text-xl mt-6">3. USER DATA AND PRIVACY</h2>
                     <ul>
-                        <li>Most data is stored locally on your device</li>
-                        <li>Optional sign-in uses Apple Sign In, authenticated via Google Firebase</li>
-                        <li>Premium iCloud sync transmits data to Apple's private CloudKit database</li>
+                        <li>Most data is stored locally on your device and may also sync to your private iCloud account when iCloud sync is enabled</li>
+                        <li>Optional sign-in uses Apple Sign In, authenticated via Google Firebase for account-based features only. Purchases and iCloud sync do not require app sign-in.</li>
+                        <li>iCloud sync transmits data to Apple's private CloudKit database when enabled</li>
                         <li>The AI Smart Scanner (fuel receipts and gas pump screens) transmits a compressed image to
-                            Firebase Cloud Functions, which processes it with Google Gemini AI. If the cloud scan fails, the
-                            app automatically falls back to on-device OCR using Apple's Vision framework, which does not
-                            transmit any data externally.</li>
+                            Firebase Cloud Functions for signed-in Pro+ users, which process it with Google Gemini AI. If
+                            the cloud scan fails, the app automatically falls back to on-device OCR using Apple's Vision
+                            framework, which does not transmit any data externally.</li>
                         <li>Precise GPS coordinates are shared with Open-Meteo (open-meteo.com) to fetch local weather</li>
                         <li>Workshop Wallet documents — including insurance card images, registration images, vehicle title
-                            images, VIN, license plate, insurance carrier, and policy number — are stored exclusively on
-                            your device and are never transmitted to any server</li>
-                        <li>The app schedules local push notifications as advance reminders before free-tier data reaches
-                            the 30-day visibility limit. These notifications are generated and stored on-device only; no
-                            data is transmitted to any server. Notification permission can be managed in iOS Settings.</li>
-                        <li>Subscription status is stored in your device's Keychain for security</li>
-                        <li>Free-tier ride, fuel, and service data older than 30 days is subject to a Feature Limitation: it
+                            images, VIN, license plate, insurance carrier, and policy number — are stored on your device
+                            and, if iCloud sync is enabled, in your private iCloud account</li>
+                        <li>The app may schedule local push notifications as advance reminders before older free-tier data
+                            becomes hidden under the history limit. These notifications are generated and stored on-device
+                            only; no data is transmitted to any server. Notification permission can be managed in iOS
+                            Settings.</li>
+                        <li>Subscription tier status is stored in your device's Keychain and, for signed-in users using
+                            account-based Pro+ features, entitlement metadata may be mirrored to Firebase Firestore for
+                            secure access control</li>
+                        <li>Free-tier ride, fuel, and service data older than 90 days is subject to a Feature Limitation: it
                             is hidden from the in-app interface but is NOT deleted. It remains stored on your device and
-                            becomes fully accessible again upon upgrading to Premium. This is an intentional design choice,
+                            becomes fully accessible again upon upgrading to Pro or Pro+. This is an intentional design choice,
                             not data loss.</li>
                         <li>We use Google Firebase Analytics to collect anonymous, pseudonymous usage data (session
                             duration, screens visited, purchase events) to improve the App. No personally identifiable
@@ -360,18 +363,20 @@
                         proceeding.</p>
 
                     <h2 class="text-white font-bold text-xl mt-6">17. SUBSCRIPTIONS AND PAYMENTS</h2>
-                    <p>MotoLog RS offers optional auto-renewing subscriptions that unlock Premium features. By subscribing,
-                        you agree to the following:</p>
+                    <p>MotoLog RS offers optional paid purchases that unlock Pro and Pro+ features. Pro is offered as a
+                        one-time purchase. Pro+ may be offered as an auto-renewing monthly or yearly subscription and may
+                        also be offered as a lifetime purchase. By purchasing a paid tier, you agree to the following:</p>
                     <ul>
                         <li>Payment will be charged to your Apple ID account at the confirmation of purchase.</li>
-                        <li>Subscriptions automatically renew unless canceled at least 24 hours before the end of the
+                        <li>Auto-renewing subscriptions automatically renew unless canceled at least 24 hours before the end of the
                             current billing period.</li>
-                        <li>Your account will be charged for renewal within 24 hours prior to the end of the current period
-                            at the rate of your selected plan.</li>
-                        <li>You can manage and cancel your subscription at any time by going to your Apple ID account
+                        <li>Your account will be charged for subscription renewal within 24 hours prior to the end of the current period
+                            at the rate of your selected subscription plan.</li>
+                        <li>You can manage and cancel an auto-renewing subscription at any time by going to your Apple ID account
                             settings in the App Store. Cancellation takes effect at the end of the current paid period — you
-                            will not be charged again, but no refund is issued for the unused portion of the current period.
+                            will not be charged again, but no refund is issued for the unused portion of the current subscription period.
                         </li>
+                        <li>One-time purchases, including lifetime purchases, do not auto-renew.</li>
                         <li>Free trials, if offered, will convert to a paid subscription at the end of the trial period
                             unless canceled beforehand. Canceling during the free trial period incurs no charge.</li>
                         <li>Prices are subject to change. We will notify you of any price changes in accordance with
@@ -386,10 +391,11 @@
                     <p>The Workshop Wallet feature allows you to store sensitive vehicle-related documents on your device,
                         including images of your insurance card, vehicle registration, vehicle title, and text fields
                         containing your VIN, license plate number, insurance carrier name, and policy number.</p>
-                    <p>MotoLog RS stores this data exclusively on your device (and optionally in your private iCloud account
-                        for Premium subscribers). WE DO NOT TRANSMIT, ACCESS, OR RETAIN THIS INFORMATION ON ANY SERVER.
-                        Because this data resides on your device, its security is entirely dependent on your device's own
-                        access controls.</p>
+                    <p>MotoLog RS stores this data on your device and, if iCloud sync is enabled and available, in your
+                        private iCloud account. WE DO NOT TRANSMIT, ACCESS, OR RETAIN THIS INFORMATION ON ANY MOTOLOG-OPERATED
+                        SERVER OR ANY THIRD-PARTY SERVER OTHER THAN YOUR PRIVATE APPLE ICLOUD STORAGE. Because this data
+                        resides on your device and optionally your private iCloud account, its security is dependent on
+                        your device's and Apple ID's access controls.</p>
                     <p>MOTOLOG RS IS NOT RESPONSIBLE FOR, AND EXPRESSLY DISCLAIMS ALL LIABILITY ARISING FROM, ANY
                         UNAUTHORIZED ACCESS TO, DISCLOSURE OF, OR MISUSE OF WORKSHOP WALLET DATA RESULTING FROM: (a) theft
                         or loss of your physical device; (b) access by any person to your device while it is unlocked or
