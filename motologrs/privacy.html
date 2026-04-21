@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/icon-outline.png">
+    <title>MotoLog RS | Privacy Policy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ducati: '#CE0000',
+                        ducatiDark: '#990000',
+                        surface: '#1E1E1E',
+                        darkBg: '#121212'
+                    },
+                    fontFamily: {
+                        heading: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            color: #F4F4F5;
+            background:
+                radial-gradient(circle at top, rgba(206, 0, 0, 0.18), transparent 35%),
+                linear-gradient(180deg, #181818 0%, #121212 45%, #090909 100%);
+        }
+
+        .clip-slant {
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+    </style>
+</head>
+
+<body class="font-body antialiased selection:bg-ducati selection:text-white">
+    <div class="fixed inset-0 pointer-events-none opacity-20"
+        style="background-image: linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+    <header class="relative z-10 border-b border-white/10 bg-darkBg/80 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between gap-4">
+            <a href="index.html" class="flex items-center gap-2 text-white no-underline">
+                <img src="images/icon-clean.png" alt="MotoLog RS Icon" class="w-9 h-9 object-contain">
+                <span class="font-heading font-bold text-3xl tracking-widest">MOTOLOG<span class="text-ducati">RS</span></span>
+            </a>
+            <a href="index.html"
+                class="bg-ducati text-white font-bold py-3 px-6 clip-slant hover:bg-white hover:text-ducati transition-colors uppercase tracking-wider text-sm">Back
+                to Home</a>
+        </div>
+    </header>
+
+    <main class="relative z-10 py-12 sm:py-16">
+        <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-surface/95 border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/40">
+                <h1 class="font-heading font-bold text-5xl sm:text-6xl uppercase mb-4">Privacy Policy</h1>
+                <p class="text-sm sm:text-base text-gray-400 mb-8">Last Updated: March 1, 2026</p>
+
+                <div class="prose prose-invert prose-p:text-gray-300 prose-li:text-gray-300 max-w-none text-sm sm:text-base leading-relaxed">
+                    <h2 class="text-white font-bold text-xl mt-6">1. INTRODUCTION</h2>
+                    <p>MotoLog RS ("we," "our," or "the App") is committed to protecting your privacy. This Privacy Policy
+                        explains how we handle your information when you use our motorcycle tracking and maintenance
+                        application.</p>
+
+                    <h2 class="text-white font-bold text-xl mt-6">2. DATA WE COLLECT AND HOW WE USE IT</h2>
+                    <p>MotoLog RS collects the minimum data necessary to provide its features:</p>
+
+                    <p><strong>a) Authentication (Optional)</strong><br>If you choose to sign in with Apple, your Apple ID
+                        authentication token is sent to Google Firebase Authentication to create and manage your account.
+                        Firebase stores an anonymous user ID and, if provided by Apple, your email address. See Google's
+                        Privacy Policy at firebase.google.com for details.</p>
+
+                    <p><strong>b) Location Data</strong><br>Location data is used only when you actively start a ride
+                        session. GPS route data is stored locally on your device. When using the Dashboard, your precise GPS
+                        coordinates (latitude and longitude) are sent to Open-Meteo (open-meteo.com) to retrieve local
+                        weather conditions. No other identifying information is included in this request.</p>
+
+                    <p><strong>c) Smart Scanner (Premium Feature)</strong><br>When you use the AI Smart Scanner to scan a
+                        fuel receipt or photograph a gas pump screen, a compressed image is securely transmitted to Google
+                        Firebase Cloud Functions, which processes it using Google Gemini AI (gemini-flash model). The image
+                        is passed through to the Gemini API for processing and is not stored by our Firebase servers. Only
+                        the extracted numeric values (total price and total gallons) are returned to the app. Your Firebase
+                        user ID is used for rate-limiting purposes only (scan count and last-scan timestamp are stored in
+                        Firebase Firestore under a date-keyed document). If the cloud-based scan fails for any reason —
+                        including network errors or service unavailability — the App automatically falls back to on-device
+                        OCR using Apple's Vision framework. This offline fallback processes the image entirely on your
+                        device and does not transmit any data. Both the cloud AI and the on-device OCR fallback may produce
+                        inaccurate results; always verify scanned values before use. The scanner is limited to 10 uses per
+                        day per account.</p>
+
+                    <p><strong>d) iCloud Sync (Premium Feature)</strong><br>Premium subscribers may optionally sync their
+                        motorcycle data (rides, maintenance, fuel logs) across their Apple devices via iCloud CloudKit
+                        (Apple's private database). This data is accessible only to you through your Apple ID and is
+                        governed by Apple's Privacy Policy at apple.com/legal/privacy.</p>
+
+                    <p><strong>e) Free-Tier Data Visibility — Feature Limitation</strong><br>For users on the free tier,
+                        rides, fuel entries, and service logs older than 30 days are subject to a Feature Limitation: they
+                        are hidden from the in-app interface but are NOT deleted. This is an intentional design choice. The
+                        data remains stored on your device and becomes fully accessible again if you upgrade to Premium.
+                        This behavior is not data loss.</p>
+
+                    <p><strong>f) Siri Shortcuts (AppIntents)</strong><br>MotoLog RS integrates with Siri via Apple's
+                        AppIntents framework. When you invoke a Siri shortcut, your request is processed by Apple in
+                        accordance with Apple's Privacy Policy at apple.com/legal/privacy.</p>
+
+                    <p><strong>g) Locally Stored Data</strong><br>All other data — motorcycle details, ride history,
+                        maintenance records, service logs, component/parts catalog, fuel entries, photos, adaptive MPG
+                        history, ride sharing configurations, app settings, and customization preferences — is stored
+                        locally on your device and is not transmitted to any server. Subscription status is stored in your
+                        device's Keychain. Adaptive MPG and maintenance predictions are calculated entirely on-device.</p>
+
+                    <p><strong>h) Workshop Wallet Documents</strong><br>The Workshop Wallet section lets you store sensitive
+                        vehicle-related information locally, including: VIN, license plate number, insurance carrier name
+                        and policy number, and images of your insurance card, vehicle registration, and vehicle title. All
+                        of this data is stored exclusively on your device (and optionally in iCloud for Premium
+                        subscribers). None of this information is transmitted to any third-party server or used for any
+                        purpose other than display within the App.</p>
+
+                    <p><strong>i) Local Push Notifications</strong><br>The App schedules local push notifications to alert
+                        free-tier users before their ride, fuel, and service data approaches the 30-day visibility limit
+                        (specifically at 7 days and 3 days before data becomes hidden). These notifications are scheduled
+                        entirely on-device using iOS's local notification system and do not involve transmitting any of your
+                        data to any server. Notification permission is managed in iOS Settings and can be revoked at any
+                        time.</p>
+
+                    <p><strong>j) Analytics (Optional — you can opt out in Settings → Privacy)</strong><br>We use Google
+                        Firebase Analytics to understand how users interact with the App at an aggregate level. Analytics
+                        data helps us identify which features are most useful, diagnose issues, and improve the overall
+                        experience. Firebase Analytics assigns a pseudonymous installation ID to your device to distinguish
+                        individual sessions; it does not transmit your name, email address, ride data, or any other
+                        personally identifiable information to the analytics service. Collected data includes: session
+                        duration, screens visited, and specific in-app events such as app launches, paywall views, and
+                        completed purchases. This data is used solely for internal product improvement and is never shared
+                        with advertisers or used for targeted advertising. You can disable analytics collection at any time
+                        in Settings → Privacy → Share Anonymous Analytics. Disabling this toggle immediately stops all
+                        further data collection.</p>
+
+                    <h2 class="text-white font-bold text-xl mt-6">3. DATA WE DO NOT COLLECT</h2>
+                    <p>MotoLog RS does NOT:</p>
+                    <ul>
+                        <li>Sell your data to third parties</li>
+                        <li>Track you across other apps or websites</li>
+                        <li>Display behaviorally targeted advertising</li>
+                        <li>Share your data with advertisers</li>
+                    </ul>
+
+                    <h2 class="text-white font-bold text-xl mt-6">4. LOCATION SERVICES</h2>
+                    <p>Location data is:</p>
+                    <ul>
+                        <li>Used only when you actively start a ride session or to fetch local weather</li>
+                        <li>Route data stored only on your device (and in iCloud for Premium subscribers)</li>
+                        <li>Under your complete control, deletable at any time</li>
+                    </ul>
+
+                    <h2 class="text-white font-bold text-xl mt-6">5. PHOTOS AND MEDIA</h2>
+                    <p>Photos you add to motorcycles, service records, or component entries are stored locally on your
+                        device. Vehicle document images stored in the Workshop Wallet (insurance card, registration, title)
+                        are stored exclusively on your device and are never transmitted or processed externally. Photos used
+                        for fuel receipt or gas pump screen scanning are transmitted to Firebase Cloud Functions for a
+                        single AI-processing request and are not retained by our servers.</p>
+
+                    <h2 class="text-white font-bold text-xl mt-6">6. DATA DELETION AND RETENTION</h2>
+                    <p>You have complete control over your data:</p>
+                    <ul>
+                        <li>Delete individual items (rides, motorcycles, etc.) at any time</li>
+                        <li>Use "Delete All Data" in Settings to remove all local data immediately</li>
+                        <li>Free-tier data older than 30 days is hidden from view but is NOT automatically deleted — this is
+                            a Feature Limitation, not data loss. The data remains on your device and is fully restored upon
+                            a Premium upgrade</li>
+                        <li>Firebase Authentication records (user ID, email if provided) are retained on Google's servers
+                            until you request account deletion. To delete your Firebase account and associated server-side
+                            records (rate-limit data, etc.), contact support@motolog.app</li>
+                        <li>iCloud CloudKit data (Premium) is retained until you delete it through the App or your iCloud
+                            account settings</li>
+                    </ul>
+
+                    <h2 class="text-white font-bold text-xl mt-6">7. THIRD-PARTY SERVICES</h2>
+                    <p>The following third-party services may process data as described above:</p>
+                    <ul>
+                        <li>Google Firebase Analytics (Anonymous usage analytics — can be disabled in Settings) —
+                            firebase.google.com/support/privacy</li>
+                        <li>Google Firebase (Authentication, Cloud Functions, Firestore rate-limit storage) —
+                            firebase.google.com/support/privacy</li>
+                        <li>Google Gemini AI (Receipt image processing via Firebase Cloud Functions) —
+                            ai.google.dev/gemini-api/terms</li>
+                        <li>Open-Meteo (Weather API — receives GPS coordinates to fetch local weather) —
+                            open-meteo.com/en/terms</li>
+                        <li>Apple iCloud CloudKit (Premium cross-device sync) — apple.com/legal/privacy</li>
+                        <li>Apple AppIntents / Siri (Shortcuts integration) — apple.com/legal/privacy</li>
+                        <li>Apple Vision (On-device OCR fallback for receipt scanning — no data leaves device) —
+                            apple.com/legal/privacy</li>
+                    </ul>
+
+                    <h2 class="text-white font-bold text-xl mt-6">8. CHILDREN'S PRIVACY</h2>
+                    <p>MotoLog RS is not intended for users under 16 years of age. We do not knowingly collect information
+                        from children.</p>
+
+                    <h2 class="text-white font-bold text-xl mt-6">9. DATA SECURITY</h2>
+                    <ul>
+                        <li>Local data is protected by your device's security features</li>
+                        <li>Server communications use HTTPS encryption</li>
+                        <li>Firebase Authentication uses industry-standard token-based security</li>
+                        <li>We recommend using device passcodes and biometric authentication</li>
+                    </ul>
+
+                    <h2 class="text-white font-bold text-xl mt-6">10. CHANGES TO PRIVACY POLICY</h2>
+                    <p>We may update this Privacy Policy. We will notify you of significant changes through the App or on
+                        our website.</p>
+
+                    <h2 class="text-white font-bold text-xl mt-6">11. YOUR RIGHTS</h2>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li>Access all your local data within the App</li>
+                        <li>Delete your data at any time</li>
+                        <li>Request deletion of server-side records: support@motolog.app</li>
+                        <li>Opt out of analytics collection: Settings → Privacy → Share Anonymous Analytics</li>
+                        <li>Opt out of iCloud sync by disabling it in iOS Settings</li>
+                    </ul>
+
+                    <h2 class="text-white font-bold text-xl mt-6">12. CONTACT US</h2>
+                    <p>Questions about this Privacy Policy: support@motolog.app</p>
+                    <p>© 2026 MotoLog RS. All rights reserved.</p>
+                </div>
+            </div>
+        </article>
+    </main>
+</body>
+
+</html>
