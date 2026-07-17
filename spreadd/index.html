@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SPREADD - AI Meal Planner for iPhone</title>
+    <meta
+      name="description"
+      content="SPREADD is an iOS meal planning app with AI chat, saved recipes, grocery lists, family sharing, and Apple Calendar and Reminders export."
+    />
+    <link rel="icon" type="image/png" href="app-icon.png" />
+    <link rel="apple-touch-icon" href="app-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="index.html" aria-label="SPREADD home">
+          <img class="brand-mark" src="app-icon.png" alt="" />
+          <span>SPREADD</span>
+        </a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="support.html">Support</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">AI meal planning for iPhone</p>
+          <h1>Plan meals, save recipes, and build grocery lists with less kitchen friction.</h1>
+          <p class="lead">
+            SPREADD helps you organize recipes, plan the next seven days, create grocery lists,
+            and ask an AI assistant for meal ideas, substitutions, and cooking help based on
+            your preferences and kitchen setup.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#pricing">View plans</a>
+            <a class="button secondary" href="privacy.html">Read privacy policy</a>
+            <span class="button disabled" aria-disabled="true">App Store listing coming soon</span>
+          </div>
+          <p class="note">
+            Pre-launch site. App Store availability, localized prices, and final purchase terms are
+            shown by Apple when the app is available.
+          </p>
+        </div>
+
+        <div class="hero-chat-preview" aria-label="SPREADD AI chat preview">
+          <div class="chat-glow" aria-hidden="true"></div>
+
+          <article class="floating-card prompt-card">
+            <div>
+              <span class="micro-label">You • Friday Plan</span>
+              <p>
+                Pick one saved recipe that works for Friday dinner, keeps it tomato-free,
+                and fits the rest of my upcoming week.
+              </p>
+            </div>
+            <span class="avatar">Y</span>
+          </article>
+
+          <div class="floating-card status-card">
+            <span class="ping-dot" aria-hidden="true"></span>
+            <span>Searching saved recipes</span>
+          </div>
+
+          <article class="floating-card answer-card">
+            <div class="answer-header">
+              <div class="assistant-id">
+                <img class="assistant-mark" src="app-icon.png" alt="" />
+                <span>SPREADD Assistant</span>
+              </div>
+              <span class="pill">10 free messages</span>
+            </div>
+
+            <div class="recommendation">
+              <span class="micro-label">Dinner Recommendation</span>
+              <h3>Herb-crusted salmon with roasted broccoli and potatoes</h3>
+              <div class="recipe-meta">
+                <span>35 min</span>
+                <span>450 kcal</span>
+                <span>Tomato-free</span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="ingredient-list" aria-label="Suggested grocery items">
+              <div><strong>1</strong><span>2 salmon fillets</span></div>
+              <div><strong>2</strong><span>Fresh broccoli florets</span></div>
+              <div><strong>3</strong><span>Potatoes, herbs, and olive oil</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="section-header">
+          <p class="eyebrow">What the iOS app supports</p>
+          <h2>A practical meal planning workflow, not a fake kitchen miracle.</h2>
+          <p class="lead">
+            The site copy below matches the current iOS app and focuses on features that are
+            actually supported in the release build.
+          </p>
+        </div>
+
+        <div class="grid features">
+          <article class="card">
+            <h3>AI meal planning chat</h3>
+            <p>
+              Ask for recipe ideas, substitutions, allergen-aware edits, and meal planning help.
+              Chat can use selected app context and attached images when you choose to send them.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Seven-day meal plan</h3>
+            <p>
+              Arrange meals across an upcoming seven-day window and sync planned meals to Apple
+              Calendar when you grant calendar permission.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Saved recipe library</h3>
+            <p>
+              Store recipes with ingredients, instructions, cook time, calories, difficulty,
+              favorites, and optional images.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Grocery lists</h3>
+            <p>
+              Create and manage grocery lists in the app, then export unchecked items to Apple
+              Reminders when you grant reminders permission.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Preferences and appliances</h3>
+            <p>
+              Save allergies, diets, dislikes, favorite cooking tools, and kitchen appliances so
+              SPREADD can personalize suggestions.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Optional family sharing</h3>
+            <p>
+              Family plans unlock household sync for shared recipes, meal plans, grocery lists,
+              member profiles, invites, and a shared AI usage pool.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="pricing" class="section">
+        <div class="section-header">
+          <p class="eyebrow">Launch pricing</p>
+          <h2>Free starter access, then personal or family plans.</h2>
+          <p class="lead">
+            Prices below are planned US App Store prices. The app displays localized StoreKit
+            prices from App Store Connect, and Apple manages billing, renewals, cancellation,
+            and refunds.
+          </p>
+        </div>
+
+        <div class="grid plans">
+          <article class="card">
+            <h3>Personal</h3>
+            <p class="price">$5.99/mo</p>
+            <p class="small">$49.99/year</p>
+            <ul class="list">
+              <li>Unlocks the individual SPREADD experience.</li>
+              <li>Includes rolling seven-day AI service-protection capacity.</li>
+              <li>Does not include household sharing, invites, or family sync.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Family</h3>
+            <p class="price">$12.99/mo</p>
+            <p class="small">$119.99/year</p>
+            <ul class="list">
+              <li>Includes the paid individual features.</li>
+              <li>Adds household sharing features for up to 6 members.</li>
+              <li>Uses a shared rolling seven-day AI usage pool.</li>
+            </ul>
+          </article>
+        </div>
+
+        <article class="card" style="margin-top: 18px;">
+          <h3>Free AI starter limit</h3>
+          <p>
+            Free accounts receive 10 lifetime AI messages. Paid AI usage is measured over the
+            last 7 days. Older AI requests stop counting as they pass 7 days old.
+          </p>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <p class="eyebrow">Safety and privacy</p>
+          <h2>Designed for practical help, with clear limits.</h2>
+        </div>
+        <div class="grid features">
+          <article class="card">
+            <h3>Not medical or allergy advice</h3>
+            <p>
+              Always verify labels, ingredients, allergens, cooking temperatures, nutrition, and
+              food safety before relying on a recipe or AI suggestion.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Analytics avoid user content</h3>
+            <p>
+              Analytics are intended for app health, onboarding, retention, subscription flow, and
+              broad feature-use measurement, not recipe names, prompts, grocery items, or images.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Delete account data in app</h3>
+            <p>
+              The iOS app includes Profile &gt; Settings &gt; Delete Account &amp; Cloud Data for
+              the current user's cloud data.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <span>© 2026 SPREADD. All rights reserved.</span>
+        <div class="nav-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="support.html">Support</a>
+          <a href="mailto:micahcrandell.dev@gmail.com?subject=SPREADD%20Support">Email</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
